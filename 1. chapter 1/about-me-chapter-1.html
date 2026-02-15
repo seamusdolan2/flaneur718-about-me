@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 1 - Bay Ridge to Academia | Flaneur 718</title>
+  
+  <style>
+    /*
+    ============================================
+    CHAPTER 1: BAY RIDGE TO ACADEMIA
+    WITH ANIMATED SCRAPBOOK + POLAROID DEVELOPMENT
+    ============================================
+    
+    ANIMATION SEQUENCE:
+    1. Page loads / Chapter scrolls into view
+    2. Typewriter effect types "CHAPTER 1"
+    3. User reads opening paragraph (~3.5 seconds)
+    4. Scrapbook items begin "falling in" one by one
+    5. Each item drops with slight rotation and bounce
+    6. 400ms stagger between each item (7 items = ~3.5s total)
+    7. User scrolls to photo section
+    8. Polaroid photos "develop" like real instant film
+    9. First photo starts immediately, second starts 1s later
+    10. Each photo takes 4s to fully develop (chemistry simulation)
+    
+    SCRAPBOOK IMAGES:
+    - Item 1: Library Cards (Brooklyn, NY, Queens)
+    - Item 2: MetroCard & Subway Tokens
+    - Item 3: Spray Paint Cans (street photo)
+    - Item 4: Quarter Drinks (Hugs)
+    - Item 5: Pizza Box (Joe's)
+    - Item 6: Research Notes (equations)
+    - Item 7: Philosophy Books (Gramsci, Benjamin, etc.)
+    
+    POLAROID DEVELOPMENT:
+    Mimics real Polaroid chemistry:
+    - Stage 1 (0-1s): Faint outlines appear
+    - Stage 2 (1-2s): Colors wash in
+    - Stage 3 (2-3s): Details emerge
+    - Stage 4 (3-4s): Final sharpening
+    - White overlay fades in final stages
+    
+    WordPress Integration: fl718- prefix on all classes
+    */
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f8f8f8;
+      color: #1a1a1a;
+      overflow-x: hidden;
+      line-height: 1.7;
+    }
+    
+    /* ==================== CHAPTER 1 CONTAINER ==================== */
+    .fl718-chapter {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      background: linear-gradient(to bottom, #f8f8f8 0%, #ebebeb 100%);
+      padding: 120px 60px 200px 60px;
+    }
+    
+    /* ==================== CHAPTER NUMBER - TYPEWRITER STYLE ==================== */
+    .fl718-chapter__number {
+      position: absolute;
+      top: -60px;
+      left: 0;
+      font-family: 'Courier New', monospace;
+      font-size: 42px;
+      font-weight: 700;
+      color: #666;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      z-index: 10;
+      display: inline-block;
+      opacity: 1;
+    }
+    
+    /* Blinking cursor effect */
+    .fl718-chapter__number::after {
+      content: '|';
+      color: #666;
+      animation: fl718-blink 1s step-end infinite;
+      margin-left: 4px;
+      opacity: 0;
+    }
+    
+    .fl718-chapter__number.typing::after {
+      opacity: 1;
+    }
+    
+    .fl718-chapter__number.typed::after {
+      animation: none;
+      opacity: 0;
+    }
+    
+    @keyframes fl718-blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+    
+    /* ==================== CHAPTER TITLE ==================== */
+    .fl718-chapter__title {
+      max-width: 1200px;
+      margin: 0 auto 140px auto;
+      text-align: left;
+      position: relative;
+    }
+    
+    .fl718-chapter__title h1 {
+      font-size: 52px;
+      font-weight: 800;
+      color: #000000;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+    }
+    
+    .fl718-chapter__title-line {
+      width: 80px;
+      height: 4px;
+      background: #2a2a2a;
+      margin-bottom: 0;
+    }
+    
+    /* ==================== CONTENT WRAPPER ==================== */
+    .fl718-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+    }
+    
+    /* ==================== SECTION SPACING ==================== */
+    .fl718-section {
+      position: relative;
+      margin-bottom: 160px;
+    }
+    
+    /* ==================== PARAGRAPH STYLES ==================== */
+    .fl718-paragraph {
+      font-size: 21px;
+      line-height: 1.8;
+      color: #2a2a2a;
+      margin-bottom: 60px;
+      max-width: 900px;
+      margin-left: 60px;
+    }
+    
+    .fl718-paragraph--opening {
+      font-size: 24px;
+      line-height: 1.75;
+      color: #1a1a1a;
+      font-weight: 500;
+      margin-bottom: 120px; /* Extra space before scrapbook appears */
+    }
+    
+    /* ==================== ANIMATED SCRAPBOOK SECTION ==================== */
+    .fl718-scrapbook-cluster {
+      position: relative;
+      margin: 100px 0 140px 0;
+      min-height: 900px; /* Taller to accommodate real images */
+      width: 100%;
+    }
+    
+    /* Base artifact styling - INITIAL HIDDEN STATE */
+    .fl718-artifact {
+      position: absolute;
+      background: #ffffff;
+      padding: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+      border-radius: 3px;
+      
+      /* Animation properties */
+      opacity: 0;
+      transform: translateY(-120px) rotate(8deg) scale(0.85);
+      transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); /* Bounce easing */
+      will-change: transform, opacity;
+    }
+    
+    /* VISIBLE STATE - triggered by JavaScript */
+    .fl718-artifact--visible {
+      opacity: 1;
+      transform: translateY(0) rotate(var(--rotation, -2deg)) scale(1);
+    }
+    
+    /* Image inside artifact */
+    .fl718-artifact img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 2px;
+    }
+    
+    /* ==================== SCRAPBOOK IMAGE POSITIONS ==================== */
+    
+    /* Item 1: Library Cards - Upper Left */
+    .fl718-artifact--library {
+      top: 20px;
+      left: 60px;
+      width: 340px;
+      --rotation: -3deg;
+      z-index: 4;
+    }
+    
+    /* Item 2: MetroCard & Tokens - Mid Left */
+    .fl718-artifact--metrocard {
+      top: 180px;
+      left: 180px;
+      width: 360px;
+      --rotation: 2deg;
+      z-index: 6;
+    }
+    
+    /* Item 3: Spray Paint Cans - Lower Left */
+    .fl718-artifact--spraypaint {
+      top: 480px;
+      left: 40px;
+      width: 380px;
+      --rotation: -2deg;
+      z-index: 3;
+    }
+    
+    /* Item 4: Quarter Drinks - Mid Right */
+    .fl718-artifact--drinks {
+      top: 140px;
+      right: 120px;
+      width: 340px;
+      --rotation: 4deg;
+      z-index: 5;
+    }
+    
+    /* Item 5: Pizza Box - Upper Right */
+    .fl718-artifact--pizza {
+      top: 60px;
+      right: 280px;
+      width: 320px;
+      --rotation: -1.5deg;
+      z-index: 2;
+    }
+    
+    /* Item 6: Research Notes - Lower Right */
+    .fl718-artifact--notes {
+      top: 520px;
+      right: 160px;
+      width: 360px;
+      --rotation: 3deg;
+      z-index: 7;
+    }
+    
+    /* Item 7: Philosophy Books - Bottom Center */
+    .fl718-artifact--books {
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-120px) rotate(8deg) scale(0.85);
+      width: 420px;
+      --rotation: -1deg;
+      z-index: 8;
+    }
+    
+    .fl718-artifact--books.fl718-artifact--visible {
+      transform: translateX(-50%) translateY(0) rotate(-1deg) scale(1);
+    }
+    
+    /* ==================== BROOKLYN PHOTOS SECTION ==================== */
+    .fl718-photo-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin: 120px 0 100px 0;
+      position: relative;
+    }
+    
+    /* ==================== POLAROID PHOTO FRAME ==================== */
+    .fl718-photo {
+      position: relative;
+      background: #fff;
+      padding: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      transform: rotate(-1deg);
+      overflow: hidden; /* Contains overlay */
+    }
+    
+    .fl718-photo:nth-child(2) {
+      transform: rotate(2deg) translateY(40px);
+    }
+    
+    /* ==================== POLAROID IMAGE (Develops over time) ==================== */
+    .fl718-photo__image {
+      width: 100%;
+      aspect-ratio: 4/3;
+      background: #e0e0e0;
+      position: relative;
+      overflow: hidden;
+
+      /* Initial state: Overexposed, low contrast, desaturated, blurred */
+      filter: brightness(3.5) contrast(0.05) saturate(0) blur(6px);
+      transition: none; /* Animation handled by keyframes */
+    }
+    
+    /* Actual image element inside */
+    .fl718-photo__image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    
+    /* ==================== WHITE OVERLAY (Unexposed Polaroid surface) ==================== */
+    .fl718-photo__overlay {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      right: 12px;
+      bottom: 42px; /* Leave space for caption */
+      background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(240,240,240,0.9) 100%);
+      z-index: 2;
+      pointer-events: none;
+      opacity: 1;
+    }
+
+    /* ==================== POLAROID DEVELOPMENT ANIMATION ==================== */
+    /* More dramatic and lively with color temperature shifts and shake effect */
+
+    @keyframes fl718-polaroid-develop {
+      0% {
+        /* Stage 1: Overexposed - bright white, heavily blurred */
+        filter: brightness(3.5) contrast(0.05) saturate(0) blur(6px) sepia(0.2);
+      }
+      /* Initial flash/exposure */
+      8% {
+        filter: brightness(4) contrast(0.1) saturate(0) blur(5px) sepia(0.3);
+      }
+      /* First visible hint of image */
+      18% {
+        filter: brightness(3) contrast(0.25) saturate(0.15) blur(4px) sepia(0.35) hue-rotate(-15deg);
+      }
+      /* Colors start to emerge - warm tones */
+      32% {
+        filter: brightness(2.2) contrast(0.45) saturate(0.4) blur(3px) sepia(0.25) hue-rotate(-8deg);
+      }
+      /* Image becoming clearer - cool shift */
+      48% {
+        filter: brightness(1.6) contrast(0.65) saturate(0.65) blur(1.8px) sepia(0.1) hue-rotate(3deg);
+      }
+      /* Sharpening phase */
+      65% {
+        filter: brightness(1.25) contrast(0.85) saturate(0.85) blur(0.8px) sepia(0.05) hue-rotate(2deg);
+      }
+      /* Near final - slight oversaturation */
+      82% {
+        filter: brightness(1.08) contrast(0.96) saturate(1.1) blur(0.3px) sepia(0) hue-rotate(0deg);
+      }
+      /* Settling to normal */
+      94% {
+        filter: brightness(1.02) contrast(0.99) saturate(1.03) blur(0.1px) sepia(0) hue-rotate(0deg);
+      }
+      100% {
+        /* Stage 5: Fully developed - crisp, saturated, sharp */
+        filter: brightness(1) contrast(1) saturate(1) blur(0) sepia(0) hue-rotate(0deg);
+      }
+    }
+
+    /* Subtle shake effect - simulates chemical reaction */
+    @keyframes fl718-polaroid-shake {
+      0%, 100% {
+        transform: translateX(0) translateY(0) rotate(0deg);
+      }
+      10% {
+        transform: translateX(-1px) translateY(0.5px) rotate(-0.3deg);
+      }
+      20% {
+        transform: translateX(1px) translateY(-0.5px) rotate(0.3deg);
+      }
+      30% {
+        transform: translateX(-0.8px) translateY(0.3px) rotate(-0.2deg);
+      }
+      40% {
+        transform: translateX(0.8px) translateY(-0.3px) rotate(0.2deg);
+      }
+      50% {
+        transform: translateX(-0.5px) translateY(0.2px) rotate(-0.1deg);
+      }
+      60% {
+        transform: translateX(0.5px) translateY(-0.2px) rotate(0.1deg);
+      }
+      70% {
+        transform: translateX(-0.3px) translateY(0.1px) rotate(-0.05deg);
+      }
+      80% {
+        transform: translateX(0.3px) translateY(-0.1px) rotate(0.05deg);
+      }
+      90% {
+        transform: translateX(-0.1px) translateY(0.05px) rotate(0deg);
+      }
+    }
+
+    /* Overlay fade - more dramatic peel-away effect */
+    @keyframes fl718-overlay-fade {
+      0% {
+        opacity: 1;
+        transform: scale(1);
+      }
+      40% {
+        opacity: 0.95;
+        transform: scale(1);
+      }
+      60% {
+        opacity: 0.7;
+        transform: scale(1.01);
+      }
+      75% {
+        opacity: 0.3;
+        transform: scale(1.02);
+      }
+      88% {
+        opacity: 0.1;
+        transform: scale(1.01);
+      }
+      100% {
+        opacity: 0;
+        transform: scale(1);
+      }
+    }
+
+    /* Triggered state: Photo begins developing with shake effect */
+    .fl718-photo--developing .fl718-photo__image {
+      animation: fl718-polaroid-develop 4.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
+                 fl718-polaroid-shake 0.6s ease-in-out 0.3s forwards;
+    }
+
+    /* White overlay fades as photo develops with scale effect */
+    .fl718-photo--developing .fl718-photo__overlay {
+      animation: fl718-overlay-fade 4.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+    
+    .fl718-photo__caption {
+      font-size: 12px;
+      color: #666;
+      margin-top: 8px;
+      font-family: 'Courier New', monospace;
+      text-align: center;
+      position: relative;
+      z-index: 3; /* Above overlay */
+    }
+    
+    /* ==================== EDUCATION SECTION ==================== */
+    .fl718-section--education {
+      background: rgba(255, 255, 255, 0.5);
+      padding: 80px 60px;
+      margin-left: -60px;
+      margin-right: -60px;
+      margin-bottom: 0;
+    }
+    
+    /* ==================== ACCESSIBILITY - REDUCED MOTION ==================== */
+    @media (prefers-reduced-motion: reduce) {
+      .fl718-artifact {
+        transition: opacity 0.3s ease;
+        transform: none !important;
+      }
+      
+      .fl718-artifact--visible {
+        transform: none !important;
+      }
+      
+      /* Instant Polaroid development for reduced motion */
+      .fl718-photo__image {
+        filter: none !important;
+        animation: none !important;
+      }
+      
+      .fl718-photo__overlay {
+        opacity: 0 !important;
+        transition: none !important;
+      }
+    }
+    
+    /* ==================== RESPONSIVE DESIGN ==================== */
+    @media (max-width: 1024px) {
+      .fl718-scrapbook-cluster {
+        min-height: 800px;
+      }
+      
+      .fl718-artifact--library { width: 280px; left: 40px; }
+      .fl718-artifact--metrocard { width: 300px; left: 120px; }
+      .fl718-artifact--spraypaint { width: 320px; top: 420px; }
+      .fl718-artifact--drinks { width: 280px; right: 60px; }
+      .fl718-artifact--pizza { width: 260px; right: 180px; }
+      .fl718-artifact--notes { width: 300px; top: 460px; }
+      .fl718-artifact--books { width: 360px; }
+    }
+    
+    @media (max-width: 768px) {
+      .fl718-chapter {
+        padding: 80px 30px 120px 30px;
+      }
+      
+      .fl718-chapter__number {
+        top: -40px;
+        font-size: 28px;
+        letter-spacing: 4px;
+      }
+      
+      .fl718-chapter__title h1 {
+        font-size: 36px;
+      }
+      
+      .fl718-paragraph {
+        font-size: 18px;
+        margin-left: 0;
+      }
+      
+      .fl718-paragraph--opening {
+        font-size: 20px;
+        margin-bottom: 80px;
+      }
+      
+      /* Mobile: Simplified vertical layout for scrapbook */
+      .fl718-scrapbook-cluster {
+        min-height: 2400px;
+      }
+      
+      .fl718-artifact {
+        left: 50% !important;
+        right: auto !important;
+        transform: translateX(-50%) translateY(-80px) rotate(5deg) scale(0.9);
+        width: 85% !important;
+        max-width: 320px !important;
+      }
+      
+      .fl718-artifact--visible {
+        transform: translateX(-50%) translateY(0) rotate(var(--rotation, -1deg)) scale(1);
+      }
+      
+      /* Vertical stacking on mobile */
+      .fl718-artifact--library { top: 20px; }
+      .fl718-artifact--metrocard { top: 340px; }
+      .fl718-artifact--pizza { top: 660px; }
+      .fl718-artifact--drinks { top: 980px; }
+      .fl718-artifact--spraypaint { top: 1300px; }
+      .fl718-artifact--notes { top: 1640px; }
+      .fl718-artifact--books { 
+        top: 1980px; 
+        left: 50% !important;
+        bottom: auto !important;
+      }
+      
+      .fl718-photo-section {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        margin: 80px 0 60px 0;
+      }
+      
+      .fl718-photo:nth-child(2) {
+        transform: rotate(-1deg) translateY(0);
+      }
+      
+      /* Ensure overlay positions correctly on mobile */
+      .fl718-photo__overlay {
+        top: 12px;
+        left: 12px;
+        right: 12px;
+        bottom: 42px;
+      }
+      
+      .fl718-section--education {
+        margin-left: -30px;
+        margin-right: -30px;
+        padding: 60px 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CHAPTER 1 -->
+  <div class="fl718-chapter">
+    
+    <!-- Chapter Title -->
+    <div class="fl718-chapter__title">
+      <!-- Chapter Number with Typewriter Effect -->
+      <div class="fl718-chapter__number" id="chapterNumber"></div>
+      
+      <div class="fl718-chapter__title-line"></div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="fl718-content">
+      
+      <!-- NYC SECTION -->
+      <section class="fl718-section fl718-section--brooklyn">
+        
+        <!-- Opening Paragraph -->
+        <p class="fl718-paragraph fl718-paragraph--opening">
+          They tell me I was born on a snowy February day in Bay Ridge, Brooklyn—a little nook where my shoes still hang from electric lines and the aged paint of my graffiti can be glimpsed through time. I roamed the streets and foraged for fun. Some say I still do.
+        </p>
+        
+        <!-- ANIMATED SCRAPBOOK CLUSTER -->
+        <div class="fl718-scrapbook-cluster" id="scrapbookCluster">
+          
+          <!-- Item 1: Library Cards -->
+          <div class="fl718-artifact fl718-artifact--library" data-index="0">
+            <img src="chapter1-scrapbook-library-cards.png" alt="Brooklyn Public Library cards with handwritten notes on aged scrapbook page">
+          </div>
+          
+          <!-- Item 2: MetroCard & Subway Tokens -->
+          <div class="fl718-artifact fl718-artifact--metrocard" data-index="1">
+            <img src="chapter1-scrapbook-metrocards.png" alt="NYC MetroCard, vintage subway tokens, and subway stamps on scrapbook page">
+          </div>
+          
+          <!-- Item 3: Spray Paint Cans -->
+          <div class="fl718-artifact fl718-artifact--spraypaint" data-index="2">
+            <img src="chapter1-scrapbook-spraypaint-street.png" alt="Krylon spray paint cans on cobblestone street with graffiti wall and yellow taxi">
+          </div>
+          
+          <!-- Item 4: Quarter Drinks (Hugs) -->
+          <div class="fl718-artifact fl718-artifact--drinks" data-index="3">
+            <img src="chapter1-scrapbook-quarter-drinks-street.png" alt="Colorful quarter water bottles on bodega counter with cold beer sign">
+          </div>
+          
+          <!-- Item 5: Pizza Box -->
+          <div class="fl718-artifact fl718-artifact--pizza" data-index="4">
+            <img src="chapter1-scrapbook-pizza-box.png" alt="Joe's Pizzeria NYC cardboard box with grease stains and city skyline">
+          </div>
+          
+          <!-- Item 6: Research Notes -->
+          <div class="fl718-artifact fl718-artifact--notes" data-index="5">
+            <img src="chapter1-scrapbook-research_notes.png" alt="Spiral notebook with handwritten physics equations, coffee stains, and pencil marks">
+          </div>
+          
+          <!-- Item 7: Philosophy Books -->
+          <div class="fl718-artifact fl718-artifact--books" data-index="6">
+            <img src="chapter1-scrapbook-books.png" alt="Stack of philosophy books: Gramsci, Walter Benjamin, Don DeLillo, George Orwell, Jean Baudrillard">
+          </div>
+          
+        </div>
+        
+        <!-- Brooklyn Photos with Polaroid Development Effect -->
+        <div class="fl718-photo-section">
+          <div class="fl718-photo fl718-photo--polaroid" data-develop-delay="0">
+            <!-- White overlay (unexposed Polaroid surface) -->
+            <div class="fl718-photo__overlay"></div>
+            
+            <div class="fl718-photo__image">
+              <img src="chapter1.jpg" alt="Black and white portrait with dramatic shadows">
+            </div>
+            <div class="fl718-photo__caption">Bay Ridge, Brooklyn</div>
+          </div>
+          
+          <div class="fl718-photo fl718-photo--polaroid" data-develop-delay="400">
+            <!-- White overlay (unexposed Polaroid surface) -->
+            <div class="fl718-photo__overlay"></div>
+            
+            <div class="fl718-photo__image">
+              <img src="chapter2-me-2.jpg" alt="Portrait with greenery background">
+            </div>
+            <div class="fl718-photo__caption">Flushing, Queens</div>
+          </div>
+        </div>
+        
+      </section>
+      
+      <!-- EDUCATION SECTION -->
+      <section class="fl718-section fl718-section--education">
+        
+        <p class="fl718-paragraph">
+          I canoed through public schools and emerged with degrees in English and History, then later in philosophy and public policy. I loved university and wanted to stay forever, but reality intervened.
+        </p>
+        
+        <p class="fl718-paragraph">
+          I worked at think tanks and universities, teaching myself to code, master statistics, and design research methods.
+        </p>
+        
+      </section>
+      
+    </div>
+    
+  </div>
+
+  <!-- TYPEWRITER + SCRAPBOOK + POLAROID ANIMATION SCRIPT -->
+  <script>
+    /**
+     * ===================================================
+     * CHAPTER 1: ANIMATIONS SYSTEM
+     * ===================================================
+     * 
+     * THREE ANIMATION SEQUENCES:
+     * 
+     * 1. TYPEWRITER EFFECT (Chapter Number)
+     *    - Triggers on scroll into view
+     *    - Variable speed typing (80-120ms per char)
+     *    - Blinking cursor during typing
+     *    - Cursor disappears when complete
+     * 
+     * 2. SCRAPBOOK FALLING-IN (7 Items)
+     *    - 3.5-second delay after section visible
+     *    - Sequential drops with 400ms stagger
+     *    - Bounce easing with rotation
+     *    - Slight random rotation variation
+     * 
+     * 3. POLAROID DEVELOPMENT (2 Photos)
+     *    - Triggers EARLY: 300px before photo section enters viewport
+     *    - Animation starts while user is still viewing scrapbook
+     *    - By the time user reaches photos, they're developing/developed
+     *    - Mimics real Polaroid chemistry:
+     *      • Stage 1: Faint outlines (brightness/contrast)
+     *      • Stage 2: Colors wash in (saturation)
+     *      • Stage 3: Details emerge (sharpness)
+     *      • Stage 4: Final development (full quality)
+     *    - White overlay fades in final stages
+     *    - Second photo starts 1s after first (staggered)
+     *    - Total development: 4 seconds per photo
+     * 
+     * PERFORMANCE:
+     * - Uses IntersectionObserver for efficient scroll detection
+     * - GPU-accelerated transforms (will-change)
+     * - Respects prefers-reduced-motion
+     * - Cleans up observers after animation completes
+     */
+    
+    // ==================== TYPEWRITER EFFECT ====================
+    function typewriterEffect(element, text, speed = 80) {
+      let index = 0;
+      element.classList.add('typing');
+      
+      function type() {
+        if (index < text.length) {
+          element.textContent += text.charAt(index);
+          index++;
+          
+          // Variable speed - slightly irregular like human typing
+          const variableSpeed = speed + (Math.random() * 40 - 20);
+          setTimeout(type, variableSpeed);
+        } else {
+          // Typing complete - remove cursor after brief pause
+          setTimeout(() => {
+            element.classList.remove('typing');
+            element.classList.add('typed');
+          }, 500);
+        }
+      }
+      
+      type();
+    }
+    
+    // ==================== SCRAPBOOK FALLING ANIMATION ====================
+    function animateScrapbook() {
+      const artifacts = document.querySelectorAll('.fl718-artifact');
+      
+      // Check for reduced motion preference
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      
+      if (prefersReducedMotion) {
+        // Instant reveal for reduced motion users
+        artifacts.forEach(artifact => {
+          artifact.classList.add('fl718-artifact--visible');
+        });
+        return;
+      }
+      
+      // 3.5-SECOND DELAY before scrapbook items start appearing
+      setTimeout(() => {
+        
+        // Sequential reveal with 400ms stagger between each item
+        artifacts.forEach((artifact, index) => {
+          setTimeout(() => {
+            artifact.classList.add('fl718-artifact--visible');
+            
+            // Optional: Add slight random variation to rotation for organic feel
+            const baseRotation = parseFloat(getComputedStyle(artifact).getPropertyValue('--rotation') || '-2deg');
+            const randomVariation = (Math.random() - 0.5) * 1; // ±0.5deg variation
+            artifact.style.setProperty('--rotation', `${baseRotation + randomVariation}deg`);
+            
+          }, index * 400); // 400ms between each drop
+        });
+        
+      }, 3500); // 3.5-second delay
+    }
+    
+    // ==================== POLAROID DEVELOPMENT ANIMATION ====================
+    function developPolaroids() {
+      const polaroids = document.querySelectorAll('.fl718-photo--polaroid');
+      
+      // Check for reduced motion preference
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      
+      if (prefersReducedMotion) {
+        // Instant reveal for reduced motion users
+        polaroids.forEach(polaroid => {
+          polaroid.classList.add('fl718-photo--developing');
+          const overlay = polaroid.querySelector('.fl718-photo__overlay');
+          if (overlay) overlay.style.opacity = '0';
+          const image = polaroid.querySelector('.fl718-photo__image');
+          if (image) image.style.filter = 'none';
+        });
+        return;
+      }
+      
+      // Sequential development with stagger (like taking photos one at a time)
+      polaroids.forEach((polaroid) => {
+        const delay = parseInt(polaroid.dataset.developDelay) || 0;
+        
+        setTimeout(() => {
+          polaroid.classList.add('fl718-photo--developing');
+        }, delay);
+      });
+    }
+    
+    // ==================== INTERSECTION OBSERVER SETUP ====================
+    
+    // Chapter number typewriter observer
+    const chapterObserverOptions = {
+      threshold: 0.2,
+      rootMargin: '0px'
+    };
+    
+    const chapterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const chapterNumber = document.getElementById('chapterNumber');
+          if (chapterNumber && chapterNumber.textContent === '') {
+            setTimeout(() => {
+              typewriterEffect(chapterNumber, 'CHAPTER 1', 90);
+            }, 300);
+          }
+          chapterObserver.unobserve(entry.target);
+        }
+      });
+    }, chapterObserverOptions);
+    
+    // Scrapbook animation observer
+    const scrapbookObserverOptions = {
+      threshold: 0.3, // Trigger when 30% of scrapbook section is visible
+      rootMargin: '0px'
+    };
+    
+    const scrapbookObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateScrapbook();
+          scrapbookObserver.unobserve(entry.target); // Only animate once
+        }
+      });
+    }, scrapbookObserverOptions);
+    
+    // Polaroid development observer - IMMEDIATE TRIGGER
+    const polaroidObserverOptions = {
+      threshold: 0, // Trigger as soon as ANY part is visible
+      rootMargin: '100px 0px 0px 0px' // Start animation 100px BEFORE top edge enters viewport
+    };
+
+    const polaroidObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          developPolaroids();
+          polaroidObserver.unobserve(entry.target); // Only develop once
+        }
+      });
+    }, polaroidObserverOptions);
+    
+    // ==================== INITIALIZE OBSERVERS ====================
+    document.addEventListener('DOMContentLoaded', () => {
+      const chapterElement = document.querySelector('.fl718-chapter');
+      const scrapbookCluster = document.getElementById('scrapbookCluster');
+      const photoSection = document.querySelector('.fl718-photo-section');
+      
+      if (chapterElement) {
+        chapterObserver.observe(chapterElement);
+      }
+      
+      if (scrapbookCluster) {
+        scrapbookObserver.observe(scrapbookCluster);
+      }
+      
+      if (photoSection) {
+        polaroidObserver.observe(photoSection);
+      }
+    });
+    
+    // ==================== PERFORMANCE OPTIMIZATION ====================
+    // Remove will-change after animations complete to free up GPU resources
+    setTimeout(() => {
+      const artifacts = document.querySelectorAll('.fl718-artifact');
+      artifacts.forEach(artifact => {
+        artifact.style.willChange = 'auto';
+      });
+    }, 11500); // After all animations complete (3.5s delay + 7 items × 400ms + 0.8s animation)
+  </script>
+
+</body>
+</html>

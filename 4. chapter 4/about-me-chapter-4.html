@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 4 - Mexico City & Film | Flaneur 718</title>
+  
+  <!-- GSAP ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  
+  <style>
+    /*
+    ============================================
+    CHAPTER 4: MEXICO CITY & 35mm FILM
+    ============================================
+    
+    NARRATIVE MOMENT:
+    - Mexico City as the place where color became essential
+    - Discovery of 35mm film photography
+    - Light, shadow, and intention
+    - Mastery emerging from experimentation
+    
+    COLOR PALETTE (REFINED - Less Intense):
+    ----------------------------------------
+    BACKGROUNDS:
+    - #fef3e2 → Warm cream (base)
+    - #f4e4d7 → Sand/adobe
+    - #fff9f0 → Soft white
+    
+    MEXICO CITY COLORS (Dialed Back):
+    - #f4e4a8 → Soft golden yellow (was #f9d71c)
+    - #e87b93 → Softer magenta/pink (was #ff6b9d)
+    - #5fa9c1 → Muted teal (was #00a8cc)
+    - #f0a76b → Soft orange (was #ffa04a)
+    - #1a1a2e → Deep shadows
+    - #2d5a3d → Forest green
+    
+    FILM/DARKROOM:
+    - #8b0000 → Darkroom red
+    - #ff6600 → Kodak orange (edge codes)
+    - #2a2a2a → Film black
+    - #c0c0c0 → Silver
+    
+    TEXT:
+    - #1a1a1a → Primary
+    - #2a2a2a → Body
+    - #666666 → Secondary
+    
+    DESIGN PHILOSOPHY:
+    ------------------
+    - Refined mastery (vs Chapter 3's playful exploration)
+    - Gallery-worthy presentation
+    - Generous white space
+    - Purposeful animations (not chaotic)
+    - Elegant artifact placement
+    - Saturated but sophisticated color
+    
+    WORDPRESS IMPLEMENTATION:
+    -------------------------
+    - Prefix: fl718-
+    - Inject CSS: Uncode → Theme Options → Utility → CSS
+    - Inject JS: Same location, JavaScript box
+    - Body class: fl718-chapter4-page
+    - Test overflow fixes per master doc
+    */
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #fef3e2;
+      color: #1a1a1a;
+      overflow-x: hidden;
+      line-height: 1.7;
+    }
+    
+    /* ==================== CHAPTER TRANSITION FROM CH3 ==================== */
+    .fl718-transition {
+      position: relative;
+      width: 100%;
+      height: 400px;
+      background: linear-gradient(to bottom, 
+        #f4e4d7 0%, 
+        #fef3e2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .fl718-transition__symbol {
+      font-size: 80px;
+      opacity: 0.3;
+    }
+    
+    /* ==================== CHAPTER 4 CONTAINER ==================== */
+    .fl718-chapter {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      background: #fef3e2;
+    }
+    
+    /* ==================== CHAPTER NUMBER - TYPEWRITER STYLE ==================== */
+    .fl718-chapter__number {
+      position: absolute;
+      top: 60px;
+      left: 60px;
+      font-family: 'Courier New', monospace;
+      font-size: 42px;
+      font-weight: 700;
+      color: #e87b93;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      z-index: 10;
+      display: inline-block;
+      opacity: 1;
+    }
+    
+    /* Blinking cursor effect */
+    .fl718-chapter__number::after {
+      content: '|';
+      color: #e87b93;
+      animation: fl718-blink 1s step-end infinite;
+      margin-left: 4px;
+      opacity: 0;
+    }
+    
+    .fl718-chapter__number.typing::after {
+      opacity: 1;
+    }
+    
+    .fl718-chapter__number.typed::after {
+      animation: none;
+      opacity: 0;
+    }
+    
+    @keyframes fl718-blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+    
+    /* ==================== OPENING SECTION ==================== */
+    .fl718-opening {
+      position: relative;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 180px 60px 120px 60px;
+      text-align: center;
+    }
+    
+    .fl718-opening__text {
+      font-size: 48px;
+      font-weight: 700;
+      line-height: 1.3;
+      color: #1a1a1a;
+      margin-bottom: 40px;
+      letter-spacing: -0.02em;
+    }
+    
+    .fl718-opening__subtitle {
+      font-size: 24px;
+      line-height: 1.7;
+      color: #2a2a2a;
+      font-weight: 400;
+    }
+    
+    /* ==================== LIGHT & SHADOW GALLERY ==================== */
+    .fl718-light-shadow {
+      position: relative;
+      width: 100%;
+      min-height: 120vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      margin: 120px 0;
+    }
+    
+    .fl718-light-side {
+      background: linear-gradient(to bottom, #f4e4a8 0%, #f0a76b 100%);
+      padding: 100px 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+    
+    .fl718-shadow-side {
+      background: linear-gradient(to bottom, #1a1a2e 0%, #2a2a2a 100%);
+      padding: 100px 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+    
+    .fl718-gallery-photo {
+      width: 100%;
+      max-width: 500px;
+      aspect-ratio: 4/3;
+      background: #000;
+      border: 10px solid rgba(255,255,255,0.95);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    
+    .fl718-gallery-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .fl718-light-side .fl718-gallery-photo {
+      border-color: rgba(255,255,255,0.95);
+    }
+    
+    .fl718-shadow-side .fl718-gallery-photo {
+      border-color: rgba(255,255,255,0.3);
+    }
+    
+    .fl718-photo-caption {
+      font-family: 'Georgia', serif;
+      font-size: 16px;
+      font-style: italic;
+      margin-top: 20px;
+      color: #1a1a1a;
+      opacity: 0;
+    }
+    
+    .fl718-shadow-side .fl718-photo-caption {
+      color: #fff;
+    }
+    
+    /* ==================== THESIS STATEMENT SECTION ==================== */
+    .fl718-thesis-section {
+      position: relative;
+      width: 100%;
+      min-height: 150vh;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 200px 60px;
+    }
+    
+    .fl718-thesis-container {
+      max-width: 1200px;
+      text-align: center;
+      position: relative;
+    }
+    
+    .fl718-thesis-text {
+      font-size: 72px;
+      font-weight: 700;
+      line-height: 1.3;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      filter: brightness(2) contrast(0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .fl718-thesis-line {
+      margin-bottom: 20px;
+    }
+    
+    /* Chemical stain effect */
+    .fl718-thesis-container::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      height: 60%;
+      background: radial-gradient(ellipse at center, 
+        rgba(139, 0, 0, 0.03) 0%, 
+        transparent 70%);
+      opacity: 0;
+      transition: opacity 2s ease;
+      pointer-events: none;
+    }
+    
+    .fl718-thesis-container.developing::before {
+      opacity: 1;
+    }
+    
+    /* ==================== FILM STRIP GALLERY ==================== */
+    .fl718-film-section {
+      position: relative;
+      width: 100%;
+      padding: 200px 0;
+      background: #1a1a1a;
+      overflow-x: hidden;
+      overflow-y: visible;
+    }
+    
+    .fl718-film-wrapper {
+      position: relative;
+      width: 100%;
+      height: 400px;
+      overflow: visible;
+    }
+    
+    .fl718-film-strip {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 300px;
+      background: #000000;
+      padding: 30px 0;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding-left: 100px;
+      padding-right: 100px;
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.8);
+    }
+    
+    /* Sprocket holes - TOP */
+    .fl718-film-strip::before {
+      content: '';
+      position: absolute;
+      top: 10px;
+      left: 0;
+      width: 100%;
+      height: 12px;
+      background: repeating-linear-gradient(
+        to right,
+        #000000 0px,
+        #000000 12px,
+        #ffffff 12px,
+        #ffffff 18px,
+        #000000 18px,
+        #000000 30px
+      );
+    }
+    
+    /* Sprocket holes - BOTTOM */
+    .fl718-film-strip::after {
+      content: '';
+      position: absolute;
+      bottom: 10px;
+      left: 0;
+      width: 100%;
+      height: 12px;
+      background: repeating-linear-gradient(
+        to right,
+        #000000 0px,
+        #000000 12px,
+        #ffffff 12px,
+        #ffffff 18px,
+        #000000 18px,
+        #000000 30px
+      );
+    }
+    
+    .fl718-film-frame {
+      position: relative;
+      width: 240px;
+      height: 240px;
+      flex-shrink: 0;
+      background: #e0e0e0;
+      border: 2px solid #333;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                  box-shadow 0.4s ease,
+                  z-index 0s 0s;
+      z-index: 1;
+    }
+    
+    .fl718-film-frame:hover {
+      transform: scale(1.15) translateY(-20px);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+      z-index: 100;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                  box-shadow 0.4s ease,
+                  z-index 0s 0s;
+    }
+    
+    .fl718-film-frame__image {
+      width: 100%;
+      height: 100%;
+      background: #000;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .fl718-film-frame__image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    
+    .fl718-film-frame__number {
+      position: absolute;
+      bottom: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      font-weight: 700;
+      color: #ff6600;
+      letter-spacing: 1px;
+    }
+    
+    .fl718-film-edge-code {
+      position: absolute;
+      font-family: 'Courier New', monospace;
+      font-size: 8px;
+      font-weight: 700;
+      color: #ff6600;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      letter-spacing: 2px;
+    }
+    
+    .fl718-film-edge-code--left {
+      left: 22px;
+      top: 50%;
+      transform: translateY(-50%) rotate(180deg);
+    }
+    
+    .fl718-film-edge-code--right {
+      right: 22px;
+      top: 50%;
+      transform: translateY(-50%) rotate(180deg);
+    }
+    
+    .fl718-film-stock-info {
+      position: absolute;
+      top: -40px;
+      left: 100px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      color: #ff6600;
+      letter-spacing: 2px;
+    }
+    
+    /* ==================== CLOSING SECTION ==================== */
+    .fl718-closing {
+      position: relative;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 160px 60px 200px 60px;
+      text-align: left;
+    }
+    
+    .fl718-closing__text {
+      font-size: 28px;
+      line-height: 1.7;
+      color: #2a2a2a;
+      font-weight: 400;
+      font-style: italic;
+      white-space: nowrap;
+    }
+    
+    /* ==================== RESPONSIVE ==================== */
+    @media (max-width: 968px) {
+      .fl718-chapter__number {
+        top: 40px;
+        left: 30px;
+        font-size: 14px;
+      }
+      
+      .fl718-opening {
+        padding: 120px 30px 80px 30px;
+      }
+      
+      .fl718-opening__text {
+        font-size: 32px;
+      }
+      
+      .fl718-opening__subtitle {
+        font-size: 18px;
+      }
+      
+      .fl718-light-shadow {
+        grid-template-columns: 1fr;
+        margin: 80px 0;
+      }
+      
+      .fl718-thesis-text {
+        font-size: 36px;
+      }
+      
+      .fl718-film-section {
+        padding: 120px 0;
+      }
+      
+      .fl718-artifacts-cluster {
+        min-height: 400px;
+      }
+      
+      .fl718-closing__text {
+        font-size: 20px;
+        white-space: normal;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CHAPTER TRANSITION -->
+  <div class="fl718-transition">
+    <div class="fl718-transition__symbol">🎞️</div>
+  </div>
+
+  <!-- CHAPTER 4 -->
+  <div class="fl718-chapter">
+    
+    <!-- Chapter Number -->
+    <div class="fl718-chapter__number" id="chapterNumber"></div>
+    
+    <!-- OPENING -->
+    <section class="fl718-opening">
+      <div class="fl718-opening__text">
+        Later, living in Mexico City, I fell in love with 35mm film photography.
+      </div>
+      <div class="fl718-opening__subtitle">
+        That city's light, shadow, and color were made for analog capture.
+      </div>
+    </section>
+    
+    <!-- LIGHT & SHADOW GALLERY -->
+    <section class="fl718-light-shadow" id="light-shadow">
+      <div class="fl718-light-side">
+        <div class="fl718-gallery-photo fl718-light-photo">
+          <img src="chapter5-colo1.jpg" alt="Mexico City color film photography" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        <div class="fl718-photo-caption fl718-light-caption">Fuji 400</div>
+      </div>
+      
+      <div class="fl718-shadow-side">
+        <div class="fl718-gallery-photo fl718-shadow-photo">
+          <img src="chapter5-bnw1.jpg" alt="Mexico City black and white film photography" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        <div class="fl718-photo-caption fl718-shadow-caption">Kodak Tri-X 400</div>
+      </div>
+    </section>
+    
+    <!-- THESIS STATEMENT - PHOTO PAPER DEVELOPMENT -->
+    <section class="fl718-thesis-section" id="thesis-section">
+      <div class="fl718-thesis-container" id="thesis-container">
+        <div class="fl718-thesis-text" id="thesis-text">
+          <div class="fl718-thesis-line">Film demands intention;</div>
+          <div class="fl718-thesis-line">every frame costs something.</div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- FILM STRIP GALLERY -->
+    <section class="fl718-film-section">
+      <div class="fl718-film-wrapper">
+        <div class="fl718-film-strip" id="film-strip">
+          
+          <div class="fl718-film-stock-info">KODAK PORTRA 400 • 35mm</div>
+          
+          <div class="fl718-film-edge-code fl718-film-edge-code--left">KODAK PORTRA 400</div>
+          <div class="fl718-film-edge-code fl718-film-edge-code--right">MEXICO CITY 2016</div>
+          
+          <!-- Frames -->
+          <div class="fl718-film-frame">
+            <div class="fl718-film-frame__image">
+              <img src="chapter5-filmstrip1.jpg" alt="Mexico City street photography" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <div class="fl718-film-frame__number">1A</div>
+          </div>
+          
+          <div class="fl718-film-frame">
+            <div class="fl718-film-frame__image">
+              <img src="chapter5-filmstrip2.jpg" alt="Mexico City street photography" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <div class="fl718-film-frame__number">2</div>
+          </div>
+          
+          <div class="fl718-film-frame">
+            <div class="fl718-film-frame__image">
+              <img src="chapter5-filmstrip3.jpg" alt="Mexico City street photography" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <div class="fl718-film-frame__number">3A</div>
+          </div>
+          
+          <div class="fl718-film-frame">
+            <div class="fl718-film-frame__image">
+              <img src="chapter5-filmstrip4.jpg" alt="Mexico City street photography" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <div class="fl718-film-frame__number">4</div>
+          </div>
+          
+          <div class="fl718-film-frame">
+            <div class="fl718-film-frame__image">
+              <img src="chapter5-filmstrip5.jpg" alt="Mexico City street photography" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <div class="fl718-film-frame__number">5A</div>
+          </div>
+          
+          <div class="fl718-film-frame">
+            <div class="fl718-film-frame__image">
+              <img src="chapter5-filmstrip6.jpg" alt="Mexico City street photography" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <div class="fl718-film-frame__number">6</div>
+          </div>
+          
+          <div class="fl718-film-frame">
+            <div class="fl718-film-frame__image">
+              <img src="chapter5-filmstrip7.jpg" alt="Mexico City street photography" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <div class="fl718-film-frame__number">7A</div>
+          </div>
+          
+        </div>
+      </div>
+    </section>
+    
+    <!-- CLOSING -->
+    <section class="fl718-closing">
+      <p class="fl718-closing__text">
+        A craftsperson with an old camera and minimal editing can still make timeless photographs.
+      </p>
+    </section>
+    
+  </div>
+
+  <!-- GSAP ANIMATIONS -->
+  <script>
+    // ============================================
+    // TYPEWRITER EFFECT FOR CHAPTER NUMBER
+    // ============================================
+    
+    function typewriterEffect(element, text, speed = 80) {
+      let index = 0;
+      element.classList.add('typing');
+      
+      function type() {
+        if (index < text.length) {
+          element.textContent += text.charAt(index);
+          index++;
+          
+          // Variable speed - slightly irregular like human typing
+          const variableSpeed = speed + (Math.random() * 40 - 20);
+          setTimeout(type, variableSpeed);
+        } else {
+          // Typing complete - remove cursor after brief pause
+          setTimeout(() => {
+            element.classList.remove('typing');
+            element.classList.add('typed');
+          }, 500);
+        }
+      }
+      
+      type();
+    }
+    
+    // Trigger typewriter on scroll into view
+    const chapterObserverOptions = {
+      threshold: 0.2,
+      rootMargin: '0px'
+    };
+    
+    const chapterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const chapterNumber = document.getElementById('chapterNumber');
+          if (chapterNumber && chapterNumber.textContent === '') {
+            setTimeout(() => {
+              typewriterEffect(chapterNumber, 'CHAPTER 4', 90);
+            }, 300);
+          }
+          chapterObserver.unobserve(entry.target);
+        }
+      });
+    }, chapterObserverOptions);
+    
+    // Initialize observer when DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+      const chapterElement = document.querySelector('.fl718-chapter');
+      const chapterNumber = document.getElementById('chapterNumber');
+      
+      if (chapterElement) {
+        chapterObserver.observe(chapterElement);
+        
+        // ALSO trigger immediately if already in viewport on page load
+        setTimeout(() => {
+          const rect = chapterElement.getBoundingClientRect();
+          const inView = rect.top < window.innerHeight && rect.bottom > 0;
+          
+          if (inView && chapterNumber && chapterNumber.textContent === '') {
+            typewriterEffect(chapterNumber, 'CHAPTER 4', 90);
+          }
+        }, 300);
+      }
+    });
+    
+    // ============================================
+    // GSAP SCROLLTRIGGER ANIMATIONS
+    // ============================================
+    
+    gsap.registerPlugin(ScrollTrigger);
+    
+    // ============================================
+    // LIGHT & SHADOW GALLERY - PARALLAX
+    // ============================================
+    
+    gsap.to('.fl718-light-photo', {
+      opacity: 1,
+      scale: 1,
+      duration: 1.2,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: '#light-shadow',
+        start: 'top 60%',
+        toggleActions: 'play none none reverse'
+      }
+    });
+    
+    gsap.to('.fl718-shadow-photo', {
+      opacity: 1,
+      scale: 1,
+      duration: 1.2,
+      delay: 0.2,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: '#light-shadow',
+        start: 'top 60%',
+        toggleActions: 'play none none reverse'
+      }
+    });
+    
+    gsap.to('.fl718-light-caption, .fl718-shadow-caption', {
+      opacity: 1,
+      duration: 0.8,
+      delay: 0.6,
+      scrollTrigger: {
+        trigger: '#light-shadow',
+        start: 'top 60%',
+        toggleActions: 'play none none reverse'
+      }
+    });
+    
+    // Parallax movement
+    gsap.to('.fl718-light-side', {
+      y: -50,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '#light-shadow',
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: 1
+      }
+    });
+    
+    gsap.to('.fl718-shadow-side', {
+      y: 50,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '#light-shadow',
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: 1
+      }
+    });
+    
+    // ============================================
+    // THESIS STATEMENT - PHOTO PAPER DEVELOPMENT
+    // FASTER: Completes before leaving viewport for normal scroll speed
+    // ============================================
+    
+    gsap.to('#thesis-text', {
+      color: '#1a1a1a',
+      filter: 'brightness(1) contrast(1)',
+      scrollTrigger: {
+        trigger: '#thesis-section',
+        start: 'top 70%',    // Start earlier when entering viewport
+        end: 'center 30%',   // Complete sooner (by center of section)
+        scrub: 0.5,          // Much faster response (was 2)
+        onEnter: () => {
+          document.getElementById('thesis-container').classList.add('developing');
+        },
+        onLeaveBack: () => {
+          document.getElementById('thesis-container').classList.remove('developing');
+        }
+      }
+    });
+    
+    // ============================================
+    // FILM STRIP - HORIZONTAL SCROLL
+    // ============================================
+    
+    const filmStrip = document.getElementById('film-strip');
+    const filmStripWidth = filmStrip.scrollWidth;
+    const viewportWidth = window.innerWidth;
+    const maxScroll = filmStripWidth - viewportWidth;
+    
+    gsap.to('#film-strip', {
+      x: -maxScroll,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '.fl718-film-section',
+        start: 'top top',
+        end: '+=3000',
+        scrub: 1,
+        pin: true,
+        anticipatePin: 1,
+      }
+    });
+    
+  </script>
+
+</body>
+</html>

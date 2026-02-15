@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 2 - The Builder | Flaneur 718</title>
+  
+  <style>
+    /*
+    ============================================
+    CHAPTER 2: THE BUILDER (NOOK NOOK MATS)
+    WITH WEAVING METAPHOR TRANSITION ANIMATION
+    ============================================
+    
+    TRANSITION ANIMATION:
+    - LEFT: Textile threads weave in sequentially (like hand-loom weaving)
+    - CENTER: "nook·nook mats" absorbs character by character (SLOWER - 150ms per char)
+    - RIGHT: Organic blob spins and expands from center
+    
+    TYPEWRITER EFFECT:
+    - "CHAPTER 2" types out on LEFT side
+    - Blinking cursor during typing
+    - Cursor stays blinking when complete
+    */
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #faf8f5;
+      color: #1a1a1a;
+      overflow-x: hidden;
+      line-height: 1.7;
+    }
+    
+    /* ==================== CHAPTER TRANSITION WITH WEAVING ANIMATION ==================== */
+    .fl718-chapter-transition {
+      position: relative;
+      width: 100%;
+      height: 300px;
+      background: linear-gradient(to bottom, 
+        #ebebeb 0%, 
+        #f0ebe5 100%);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 80px;
+      overflow: hidden;
+    }
+    
+    /* LEFT: Wavy Textile Lines - Sequential weaving animation */
+    .fl718-textile-pattern {
+      width: 180px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+    }
+    
+    .fl718-textile-pattern svg {
+      width: 100%;
+      height: 200px;
+    }
+    
+    .fl718-textile-pattern path {
+      stroke-dasharray: 1000;
+      stroke-dashoffset: 1000;
+      transition: stroke-dashoffset 0.4s ease-out;
+    }
+    
+    .fl718-textile-pattern.animate path:nth-child(1) {
+      animation: fl718-draw-line 0.4s ease-out 0.0s forwards;
+    }
+    
+    .fl718-textile-pattern.animate path:nth-child(2) {
+      animation: fl718-draw-line 0.4s ease-out 0.1s forwards;
+    }
+    
+    .fl718-textile-pattern.animate path:nth-child(3) {
+      animation: fl718-draw-line 0.4s ease-out 0.2s forwards;
+    }
+    
+    .fl718-textile-pattern.animate path:nth-child(4) {
+      animation: fl718-draw-line 0.4s ease-out 0.3s forwards;
+    }
+    
+    .fl718-textile-pattern.animate path:nth-child(5) {
+      animation: fl718-draw-line 0.4s ease-out 0.4s forwards;
+    }
+    
+    .fl718-textile-pattern.animate path:nth-child(6) {
+      animation: fl718-draw-line 0.4s ease-out 0.5s forwards;
+    }
+    
+    .fl718-textile-pattern.animate path:nth-child(7) {
+      animation: fl718-draw-line 0.4s ease-out 0.6s forwards;
+    }
+    
+    .fl718-textile-pattern.animate path:nth-child(8) {
+      animation: fl718-draw-line 0.4s ease-out 0.7s forwards;
+    }
+    
+    @keyframes fl718-draw-line {
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+    
+    /* CENTER: Brand Typography - Character by character fade (SLOWER) */
+    .fl718-brand-logo {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      flex-direction: column;
+    }
+    
+    .fl718-brand-logo__main {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      line-height: 1;
+    }
+    
+    .fl718-brand-logo__nook {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 84px;
+      font-weight: 900;
+      color: #000000;
+      letter-spacing: -0.02em;
+      line-height: 0.9;
+    }
+    
+    .fl718-brand-logo__nook span {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    
+    .fl718-brand-logo__dot {
+      width: 16px;
+      height: 16px;
+      background: #d4664a;
+      border-radius: 50%;
+      margin: 0 8px;
+      align-self: center;
+      position: relative;
+      top: -8px;
+      opacity: 0;
+      transform: scale(0.5);
+    }
+    
+    .fl718-brand-logo__mats {
+      font-family: 'Brush Script MT', cursive, 'Comic Sans MS', sans-serif;
+      font-size: 52px;
+      font-weight: 400;
+      color: #000000;
+      font-style: italic;
+      position: relative;
+      top: -15px;
+      left: -10px;
+      letter-spacing: 0.02em;
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    
+    /* RIGHT: Organic Blob Shape - Spinning/expanding */
+    .fl718-organic-shape {
+      width: 280px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      opacity: 0;
+      transform: scale(0.3) rotate(-90deg);
+      transition: opacity 1.2s ease, transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    
+    .fl718-organic-shape.animate {
+      opacity: 1;
+      transform: scale(1.0) rotate(0deg);
+    }
+    
+    .fl718-organic-shape svg {
+      width: 220px;
+      height: 220px;
+    }
+    
+    /* ==================== CHAPTER 2 CONTAINER ==================== */
+    .fl718-chapter {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      background: linear-gradient(to bottom, #faf8f5 0%, #f0ebe5 100%);
+      padding: 120px 60px 200px 60px;
+    }
+    
+    /* ==================== CHAPTER NUMBER - TYPEWRITER STYLE ==================== */
+    .fl718-chapter__number {
+      position: absolute;
+      top: -60px;
+      left: 0;
+      font-family: 'Courier New', monospace;
+      font-size: 42px;
+      font-weight: 700;
+      color: #8b7355;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      z-index: 10;
+      display: inline-block;
+      opacity: 1;
+    }
+    
+    /* Blinking cursor effect */
+    .fl718-chapter__number::after {
+      content: '|';
+      color: #8b7355;
+      animation: fl718-blink 1s step-end infinite;
+      margin-left: 4px;
+      opacity: 0;
+    }
+    
+    .fl718-chapter__number.typing::after {
+      opacity: 1;
+    }
+    
+    @keyframes fl718-blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+    
+    /* ==================== CHAPTER TITLE ==================== */
+    .fl718-chapter__title {
+      max-width: 900px;
+      margin: 0 auto 140px auto;
+      text-align: left;
+      position: relative;
+    }
+    
+    .fl718-chapter__title-line {
+      width: 80px;
+      height: 4px;
+      background: #8b7355;
+      margin-bottom: 0;
+    }
+    
+    /* ==================== CONTENT WRAPPER ==================== */
+    .fl718-content {
+      max-width: 900px;
+      margin: 0 auto;
+      position: relative;
+    }
+    
+    /* ==================== SECTION SPACING ==================== */
+    .fl718-section {
+      position: relative;
+      margin-bottom: 160px;
+    }
+    
+    /* ==================== PARAGRAPH STYLES ==================== */
+    .fl718-paragraph {
+      font-size: 21px;
+      line-height: 1.8;
+      color: #2a2a2a;
+      margin-bottom: 60px;
+      max-width: 700px;
+      margin-left: 100px;
+    }
+    
+    .fl718-paragraph--opening {
+      font-size: 24px;
+      line-height: 1.75;
+      color: #1a1a1a;
+      font-weight: 500;
+    }
+    
+    /* ==================== KINETIC TEXT - MOMENTUM ==================== */
+    .fl718-paragraph--momentum {
+      font-style: italic;
+      font-weight: 500;
+      color: #2a2a2a;
+      position: relative;
+      max-width: 950px; /* Wider to keep sentence on one line */
+      transform: skewX(-3deg);
+      transition: transform 0.3s ease;
+    }
+    
+    .fl718-paragraph--momentum:hover {
+      transform: skewX(-1deg) translateX(5px);
+    }
+    
+    /* ==================== HIGHLIGHT - THE REALIZATION ==================== */
+    .fl718-highlight {
+      font-size: 24px;
+      line-height: 1.75;
+      font-weight: 500;
+      color: #1a1a1a;
+      margin: 100px 0 60px 100px;
+      max-width: 700px;
+    }
+    
+    /* ==================== ENDING TEXT ==================== */
+    .fl718-ending {
+      font-size: 24px;
+      line-height: 1.75;
+      font-weight: 500;
+      color: #1a1a1a;
+      margin-bottom: 60px;
+      max-width: 700px;
+      margin-left: 100px;
+      margin-top: 60px;
+      margin-bottom: 180px;
+    }
+    
+    /* ==================== PRODUCT PHOTOS - WITH PRESENTATION ANIMATION ==================== */
+    .fl718-photo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+      margin: 80px 0 120px 0;
+      max-width: 900px;
+    }
+    
+    .fl718-photo {
+      position: relative;
+      background: #ffffff;
+      padding: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      border-radius: 3px;
+      
+      /* Initial state for presentation animation */
+      opacity: 0;
+      transform: translateY(30px) scale(0.96);
+      will-change: transform, opacity;
+      transition: box-shadow 0.3s ease;
+    }
+    
+    /* Animated state - triggered by JavaScript */
+    .fl718-photo--presented {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      transition: opacity 0.8s ease-out, transform 0.8s ease-out, box-shadow 0.3s ease;
+    }
+    
+    .fl718-photo:hover {
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    .fl718-photo__image {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 2px;
+    }
+    
+    .fl718-photo__caption {
+      margin-top: 12px;
+      font-size: 13px;
+      color: #666;
+      text-align: center;
+      font-style: italic;
+    }
+    
+    /* ==================== SCRAPBOOK CLUSTER - BUILDER ARTIFACTS ==================== */
+    .fl718-scrapbook-cluster {
+      position: relative;
+      margin: 100px 0 140px 0;
+      min-height: 700px;
+      width: 100%;
+    }
+    
+    .fl718-artifact {
+      position: absolute;
+      background: #ffffff;
+      padding: 12px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+      border-radius: 3px;
+      
+      /* Animation properties - INITIAL HIDDEN STATE */
+      opacity: 0;
+      transform: translateY(-120px) rotate(8deg) scale(0.85);
+      transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); /* Bounce easing */
+      will-change: transform, opacity;
+    }
+    
+    /* VISIBLE STATE - triggered by JavaScript */
+    .fl718-artifact--visible {
+      opacity: 1;
+      transform: translateY(0) rotate(var(--rotation, -2deg)) scale(1);
+    }
+    
+    .fl718-artifact__image {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 2px;
+    }
+    
+    /* Vintage Cochin Postcards - Upper Left */
+    .fl718-artifact--postcards {
+      top: 20px;
+      left: 40px;
+      width: 420px;
+      --rotation: -1.5deg;
+      z-index: 4;
+    }
+    
+    /* Shipping & Freight Documents - Mid Right */
+    .fl718-artifact--shipping-docs {
+      top: 80px;
+      right: 60px;
+      width: 440px;
+      --rotation: 2deg;
+      z-index: 3;
+    }
+    
+    /* Coir Mat Product - Lower Left */
+    .fl718-artifact--mat-product {
+      top: 380px;
+      left: 80px;
+      width: 360px;
+      --rotation: -2.5deg;
+      z-index: 2;
+    }
+    
+    /* Business Planning Notebooks - Lower Right */
+    .fl718-artifact--business-notes {
+      top: 340px;
+      right: 100px;
+      width: 400px;
+      --rotation: 1deg;
+      z-index: 5;
+    }
+    
+    /* ==================== ARTISAN SECTION ==================== */
+    .fl718-artisan-section {
+      margin: 120px 0;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .fl718-artisan-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #8b7355;
+      margin-bottom: 60px;
+      text-align: center;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    
+    .fl718-artisan-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+    }
+    
+    .fl718-artisan-photo {
+      position: relative;
+      background: #ffffff;
+      padding: 12px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+      border-radius: 2px;
+      
+      /* Initial state for presentation animation */
+      opacity: 0;
+      transform: translateY(30px) scale(0.96);
+      will-change: transform, opacity;
+      transition: box-shadow 0.3s ease;
+    }
+    
+    /* Animated state - triggered by JavaScript */
+    .fl718-artisan-photo--presented {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      transition: opacity 0.8s ease-out, transform 0.8s ease-out, box-shadow 0.3s ease;
+    }
+    
+    .fl718-artisan-photo:hover {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+    
+    .fl718-artisan-photo__image {
+      width: 100%;
+      height: auto;
+      display: block;
+      filter: sepia(0.15) contrast(1.05);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CHAPTER TRANSITION - NOOK NOOK MATS DESIGN WITH WEAVING ANIMATION -->
+  <div class="fl718-chapter-transition" id="transitionSection">
+    
+    <!-- LEFT: Wavy Textile Pattern -->
+    <div class="fl718-textile-pattern" id="textilePattern">
+      <svg viewBox="0 0 180 200" xmlns="http://www.w3.org/2000/svg">
+        <!-- Column 1 -->
+        <path d="M 15,20 Q 10,35 15,50 Q 20,65 15,80 Q 10,95 15,110 Q 20,125 15,140" 
+              stroke="#c8a882" stroke-width="8" fill="none" stroke-linecap="round"/>
+        
+        <!-- Column 2 -->
+        <path d="M 35,10 Q 30,25 35,40 Q 40,55 35,70 Q 30,85 35,100 Q 40,115 35,130 Q 30,145 35,160" 
+              stroke="#c8a882" stroke-width="8" fill="none" stroke-linecap="round"/>
+        
+        <!-- Column 3 -->
+        <path d="M 55,30 Q 50,45 55,60 Q 60,75 55,90 Q 50,105 55,120" 
+              stroke="#c8a882" stroke-width="8" fill="none" stroke-linecap="round"/>
+        
+        <!-- Column 4 -->
+        <path d="M 75,5 Q 70,20 75,35 Q 80,50 75,65 Q 70,80 75,95 Q 80,110 75,125 Q 70,140 75,155 Q 80,170 75,185" 
+              stroke="#c8a882" stroke-width="8" fill="none" stroke-linecap="round"/>
+        
+        <!-- Column 5 -->
+        <path d="M 95,25 Q 90,40 95,55 Q 100,70 95,85 Q 90,100 95,115 Q 100,130 95,145" 
+              stroke="#c8a882" stroke-width="8" fill="none" stroke-linecap="round"/>
+        
+        <!-- Column 6 -->
+        <path d="M 115,15 Q 110,30 115,45 Q 120,60 115,75 Q 110,90 115,105 Q 120,120 115,135 Q 110,150 115,165" 
+              stroke="#c8a882" stroke-width="8" fill="none" stroke-linecap="round"/>
+        
+        <!-- Column 7 -->
+        <path d="M 135,35 Q 130,50 135,65 Q 140,80 135,95 Q 130,110 135,125 Q 140,140 135,155" 
+              stroke="#c8a882" stroke-width="8" fill="none" stroke-linecap="round"/>
+        
+        <!-- Column 8 -->
+        <path d="M 155,10 Q 150,25 155,40 Q 160,55 155,70 Q 150,85 155,100 Q 160,115 155,130" 
+              stroke="#c8a882" stroke-width="8" fill="none" stroke-linecap="round"/>
+      </svg>
+    </div>
+    
+    <!-- CENTER: Nook Nook Mats Brand Logo -->
+    <div class="fl718-brand-logo" id="brandLogo">
+      <div class="fl718-brand-logo__main">
+        <span class="fl718-brand-logo__nook" id="nook1"></span>
+        <div class="fl718-brand-logo__dot" id="dot"></div>
+        <span class="fl718-brand-logo__nook" id="nook2"></span>
+      </div>
+      <span class="fl718-brand-logo__mats" id="mats"></span>
+    </div>
+    
+    <!-- RIGHT: Organic Orange Blob -->
+    <div class="fl718-organic-shape" id="organicShape">
+      <svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+        <path d="M 110,20 
+                 Q 150,25 170,50 
+                 Q 195,80 190,110 
+                 Q 185,145 160,170 
+                 Q 130,195 95,185 
+                 Q 60,175 40,150 
+                 Q 20,120 30,85 
+                 Q 40,50 75,30 
+                 Q 90,20 110,20 Z" 
+              fill="#d4664a" 
+              opacity="0.85"/>
+      </svg>
+    </div>
+    
+  </div>
+
+  <!-- CHAPTER 2 -->
+  <div class="fl718-chapter">
+    
+    <!-- Chapter Title -->
+    <div class="fl718-chapter__title">
+      <!-- Chapter Number with Typewriter Effect -->
+      <div class="fl718-chapter__number" id="chapterNumber"></div>
+      
+      <div class="fl718-chapter__title-line"></div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="fl718-content">
+      
+      <!-- OPENING SECTION -->
+      <section class="fl718-section">
+        
+        <!-- Opening Paragraph -->
+        <p class="fl718-paragraph fl718-paragraph--opening">
+          While working full-time as a researcher, I founded a sustainable home goods brand. Inspired by Indian coconut coir mats, I designed eco-friendly doormats made by local artisans in Kochi, India. I sought suppliers who paid higher wages, manufactured by hand loom, and limited environmental impact.
+        </p>
+        
+        <!-- Product Photos -->
+        <div class="fl718-photo-grid" id="productPhotos">
+          <div class="fl718-photo">
+            <img src="nook-nook-1.png" alt="Nook Nook Mats Brand" class="fl718-photo__image">
+            <div class="fl718-photo__caption">Sustainable • Handmade • Humane</div>
+          </div>
+          
+          <div class="fl718-photo">
+            <img src="nook-nook-3.jpg" alt="Tree Design Coir Mat" class="fl718-photo__image">
+            <div class="fl718-photo__caption">Hand-woven Tree Design</div>
+          </div>
+          
+          <div class="fl718-photo">
+            <img src="nook-nook-2.jpg" alt="Handmade in India" class="fl718-photo__image">
+            <div class="fl718-photo__caption">From The Earth To Your Home</div>
+          </div>
+        </div>
+        
+      </section>
+      
+      <!-- LEARNING SECTION -->
+      <section class="fl718-section">
+        
+        <p class="fl718-paragraph fl718-paragraph--momentum">
+          I learned logistics, accounting, marketing, and management and just kept going.
+        </p>
+        
+        <!-- Scrapbook Cluster - Builder Artifacts -->
+        <div class="fl718-scrapbook-cluster">
+          <!-- Vintage Cochin Postcards -->
+          <div class="fl718-artifact fl718-artifact--postcards">
+            <img src="chapter2-scrap1.png" alt="Greetings from Cochin - Vintage Postcards" class="fl718-artifact__image">
+          </div>
+          
+          <!-- Shipping & Freight Documents -->
+          <div class="fl718-artifact fl718-artifact--shipping-docs">
+            <img src="NookNook-scrap2.png" alt="Shipping Documents - Kochi to New York" class="fl718-artifact__image">
+          </div>
+          
+          <!-- Coir Mat Product -->
+          <div class="fl718-artifact fl718-artifact--mat-product">
+            <img src="chapter2-scrap3.jpg" alt="Handwoven Coir Doormat" class="fl718-artifact__image">
+          </div>
+          
+          <!-- Business Planning Notebooks -->
+          <div class="fl718-artifact fl718-artifact--business-notes">
+            <img src="chapter2-scrap4.png" alt="Business Planning and Strategy Notes" class="fl718-artifact__image">
+          </div>
+        </div>
+        
+      </section>
+      
+      <!-- ARTISAN SECTION - HONORED -->
+      <section class="fl718-artisan-section">
+        <div class="fl718-artisan-title">Hand-Woven in Kochi, India</div>
+        
+        <div class="fl718-artisan-grid">
+          <div class="fl718-artisan-photo">
+            <img src="nook-nook4.jpg" alt="Product Benefits - Natural & Sustainable" class="fl718-artisan-photo__image">
+          </div>
+          
+          <div class="fl718-artisan-photo">
+            <img src="Nook-Nook5.JPG" alt="Artisan Preparing Coconut Coir Fiber" class="fl718-artisan-photo__image">
+          </div>
+          
+          <div class="fl718-artisan-photo">
+            <img src="Nook-Nook6.JPG" alt="Hand Loom Weaving in Kochi" class="fl718-artisan-photo__image">
+          </div>
+        </div>
+      </section>
+      
+      <!-- THE REALIZATION - HIGHLIGHTED -->
+      <div class="fl718-highlight">
+        The experience changed how I saw the world.
+      </div>
+      
+      <!-- ENDING -->
+      <p class="fl718-ending">
+        That project ended in 2023.
+      </p>
+      
+    </div>
+    
+  </div>
+
+  <!-- ANIMATION SCRIPT -->
+  <script>
+    /**
+     * ===================================================
+     * CHAPTER 2: WEAVING METAPHOR TRANSITION + TYPEWRITER
+     * ===================================================
+     * 
+     * TRANSITION ANIMATION:
+     * 1. Textile threads weave in sequentially (like hand-loom)
+     * 2. Brand logo absorbs character by character (SLOWER - 150ms per char)
+     * 3. Organic blob spins and expands from center
+     * 
+     * CHAPTER NUMBER:
+     * - Typewriter effect on LEFT side
+     * - Blinking cursor during and after typing
+     */
+    
+    let hasAnimatedTransition = false;
+    let hasTyped = false;
+    
+    // ==================== TYPEWRITER EFFECT ====================
+    function typewriterEffect(element, text, speed = 80) {
+      let index = 0;
+      element.classList.add('typing');
+      
+      function type() {
+        if (index < text.length) {
+          element.textContent += text.charAt(index);
+          index++;
+          
+          // Variable speed - slightly irregular like human typing
+          const variableSpeed = speed + (Math.random() * 40 - 20);
+          setTimeout(type, variableSpeed);
+        }
+        // Typing complete - cursor stays blinking
+      }
+      
+      type();
+    }
+    
+    // ==================== BRAND TEXT FADE ANIMATION (SLOWER) ====================
+    function animateText(element, text, delay, charDelay = 150) {
+      element.innerHTML = '';
+      
+      // Split text into individual characters
+      text.split('').forEach((char, index) => {
+        const span = document.createElement('span');
+        span.textContent = char;
+        element.appendChild(span);
+        
+        // Fade in each character - SLOWER (150ms per character)
+        setTimeout(() => {
+          span.style.opacity = '1';
+          span.style.transform = 'translateY(0)';
+          span.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        }, delay + (index * charDelay));
+      });
+    }
+    
+    // ==================== TRANSITION ANIMATION ====================
+    function triggerTransitionAnimation() {
+      if (hasAnimatedTransition) return;
+      
+      const textile = document.getElementById('textilePattern');
+      const nook1 = document.getElementById('nook1');
+      const dot = document.getElementById('dot');
+      const nook2 = document.getElementById('nook2');
+      const mats = document.getElementById('mats');
+      const shape = document.getElementById('organicShape');
+      
+      // 1. Weave textile lines (starts immediately)
+      setTimeout(() => {
+        textile.classList.add('animate');
+      }, 300);
+      
+      // 2. Absorb brand text character by character - SLOWER (150ms per char)
+      setTimeout(() => {
+        animateText(nook1, 'nook', 0, 150); // 150ms per character
+      }, 1000);
+      
+      setTimeout(() => {
+        dot.style.opacity = '1';
+        dot.style.transform = 'scale(1.0)';
+        dot.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+      }, 1600); // Adjusted timing
+      
+      setTimeout(() => {
+        animateText(nook2, 'nook', 0, 150); // 150ms per character
+      }, 1700);
+      
+      setTimeout(() => {
+        mats.style.opacity = '1';
+        mats.style.transform = 'translateY(0)';
+        mats.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+      }, 2300); // Adjusted timing
+      
+      // 3. Spin and expand the organic shape
+      setTimeout(() => {
+        shape.classList.add('animate');
+      }, 2500);
+      
+      hasAnimatedTransition = true;
+    }
+    
+    // ==================== CHAPTER NUMBER TYPEWRITER ====================
+    function triggerTypewriter() {
+      if (hasTyped) return;
+      
+      const chapterNumber = document.getElementById('chapterNumber');
+      if (chapterNumber && chapterNumber.textContent === '') {
+        setTimeout(() => {
+          typewriterEffect(chapterNumber, 'CHAPTER 2', 90);
+        }, 300);
+      }
+      
+      hasTyped = true;
+    }
+    
+    // ==================== PRODUCT PHOTOS PRESENTATION ANIMATION ====================
+    let hasAnimatedPhotos = false;
+    
+    function presentProducts() {
+      if (hasAnimatedPhotos) return;
+      
+      const photos = document.querySelectorAll('.fl718-photo');
+      
+      // Check for reduced motion preference
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      
+      if (prefersReducedMotion) {
+        // Instant reveal for reduced motion users
+        photos.forEach(photo => {
+          photo.classList.add('fl718-photo--presented');
+        });
+        hasAnimatedPhotos = true;
+        return;
+      }
+      
+      // Sequential presentation with stagger
+      // First photo: 300ms delay
+      // Second photo: 800ms delay (300 + 500)
+      // Third photo: 1300ms delay (300 + 500 + 500)
+      setTimeout(() => {
+        photos[0].classList.add('fl718-photo--presented');
+      }, 300);
+      
+      setTimeout(() => {
+        photos[1].classList.add('fl718-photo--presented');
+      }, 800);
+      
+      setTimeout(() => {
+        photos[2].classList.add('fl718-photo--presented');
+      }, 1300);
+      
+      hasAnimatedPhotos = true;
+      
+      // Clean up will-change after animations complete
+      setTimeout(() => {
+        photos.forEach(photo => {
+          photo.style.willChange = 'auto';
+        });
+      }, 2500);
+    }
+    
+    // ==================== SCRAPBOOK FALLING ANIMATION (BUILDER ARTIFACTS) ====================
+    let hasAnimatedScrapbook = false;
+    
+    function animateScrapbookArtifacts() {
+      if (hasAnimatedScrapbook) return;
+      
+      const artifacts = document.querySelectorAll('.fl718-artifact');
+      
+      // Check for reduced motion preference
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      
+      if (prefersReducedMotion) {
+        // Instant reveal for reduced motion users
+        artifacts.forEach(artifact => {
+          artifact.classList.add('fl718-artifact--visible');
+        });
+        hasAnimatedScrapbook = true;
+        return;
+      }
+      
+      // 2-SECOND DELAY before scrapbook items start appearing
+      setTimeout(() => {
+        
+        // Sequential reveal with 400ms stagger between each item
+        artifacts.forEach((artifact, index) => {
+          setTimeout(() => {
+            artifact.classList.add('fl718-artifact--visible');
+            
+            // Optional: Add slight random variation to rotation for organic feel
+            const baseRotation = parseFloat(getComputedStyle(artifact).getPropertyValue('--rotation') || '-2deg');
+            const randomVariation = (Math.random() - 0.5) * 1; // ±0.5deg variation
+            artifact.style.setProperty('--rotation', `${baseRotation + randomVariation}deg`);
+            
+          }, index * 400); // 400ms between each drop
+        });
+        
+      }, 2000); // 2-second delay
+      
+      hasAnimatedScrapbook = true;
+      
+      // Remove will-change after animations complete to free up GPU resources
+      setTimeout(() => {
+        artifacts.forEach(artifact => {
+          artifact.style.willChange = 'auto';
+        });
+      }, 4200); // After all animations complete (2s delay + 4 items × 400ms + 0.8s animation)
+    }
+    
+    // ==================== ARTISAN PHOTOS PRESENTATION ANIMATION ====================
+    let hasAnimatedArtisan = false;
+    
+    function presentArtisanPhotos() {
+      if (hasAnimatedArtisan) return;
+      
+      const artisanPhotos = document.querySelectorAll('.fl718-artisan-photo');
+      
+      // Check for reduced motion preference
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      
+      if (prefersReducedMotion) {
+        // Instant reveal for reduced motion users
+        artisanPhotos.forEach(photo => {
+          photo.classList.add('fl718-artisan-photo--presented');
+        });
+        hasAnimatedArtisan = true;
+        return;
+      }
+      
+      // Sequential presentation with stagger (same as product photos)
+      // First photo: 300ms delay
+      // Second photo: 800ms delay (300 + 500)
+      // Third photo: 1300ms delay (300 + 500 + 500)
+      setTimeout(() => {
+        artisanPhotos[0].classList.add('fl718-artisan-photo--presented');
+      }, 300);
+      
+      setTimeout(() => {
+        artisanPhotos[1].classList.add('fl718-artisan-photo--presented');
+      }, 800);
+      
+      setTimeout(() => {
+        artisanPhotos[2].classList.add('fl718-artisan-photo--presented');
+      }, 1300);
+      
+      hasAnimatedArtisan = true;
+      
+      // Clean up will-change after animations complete
+      setTimeout(() => {
+        artisanPhotos.forEach(photo => {
+          photo.style.willChange = 'auto';
+        });
+      }, 2500);
+    }
+    
+    // ==================== INTERSECTION OBSERVERS ====================
+    
+    // Transition section observer
+    const transitionObserverOptions = {
+      threshold: 0.5,
+      rootMargin: '0px'
+    };
+    
+    const transitionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          triggerTransitionAnimation();
+        }
+      });
+    }, transitionObserverOptions);
+    
+    // Chapter number observer
+    const chapterObserverOptions = {
+      threshold: 0.2,
+      rootMargin: '0px'
+    };
+    
+    const chapterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          triggerTypewriter();
+        }
+      });
+    }, chapterObserverOptions);
+    
+    // Product photos presentation observer
+    const photosObserverOptions = {
+      threshold: 0.3, // Trigger when 30% of photo grid is visible
+      rootMargin: '0px'
+    };
+    
+    const photosObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          presentProducts();
+        }
+      });
+    }, photosObserverOptions);
+    
+    // Scrapbook artifacts animation observer
+    const scrapbookObserverOptions = {
+      threshold: 0.3, // Trigger when 30% of scrapbook section is visible
+      rootMargin: '0px'
+    };
+    
+    const scrapbookObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateScrapbookArtifacts();
+          scrapbookObserver.unobserve(entry.target); // Only animate once
+        }
+      });
+    }, scrapbookObserverOptions);
+    
+    // Artisan photos presentation observer
+    const artisanObserverOptions = {
+      threshold: 0.3, // Trigger when 30% of artisan section is visible
+      rootMargin: '0px'
+    };
+    
+    const artisanObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          presentArtisanPhotos();
+        }
+      });
+    }, artisanObserverOptions);
+    
+    // ==================== INITIALIZE OBSERVERS ====================
+    document.addEventListener('DOMContentLoaded', () => {
+      const transitionSection = document.getElementById('transitionSection');
+      const chapterElement = document.querySelector('.fl718-chapter');
+      const productPhotos = document.getElementById('productPhotos');
+      const scrapbookCluster = document.querySelector('.fl718-scrapbook-cluster');
+      
+      if (transitionSection) {
+        transitionObserver.observe(transitionSection);
+      }
+      
+      if (chapterElement) {
+        chapterObserver.observe(chapterElement);
+      }
+      
+      if (productPhotos) {
+        photosObserver.observe(productPhotos);
+      }
+      
+      if (scrapbookCluster) {
+        scrapbookObserver.observe(scrapbookCluster);
+      }
+      
+      const artisanSection = document.querySelector('.fl718-artisan-section');
+      if (artisanSection) {
+        artisanObserver.observe(artisanSection);
+      }
+    });
+  </script>
+
+</body>
+</html>

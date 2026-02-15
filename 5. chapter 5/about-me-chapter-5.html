@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 5 - Flâneur 718 | The Present</title>
+  
+  <!-- GSAP for simple fade animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  
+  <style>
+    /*
+    ============================================
+    CHAPTER 5: FLÂNEUR 718 - THE ARRIVAL
+    ============================================
+    
+    DESIGN PHILOSOPHY:
+    - Stillness, not movement
+    - Confidence through white space
+    - Typography as truth (no tricks)
+    - Gallery-worthy photo presentation
+    - Minimal artifacts (or none)
+    - Clean, sophisticated, present
+    
+    COLOR PALETTE:
+    ---------------
+    BACKGROUNDS:
+    - #ffffff → Pure white
+    - #fafafa → Soft white
+    
+    TEXT:
+    - #000000 → Absolute black (chapter title)
+    - #1a1a1a → Nearly black (body)
+    - #666666 → Medium gray (secondary)
+    - #999999 → Light gray (chapter number)
+    
+    ACCENTS:
+    - #c44536 → Deep red (Flâneur 718 only)
+    - #f4c542 → Optional yellow (used once if needed)
+    - #2a2a2a → Urban concrete
+    
+    TYPOGRAPHY:
+    -----------
+    - Flâneur 718: 90px, bold, red accent
+    - Core statement: 40px, Georgia serif, centered
+    - Body text: 22px, system sans, clean
+    - Photo captions: 14px, monospace, subtle
+    
+    SPACING:
+    --------
+    - Opening vertical: 300px
+    - Between sections: 240px
+    - Section padding: 200px vertical
+    - Photo grid gap: 40px
+    - Closing space: 300px
+    
+    ANIMATION:
+    ----------
+    - Simple fade-in only (opacity 0 → 1)
+    - Subtle scale (0.95 → 1.0)
+    - 1 second duration
+    - No parallax, no blur, no color shifts
+    */
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #ffffff;
+      color: #1a1a1a;
+      overflow-x: hidden;
+      line-height: 1.7;
+    }
+    
+    /* ==================== CHAPTER 5 CONTAINER ==================== */
+    .fl718-chapter5 {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      background: #ffffff;
+    }
+    
+    /* ==================== OPENING SECTION ==================== */
+    .fl718-opening {
+      position: relative;
+      width: 100%;
+      padding: 200px 60px 200px 60px;
+      text-align: center;
+    }
+    
+    /* CHAPTER 5 - TYPEWRITER STYLE - Upper Left Position */
+    .fl718-chapter__number {
+      position: absolute;
+      top: 120px;
+      left: 80px;
+      font-family: 'Courier New', monospace;
+      font-size: 16px;
+      font-weight: 400;
+      color: #999999;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      display: inline-block;
+      opacity: 1;
+      z-index: 10;
+    }
+    
+    /* Blinking cursor effect */
+    .fl718-chapter__number::after {
+      content: '|';
+      color: #999999;
+      animation: fl718-blink 1s step-end infinite;
+      margin-left: 4px;
+      opacity: 0;
+    }
+    
+    .fl718-chapter__number.typing::after {
+      opacity: 1;
+    }
+    
+    @keyframes fl718-blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+    
+    .fl718-chapter__title {
+      font-size: 90px;
+      font-weight: 800;
+      color: #c44536;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      margin-bottom: 0;
+      line-height: 1;
+      margin-top: 80px;
+    }
+    
+    /* ==================== CORE STATEMENT ==================== */
+    .fl718-statement {
+      position: relative;
+      width: 100%;
+      padding: 200px 60px;
+      text-align: center;
+      background: #fafafa;
+    }
+    
+    .fl718-statement__text {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 40px;
+      font-weight: 400;
+      line-height: 1.6;
+      color: #000000;
+      max-width: 900px;
+      margin: 0 auto;
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    
+    /* ==================== PHOTO GRID ==================== */
+    .fl718-photo-section {
+      position: relative;
+      width: 100%;
+      padding: 240px 60px;
+      background: #ffffff;
+    }
+    
+    .fl718-photo-grid {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+    }
+    
+    .fl718-photo {
+      position: relative;
+      background: #ffffff;
+      padding: 20px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+      opacity: 0;
+      transform: scale(0.95);
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+      cursor: pointer;
+    }
+    
+    .fl718-photo:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.16);
+    }
+    
+    .fl718-photo__image {
+      width: 100%;
+      height: auto;
+      display: block;
+      border: 1px solid #e0e0e0;
+    }
+    
+    .fl718-photo__caption {
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      color: #666;
+      margin-top: 12px;
+      text-align: center;
+      letter-spacing: 0.5px;
+    }
+    
+    /* Larger hero photos (first two in grid) */
+    .fl718-photo:nth-child(1),
+    .fl718-photo:nth-child(2) {
+      grid-column: span 1;
+    }
+    
+    /* ==================== PRACTICE DESCRIPTION ==================== */
+    .fl718-practice {
+      position: relative;
+      width: 100%;
+      padding: 200px 60px;
+      background: #fafafa;
+    }
+    
+    .fl718-practice__container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 100px;
+    }
+    
+    .fl718-practice__column {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    
+    .fl718-practice__text {
+      font-size: 22px;
+      line-height: 1.8;
+      color: #2a2a2a;
+      margin-bottom: 30px;
+    }
+    
+    /* ==================== CLOSING ==================== */
+    .fl718-closing {
+      position: relative;
+      width: 100%;
+      padding: 240px 60px 300px 60px;
+      text-align: center;
+      background: #ffffff;
+    }
+    
+    .fl718-closing__text {
+      font-size: 24px;
+      line-height: 1.7;
+      color: #1a1a1a;
+      max-width: 700px;
+      margin: 0 auto;
+      opacity: 0;
+    }
+    
+    /* ==================== RESPONSIVE ==================== */
+    @media (max-width: 968px) {
+      .fl718-opening {
+        padding: 160px 30px 120px 30px;
+      }
+      
+      .fl718-chapter__number {
+        top: 80px;
+        left: 30px;
+        font-size: 14px;
+        letter-spacing: 3px;
+      }
+      
+      .fl718-chapter__title {
+        font-size: 52px;
+        margin-top: 60px;
+      }
+      
+      .fl718-statement {
+        padding: 120px 30px;
+      }
+      
+      .fl718-statement__text {
+        font-size: 28px;
+      }
+      
+      .fl718-photo-section {
+        padding: 120px 30px;
+      }
+      
+      .fl718-photo-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+      
+      .fl718-photo:nth-child(1),
+      .fl718-photo:nth-child(2) {
+        grid-column: span 1;
+      }
+      
+      .fl718-practice {
+        padding: 120px 30px;
+      }
+      
+      .fl718-practice__container {
+        grid-template-columns: 1fr;
+        gap: 60px;
+      }
+      
+      .fl718-practice__text {
+        font-size: 18px;
+      }
+      
+      .fl718-closing {
+        padding: 120px 30px 200px 30px;
+      }
+      
+      .fl718-closing__text {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CHAPTER 5: FLÂNEUR 718 -->
+  <div class="fl718-chapter5">
+    
+    <!-- OPENING -->
+    <section class="fl718-opening">
+      <div class="fl718-chapter__number" id="chapterNumber"></div>
+      <h1 class="fl718-chapter__title">Flâneur 718</h1>
+    </section>
+    
+    <!-- CORE STATEMENT -->
+    <section class="fl718-statement">
+      <div class="fl718-statement__text" id="statement-text">
+        Now I document the human condition through street photography throughout this earth.
+      </div>
+    </section>
+    
+    <!-- PHOTO GRID -->
+    <section class="fl718-photo-section">
+      <div class="fl718-photo-grid">
+        
+        <div class="fl718-photo">
+          <img src="Chapter5-foto1.jpg" alt="Bad Habits Peep Show neon sign" class="fl718-photo__image">
+          <div class="fl718-photo__caption">New York • Black & White</div>
+        </div>
+        
+        <div class="fl718-photo">
+          <img src="Chapter5-foto2.jpg" alt="Street vendor moment" class="fl718-photo__image">
+          <div class="fl718-photo__caption">Mexico City • Street Life</div>
+        </div>
+        
+        <div class="fl718-photo">
+          <img src="Chapter5-foto3.jpg" alt="Burning dollar portrait" class="fl718-photo__image">
+          <div class="fl718-photo__caption">Conceptual • Self Portrait</div>
+        </div>
+        
+        <div class="fl718-photo">
+          <img src="Chapter5-foto4.jpg" alt="Carnival street scene" class="fl718-photo__image">
+          <div class="fl718-photo__caption">New York • Documentary</div>
+        </div>
+        
+        <div class="fl718-photo">
+          <img src="Chapter5-foto5.jpg" alt="Urban art encounter" class="fl718-photo__image">
+          <div class="fl718-photo__caption">Underground • Street Art</div>
+        </div>
+        
+        <div class="fl718-photo">
+          <img src="Chapter5-foto6.jpg" alt="Self portrait with camera" class="fl718-photo__image">
+          <div class="fl718-photo__caption">Peru • 35mm Film</div>
+        </div>
+        
+      </div>
+    </section>
+    
+    <!-- PRACTICE DESCRIPTION -->
+    <section class="fl718-practice">
+      <div class="fl718-practice__container">
+        
+        <div class="fl718-practice__column" id="practice-left">
+          <p class="fl718-practice__text">
+            I shoot both digital and analog, color and black-and-white, capturing daily repetitions, light and shadow, reflections and dualities.
+          </p>
+          
+          <p class="fl718-practice__text">
+            I also photograph architecture, abstractions, fine art, conceptual, and landscape work.
+          </p>
+        </div>
+        
+        <div class="fl718-practice__column" id="practice-right">
+          <p class="fl718-practice__text">
+            I write photo essays, city essays, and travel observations.
+          </p>
+          
+          <p class="fl718-practice__text">
+            I write about philosophy, psychology, history, and architecture.
+          </p>
+          
+          <p class="fl718-practice__text">
+            I write criticism and musings on the odd habits witnessed during wandering.
+          </p>
+        </div>
+        
+      </div>
+    </section>
+    
+    <!-- CLOSING -->
+    <section class="fl718-closing">
+      <p class="fl718-closing__text" id="closing-text">
+        This website archives my life's photographic work and writing. I add new work regularly.
+      </p>
+    </section>
+    
+  </div>
+
+  <!-- GSAP ANIMATIONS - SIMPLE FADES ONLY -->
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+    
+    // ============================================
+    // CORE STATEMENT - FADE IN
+    // ============================================
+    
+    gsap.to('#statement-text', {
+      opacity: 1,
+      scale: 1,
+      duration: 1.2,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: '.fl718-statement',
+        start: 'top 70%',
+        toggleActions: 'play none none reverse'
+      }
+    });
+    
+    // ============================================
+    // PHOTO GRID - STAGGERED FADE IN
+    // ============================================
+    
+    gsap.to('.fl718-photo', {
+      opacity: 1,
+      scale: 1,
+      duration: 1,
+      stagger: 0.15,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: '.fl718-photo-grid',
+        start: 'top 70%',
+        toggleActions: 'play none none reverse'
+      }
+    });
+    
+    // ============================================
+    // PRACTICE COLUMNS - FADE IN
+    // ============================================
+    
+    gsap.to('#practice-left', {
+      opacity: 1,
+      y: 0,
+      duration: 1,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: '.fl718-practice',
+        start: 'top 70%',
+        toggleActions: 'play none none reverse'
+      }
+    });
+    
+    gsap.to('#practice-right', {
+      opacity: 1,
+      y: 0,
+      duration: 1,
+      delay: 0.2,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: '.fl718-practice',
+        start: 'top 70%',
+        toggleActions: 'play none none reverse'
+      }
+    });
+    
+    // ============================================
+    // CLOSING - FADE IN
+    // ============================================
+    
+    gsap.to('#closing-text', {
+      opacity: 1,
+      duration: 1,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: '.fl718-closing',
+        start: 'top 70%',
+        toggleActions: 'play none none reverse'
+      }
+    });
+    
+    // ============================================
+    // TYPEWRITER EFFECT FOR CHAPTER 5
+    // ============================================
+    
+    let hasTyped = false;
+    
+    // Typewriter function - types text character by character
+    function typewriterEffect(element, text, speed) {
+      let index = 0;
+      element.classList.add('typing');
+      
+      function type() {
+        if (index < text.length) {
+          element.textContent += text.charAt(index);
+          index++;
+          setTimeout(type, speed);
+        } else {
+          // Keep cursor blinking after typing completes
+          element.classList.remove('typing');
+          element.classList.add('typing'); // Re-add to keep cursor visible
+        }
+      }
+      
+      type();
+    }
+    
+    // Trigger typewriter when opening section comes into view
+    function triggerTypewriter() {
+      if (hasTyped) return;
+      
+      const chapterNumber = document.getElementById('chapterNumber');
+      if (chapterNumber && chapterNumber.textContent === '') {
+        setTimeout(() => {
+          typewriterEffect(chapterNumber, 'CHAPTER 5', 90);
+        }, 300);
+      }
+      
+      hasTyped = true;
+    }
+    
+    // IntersectionObserver for typewriter trigger
+    const typewriterObserverOptions = {
+      threshold: 0.2,
+      rootMargin: '0px'
+    };
+    
+    const typewriterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          triggerTypewriter();
+        }
+      });
+    }, typewriterObserverOptions);
+    
+    // Initialize observer on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      const openingSection = document.querySelector('.fl718-opening');
+      if (openingSection) {
+        typewriterObserver.observe(openingSection);
+      }
+    });
+    
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flaneur 718 - About Me Hero</title>
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #ffffff;
+      overflow-x: hidden;
+    }
+    
+    /* MAIN OPENING SECTION */
+    .fl718-opening {
+      position: relative;
+      width: 100vw;
+      min-height: 100vh;
+      background: #ffffff;
+      padding: 60px 40px;
+      display: flex;
+    }
+    
+    /* LEFT SIDE - Vertical Title */
+    .fl718-opening__title-container {
+      position: relative;
+      width: 200px;
+      display: flex;
+      align-items: flex-start;
+      padding-top: 40px;
+    }
+    
+    .fl718-opening__title {
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      margin: 0;
+      line-height: 0.85;
+      letter-spacing: -0.02em;
+      /* Initial state for animation */
+      opacity: 0;
+      filter: brightness(3) blur(3px);
+    }
+    
+    .fl718-opening__title-main {
+      display: block;
+      font-size: 72px;
+      font-weight: 800;
+      color: #000000;
+      text-transform: uppercase;
+    }
+    
+    .fl718-opening__title-sub {
+      display: block;
+      font-size: 72px;
+      font-weight: 600;
+      color: #333333;
+      margin-top: -12px;
+    }
+    
+    /* RIGHT SIDE - Film Strips Container */
+    .fl718-opening__contact-sheet {
+      flex: 1;
+      position: relative;
+      padding: 40px 60px;
+      min-height: 700px;
+    }
+    
+    /* FILM STRIP - Asymmetric positioning */
+    .fl718-film-strip {
+      position: absolute;
+      background: #000000;
+      padding: 20px 30px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+      /* Initial state for animation */
+      opacity: 0;
+    }
+    
+    /* Position each strip asymmetrically with spacing */
+    .fl718-film-strip:nth-child(1) {
+      top: 20px;
+      left: 120px;
+      transform: rotate(-2deg);
+      z-index: 1;
+    }
+    
+    .fl718-film-strip:nth-child(2) {
+      top: 60px;
+      left: 410px;
+      transform: rotate(1.5deg);
+      z-index: 2;
+    }
+    
+    .fl718-film-strip:nth-child(3) {
+      top: 100px;
+      left: 700px;
+      transform: rotate(-1deg);
+      z-index: 1;
+    }
+    
+    /* Film strip sprocket holes - LEFT SIDE */
+    .fl718-film-strip::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 8px;
+      width: 6px;
+      height: 100%;
+      background: repeating-linear-gradient(
+        to bottom,
+        #000000 0px,
+        #000000 8px,
+        #ffffff 8px,
+        #ffffff 12px,
+        #000000 12px,
+        #000000 20px
+      );
+    }
+    
+    /* Film strip sprocket holes - RIGHT SIDE */
+    .fl718-film-strip::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 8px;
+      width: 6px;
+      height: 100%;
+      background: repeating-linear-gradient(
+        to bottom,
+        #000000 0px,
+        #000000 8px,
+        #ffffff 8px,
+        #ffffff 12px,
+        #000000 12px,
+        #000000 20px
+      );
+    }
+    
+    /* Film strip edge codes - LEFT */
+    .fl718-film-strip__edge-left {
+      position: absolute;
+      left: 15px;
+      top: 30px;
+      bottom: 30px;
+      width: 12px;
+      font-family: 'Courier New', monospace;
+      font-size: 7px;
+      font-weight: 700;
+      color: #ff6600;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    /* Film strip edge codes - RIGHT */
+    .fl718-film-strip__edge-right {
+      position: absolute;
+      right: 15px;
+      top: 30px;
+      bottom: 30px;
+      width: 12px;
+      font-family: 'Courier New', monospace;
+      font-size: 8px;
+      font-weight: 700;
+      color: #ff6600;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      letter-spacing: 2px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-around;
+    }
+    
+    .fl718-film-strip__edge-right span {
+      display: block;
+    }
+    
+    /* Additional frame markings between frames */
+    .fl718-film-strip__frame-markers {
+      position: absolute;
+      top: 0;
+      right: 22px;
+      width: 20px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      align-items: center;
+      padding: 30px 0;
+    }
+    
+    .fl718-film-strip__frame-marker {
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: #ff6600;
+      white-space: nowrap;
+      transform: rotate(-90deg);
+    }
+    
+    /* Film stock info at top of strip */
+    .fl718-film-strip__stock-info {
+      position: absolute;
+      top: 5px;
+      left: 30px;
+      right: 30px;
+      text-align: center;
+      font-family: 'Courier New', monospace;
+      font-size: 9px;
+      font-weight: 700;
+      color: #ff6600;
+      letter-spacing: 1px;
+    }
+    
+    /* Film stock info at bottom of strip */
+    .fl718-film-strip__iso-info {
+      position: absolute;
+      bottom: 5px;
+      left: 30px;
+      right: 30px;
+      text-align: center;
+      font-family: 'Courier New', monospace;
+      font-size: 8px;
+      font-weight: 700;
+      color: #ff6600;
+      letter-spacing: 1px;
+    }
+    
+    /* FRAMES CONTAINER */
+    .fl718-film-strip__frames {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      padding: 25px 0;
+    }
+    
+    /* INDIVIDUAL FRAME */
+    .fl718-frame {
+      position: relative;
+      width: 180px;
+      height: 180px;
+      background: #ffffff;
+      border: 2px solid #000000;
+    }
+    
+    /* FRAME IMAGE */
+    .fl718-frame__image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    
+    /* FRAME NUMBER */
+    .fl718-frame__number {
+      position: absolute;
+      bottom: -18px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: #ff6600;
+      background: #000000;
+      padding: 2px 6px;
+    }
+    
+    /* HAND-DRAWN GREASE PENCIL MARK */
+    .fl718-frame__hand-drawn {
+      position: absolute;
+      top: -8px;
+      left: -8px;
+      right: -8px;
+      bottom: -8px;
+      pointer-events: none;
+      z-index: 10;
+    }
+    
+    .fl718-frame__hand-drawn svg {
+      width: 100%;
+      height: 100%;
+    }
+    
+    .fl718-frame__hand-drawn path {
+      fill: none;
+      stroke: #ff3333;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      opacity: 0.85;
+      /* Initial state - hidden with stroke drawing technique */
+      stroke-dasharray: 1000;
+      stroke-dashoffset: 1000;
+    }
+    
+    /* TAGLINE */
+    .fl718-opening__tagline {
+      position: absolute;
+      bottom: 60px;
+      left: 220px;
+      right: 40px;
+      font-size: 14px;
+      font-weight: 400;
+      color: #666666;
+      letter-spacing: 0.5px;
+      line-height: 1.6;
+      max-width: 600px;
+      /* Initial state for animation */
+      opacity: 0;
+    }
+    
+    /* ============================================
+       CONCEPT 3: EXPOSURE ADJUSTMENT ANIMATIONS
+       ============================================ */
+    
+    /* Animated states */
+    .fl718-opening.animate .fl718-opening__title {
+      animation: exposureCorrect 1s ease-out forwards;
+    }
+    
+    .fl718-opening.animate .fl718-film-strip:nth-child(1) {
+      animation: photoFlash 0.4s ease-out 1s forwards;
+    }
+    
+    .fl718-opening.animate .fl718-film-strip:nth-child(2) {
+      animation: photoFlash 0.4s ease-out 1.25s forwards;
+    }
+    
+    .fl718-opening.animate .fl718-film-strip:nth-child(3) {
+      animation: photoFlash 0.4s ease-out 1.5s forwards;
+    }
+    
+    .fl718-opening.animate .fl718-opening__tagline {
+      animation: fadeUp 0.6s ease-out 1.9s forwards;
+    }
+    
+    @keyframes exposureCorrect {
+      0% {
+        opacity: 0;
+        filter: brightness(3) blur(3px);
+      }
+      100% {
+        opacity: 1;
+        filter: brightness(1) blur(0px);
+      }
+    }
+    
+    @keyframes photoFlash {
+      0% {
+        opacity: 0;
+        filter: brightness(5);
+      }
+      30% {
+        opacity: 1;
+        filter: brightness(1.5);
+      }
+      100% {
+        opacity: 1;
+        filter: brightness(1);
+      }
+    }
+    
+    @keyframes fadeUp {
+      0% {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* ============================================
+       GREASE PENCIL MARK DRAWING ANIMATION
+       Appears after main sequence completes
+       ============================================ */
+    
+    /* Film Strip 1, Frame 1 (15A) - First mark */
+    .fl718-opening.animate .fl718-film-strip:nth-child(1) .fl718-frame:nth-child(1) .fl718-frame__hand-drawn path {
+      animation: drawMark 0.6s ease-out 2.6s forwards;
+    }
+    
+    /* Film Strip 1, Frame 3 (8A) - Second mark */
+    .fl718-opening.animate .fl718-film-strip:nth-child(1) .fl718-frame:nth-child(3) .fl718-frame__hand-drawn path {
+      animation: drawMark 0.6s ease-out 3.0s forwards;
+    }
+    
+    /* Film Strip 2, Frame 2 (12) - Third mark */
+    .fl718-opening.animate .fl718-film-strip:nth-child(2) .fl718-frame:nth-child(2) .fl718-frame__hand-drawn path {
+      animation: drawMark 0.6s ease-out 3.4s forwards;
+    }
+    
+    /* Film Strip 3, Frame 3 (5) - Fourth mark */
+    .fl718-opening.animate .fl718-film-strip:nth-child(3) .fl718-frame:nth-child(3) .fl718-frame__hand-drawn path {
+      animation: drawMark 0.6s ease-out 3.8s forwards;
+    }
+    
+    @keyframes drawMark {
+      0% {
+        stroke-dashoffset: 1000;
+      }
+      100% {
+        stroke-dashoffset: 0;
+      }
+    }
+    
+    /* TEST CONTENT SECTION */
+    .fl718-test-content {
+      padding: 80px 40px;
+      max-width: 900px;
+      margin: 0 auto;
+      background: #f9f9f9;
+    }
+    
+    .fl718-test-content__inner {
+      background: #ffffff;
+      padding: 40px;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+    }
+    
+    .fl718-test-content h2 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #000000;
+      margin-bottom: 20px;
+    }
+    
+    .fl718-test-content p {
+      font-size: 16px;
+      line-height: 1.7;
+      color: #333333;
+      margin-bottom: 16px;
+    }
+    
+    .fl718-test-content p:last-child {
+      margin-bottom: 0;
+    }
+    
+    .fl718-test-content strong {
+      color: #000000;
+    }
+    
+    .fl718-test-content code {
+      background: #f5f5f5;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      color: #ff6600;
+    }
+    
+    /* RESPONSIVE */
+    @media (max-width: 1200px) {
+      .fl718-opening {
+        flex-direction: column;
+        padding: 40px 20px;
+      }
+      
+      .fl718-opening__title-container {
+        width: 100%;
+        padding: 20px 0;
+        justify-content: center;
+      }
+      
+      .fl718-opening__title {
+        writing-mode: horizontal-tb;
+        transform: none;
+        text-align: center;
+      }
+      
+      .fl718-opening__title-main,
+      .fl718-opening__title-sub {
+        display: inline;
+        font-size: 48px;
+      }
+      
+      .fl718-opening__title-sub {
+        margin-top: 0;
+        margin-left: 10px;
+      }
+      
+      .fl718-opening__contact-sheet {
+        padding: 0;
+        min-height: 500px;
+      }
+      
+      .fl718-film-strip {
+        padding: 15px 20px;
+      }
+      
+      .fl718-film-strip:nth-child(1) {
+        left: 10px;
+        top: 20px;
+      }
+      
+      .fl718-film-strip:nth-child(2) {
+        display: none;
+      }
+      
+      .fl718-film-strip:nth-child(3) {
+        display: none;
+      }
+      
+      .fl718-frame {
+        width: 140px;
+        height: 140px;
+      }
+      
+      .fl718-opening__tagline {
+        position: static;
+        margin-top: 40px;
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- OPENING SECTION WITH CONCEPT 3 ANIMATIONS -->
+  <div class="fl718-opening">
+    
+    <!-- LEFT: Vertical Title -->
+    <div class="fl718-opening__title-container">
+      <h1 class="fl718-opening__title">
+        <span class="fl718-opening__title-main">Flaneur</span>
+        <span class="fl718-opening__title-sub">718</span>
+      </h1>
+    </div>
+    
+    <!-- RIGHT: Film Strips (Asymmetric Layout) -->
+    <div class="fl718-opening__contact-sheet">
+      
+      <!-- FILM STRIP 1 - KODAK PORTRA 400 -->
+      <div class="fl718-film-strip">
+        <div class="fl718-film-strip__stock-info">KODAK PORTRA 400</div>
+        <div class="fl718-film-strip__iso-info">ISO 400 • 35mm</div>
+        
+        <div class="fl718-film-strip__edge-left">KODAK PORTRA 400</div>
+        <div class="fl718-film-strip__edge-right">
+          <span>15A</span>
+          <span>22</span>
+          <span>8A</span>
+        </div>
+        
+        <div class="fl718-film-strip__frame-markers">
+          <span class="fl718-film-strip__frame-marker">15</span>
+          <span class="fl718-film-strip__frame-marker">→15A</span>
+          <span class="fl718-film-strip__frame-marker">22</span>
+          <span class="fl718-film-strip__frame-marker">→8A</span>
+        </div>
+        
+        <div class="fl718-film-strip__frames">
+          <!-- Frame 1 - marked with hand-drawn selection - BURNING DOLLAR -->
+          <div class="fl718-frame fl718-frame--marked">
+            <img src="placeholder4.jpeg" alt="Frame 15A" class="fl718-frame__image">
+            <div class="fl718-frame__hand-drawn">
+              <svg viewBox="0 0 196 196" xmlns="http://www.w3.org/2000/svg">
+                <!-- Multiple overlapping strokes - like drawing over it several times -->
+                <path d="M 4,10 Q 6,8 12,7 L 95,5 Q 140,4 188,7 Q 192,9 193,15 L 194,90 Q 195,140 192,186 Q 190,191 185,192 L 100,194 Q 50,195 8,193 Q 4,192 3,187 L 2,100 Q 1,50 4,10" />
+                <path d="M 5,12 Q 8,9 14,8 L 97,6 Q 142,5 189,8 Q 193,10 194,16 L 195,92 Q 196,142 193,187 Q 191,192 186,193 L 102,195 Q 52,196 9,194 Q 5,193 4,188 L 3,102 Q 2,52 5,12" />
+                <path d="M 3,9 Q 5,7 11,6 L 94,4 Q 138,3 187,6 Q 191,8 192,14 L 193,89 Q 194,139 191,185 Q 189,190 184,191 L 99,193 Q 49,194 7,192 Q 3,191 2,186 L 1,99 Q 0,49 3,9" />
+                <path d="M 6,11 Q 9,9 15,8 L 98,6 Q 143,5 190,8 Q 194,10 195,17 L 196,93 Q 197,143 194,188 Q 192,193 187,194 L 103,196 Q 53,197 10,195 Q 6,194 5,189 L 4,103 Q 3,53 6,11" />
+              </svg>
+            </div>
+            <div class="fl718-frame__number">15A</div>
+          </div>
+          
+          <!-- Frame 2 - EMPTY -->
+          <div class="fl718-frame">
+            <img src="https://placehold.co/180x180/e8e8e8/e8e8e8?text=" alt="Frame 22" class="fl718-frame__image">
+            <div class="fl718-frame__number">22</div>
+          </div>
+          
+          <!-- Frame 3 - marked - MIRROR MOTORCYCLE REFLECTION -->
+          <div class="fl718-frame fl718-frame--marked">
+            <img src="placeholder1.jpg" alt="Frame 8A" class="fl718-frame__image">
+            <div class="fl718-frame__hand-drawn">
+              <svg viewBox="0 0 196 196" xmlns="http://www.w3.org/2000/svg">
+                <!-- Multiple fast strokes over the same path -->
+                <path d="M 7,12 Q 10,6 18,5 L 100,3 Q 150,2 189,6 Q 194,8 195,18 L 196,100 Q 197,145 193,188 Q 191,193 184,194 L 95,196 Q 45,196 6,192 Q 2,190 2,185 L 1,95 Q 0,45 7,12" />
+                <path d="M 8,13 Q 11,7 19,6 L 102,4 Q 152,3 190,7 Q 195,9 196,19 L 197,102 Q 198,147 194,189 Q 192,194 185,195 L 97,197 Q 47,197 7,193 Q 3,191 3,186 L 2,97 Q 1,47 8,13" />
+                <path d="M 6,11 Q 9,5 17,4 L 99,2 Q 149,1 188,5 Q 193,7 194,17 L 195,99 Q 196,144 192,187 Q 190,192 183,193 L 94,195 Q 44,195 5,191 Q 1,189 1,184 L 0,94 Q -1,44 6,11" />
+                <path d="M 9,14 Q 12,8 20,7 L 103,5 Q 153,4 191,8 Q 196,10 197,20 L 198,103 Q 199,148 195,190 Q 193,195 186,196 L 98,198 Q 48,198 8,194 Q 4,192 4,187 L 3,98 Q 2,48 9,14" />
+              </svg>
+            </div>
+            <div class="fl718-frame__number">8A</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- FILM STRIP 2 - KODAK TRI-X 400 -->
+      <div class="fl718-film-strip">
+        <div class="fl718-film-strip__stock-info">KODAK TRI-X 400</div>
+        <div class="fl718-film-strip__iso-info">400TX • 35mm</div>
+        
+        <div class="fl718-film-strip__edge-left">KODAK TRI-X 400</div>
+        <div class="fl718-film-strip__edge-right">
+          <span>31</span>
+          <span>12</span>
+        </div>
+        
+        <div class="fl718-film-strip__frame-markers">
+          <span class="fl718-film-strip__frame-marker">→31</span>
+          <span class="fl718-film-strip__frame-marker">12A</span>
+        </div>
+        
+        <div class="fl718-film-strip__frames">
+          <!-- Frame 4 - EMPTY -->
+          <div class="fl718-frame">
+            <img src="https://placehold.co/180x180/e8e8e8/e8e8e8?text=" alt="Frame 31" class="fl718-frame__image">
+            <div class="fl718-frame__number">31</div>
+          </div>
+          
+          <!-- Frame 5 - marked - EMPTY -->
+          <div class="fl718-frame fl718-frame--marked">
+            <img src="https://placehold.co/180x180/e8e8e8/e8e8e8?text=" alt="Frame 12" class="fl718-frame__image">
+            <div class="fl718-frame__hand-drawn">
+              <svg viewBox="0 0 196 196" xmlns="http://www.w3.org/2000/svg">
+                <!-- Layered strokes - sketchy, fast hand movement -->
+                <path d="M 5,8 Q 8,4 15,3 L 98,2 Q 145,1 190,5 Q 195,7 196,14 L 197,98 Q 198,148 194,189 Q 192,195 186,196 L 98,197 Q 48,197 7,194 Q 3,193 2,188 L 1,98 Q 0,42 5,8" />
+                <path d="M 6,9 Q 9,5 16,4 L 100,3 Q 147,2 191,6 Q 196,8 197,15 L 198,100 Q 199,150 195,190 Q 193,196 187,197 L 100,198 Q 50,198 8,195 Q 4,194 3,189 L 2,100 Q 1,44 6,9" />
+                <path d="M 4,7 Q 7,3 14,2 L 97,1 Q 144,0 189,4 Q 194,6 195,13 L 196,97 Q 197,147 193,188 Q 191,194 185,195 L 97,196 Q 47,196 6,193 Q 2,192 1,187 L 0,97 Q -1,41 4,7" />
+                <path d="M 7,10 Q 10,6 17,5 L 101,4 Q 148,3 192,7 Q 197,9 198,16 L 199,101 Q 200,151 196,191 Q 194,197 188,198 L 101,199 Q 51,199 9,196 Q 5,195 4,190 L 3,101 Q 2,45 7,10" />
+              </svg>
+            </div>
+            <div class="fl718-frame__number">12</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- FILM STRIP 3 - ILFORD HP5 PLUS -->
+      <div class="fl718-film-strip">
+        <div class="fl718-film-strip__stock-info">ILFORD HP5 PLUS</div>
+        <div class="fl718-film-strip__iso-info">ISO 400 • 35mm</div>
+        
+        <div class="fl718-film-strip__edge-left">ILFORD HP5 PLUS</div>
+        <div class="fl718-film-strip__edge-right">
+          <span>27</span>
+          <span>19A</span>
+          <span>5</span>
+        </div>
+        
+        <div class="fl718-film-strip__frame-markers">
+          <span class="fl718-film-strip__frame-marker">27</span>
+          <span class="fl718-film-strip__frame-marker">→19A</span>
+          <span class="fl718-film-strip__frame-marker">5A</span>
+        </div>
+        
+        <div class="fl718-film-strip__frames">
+          <!-- Frame 6 - STREET SHOOTING -->
+          <div class="fl718-frame">
+            <img src="placeholder2.jpg" alt="Frame 27" class="fl718-frame__image">
+            <div class="fl718-frame__number">27</div>
+          </div>
+          
+          <!-- Frame 7 - EMPTY -->
+          <div class="fl718-frame">
+            <img src="https://placehold.co/180x180/e8e8e8/e8e8e8?text=" alt="Frame 19A" class="fl718-frame__image">
+            <div class="fl718-frame__number">19A</div>
+          </div>
+          
+          <!-- Frame 8 - marked - BROOKLYN STOOP -->
+          <div class="fl718-frame fl718-frame--marked">
+            <img src="placeholder3.JPG" alt="Frame 5" class="fl718-frame__image">
+            <div class="fl718-frame__hand-drawn">
+              <svg viewBox="0 0 196 196" xmlns="http://www.w3.org/2000/svg">
+                <!-- Rough, repeated strokes - organic hand motion -->
+                <path d="M 6,11 Q 9,5 16,4 L 102,2 Q 152,1 191,6 Q 196,9 197,17 L 198,102 Q 199,152 195,190 Q 193,196 187,197 L 100,198 Q 46,198 5,195 Q 1,194 1,189 L 0,100 Q -1,44 6,11" />
+                <path d="M 7,12 Q 10,6 17,5 L 103,3 Q 153,2 192,7 Q 197,10 198,18 L 199,103 Q 200,153 196,191 Q 194,197 188,198 L 101,199 Q 47,199 6,196 Q 2,195 2,190 L 1,101 Q 0,45 7,12" />
+                <path d="M 5,10 Q 8,4 15,3 L 101,1 Q 151,0 190,5 Q 195,8 196,16 L 197,101 Q 198,151 194,189 Q 192,195 186,196 L 99,197 Q 45,197 4,194 Q 0,193 0,188 L -1,99 Q -2,43 5,10" />
+                <path d="M 8,13 Q 11,7 18,6 L 104,4 Q 154,3 193,8 Q 198,11 199,19 L 200,104 Q 201,154 197,192 Q 195,198 189,199 L 102,200 Q 48,200 7,197 Q 3,196 3,191 L 2,102 Q 1,46 8,13" />
+              </svg>
+            </div>
+            <div class="fl718-frame__number">5</div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+    
+    <!-- Tagline at bottom -->
+    <p class="fl718-opening__tagline">documenting the human condition through street photography throughout this earth</p>
+    
+  </div>
+
+  <!-- TEST CONTENT TO SHOW SCROLL BEHAVIOR -->
+  <div class="fl718-test-content">
+    <div class="fl718-test-content__inner">
+      <h2>✨ Concept 3: Exposure Adjustment Animation + Hand Selection</h2>
+      <p><strong>Complete Animation Sequence:</strong></p>
+      <p>1. <strong>FLANEUR 718</strong> title corrects from overexposed to proper exposure (1s) - starts bright/blown-out, fades to solid black with slight blur-to-sharp effect</p>
+      <p>2. <strong>Film Strip 1</strong> appears with photo flash effect (1s delay, 0.4s duration)</p>
+      <p>3. <strong>Film Strip 2</strong> appears with photo flash effect (1.25s delay, 0.4s duration)</p>
+      <p>4. <strong>Film Strip 3</strong> appears with photo flash effect (1.5s delay, 0.4s duration)</p>
+      <p>5. <strong>Tagline</strong> fades up from bottom (1.9s delay, 0.6s duration)</p>
+      <p>6. <strong>Red grease pencil marks</strong> draw on one by one, simulating hand-selection (starts at 2.6s):</p>
+      <p style="margin-left: 20px;">• Frame 15A marked (2.6s, 0.6s duration)<br>
+      • Frame 8A marked (3.0s, 0.6s duration)<br>
+      • Frame 12 marked (3.4s, 0.6s duration)<br>
+      • Frame 5 marked (3.8s, 0.6s duration)</p>
+      
+      <p><strong>Total Duration:</strong> ~4.4 seconds (main sequence 2.5s + hand selection 1.9s)</p>
+      
+      <p><strong>Why this works:</strong> The exposure correction and sequential photo flashes establish photographic expertise, then the hand-drawn selection marks complete the authentic darkroom workflow - as if you're watching a photographer review their contact sheet and mark keepers. The organic, hand-drawn animation reinforces the craft and intentionality of film photography.</p>
+      
+      <p><strong>WordPress Integration:</strong> Copy the CSS from the <code>&lt;style&gt;</code> block into <strong>Uncode → Theme Options → Utility → CSS</strong>, and copy the JavaScript from the <code>&lt;script&gt;</code> block into the <strong>JavaScript</strong> section.</p>
+    </div>
+  </div>
+
+  <script>
+    // Trigger animation on page load or when scrolling into view
+    
+    // Option 1: Auto-trigger on page load (recommended for hero section)
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.querySelector('.fl718-opening').classList.add('animate');
+      }, 300); // Small delay to ensure page is fully rendered
+    });
+    
+    /* Option 2: Trigger on scroll into view (uncomment if you want scroll-triggered animation)
+    const observerOptions = {
+      threshold: 0.3,
+      rootMargin: '0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !entry.target.classList.contains('animate')) {
+          entry.target.classList.add('animate');
+        }
+      });
+    }, observerOptions);
+    
+    observer.observe(document.querySelector('.fl718-opening'));
+    */
+  </script>
+
+</body>
+</html>

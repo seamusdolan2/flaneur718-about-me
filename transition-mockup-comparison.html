@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transition Options Comparison | Flaneur 718</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f0f0f0;
+      padding: 40px 20px;
+    }
+
+    .comparison-container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .option-section {
+      background: white;
+      margin-bottom: 60px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .option-label {
+      background: #1a1a1a;
+      color: white;
+      padding: 20px 40px;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .option-label span {
+      color: #ff6b9d;
+      font-weight: 700;
+      margin-right: 10px;
+    }
+
+    /* Hero Section Ending (simplified) */
+    .hero-ending {
+      background: #ffffff;
+      padding: 60px 40px 40px 40px;
+      text-align: center;
+    }
+
+    .hero-ending p {
+      font-size: 16px;
+      color: #666;
+      letter-spacing: 1px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Chapter 1 Beginning (simplified) */
+    .chapter1-beginning {
+      background: linear-gradient(to bottom, #f8f8f8 0%, #ebebeb 100%);
+      padding: 80px 40px 60px 40px;
+      position: relative;
+    }
+
+    .chapter1-number {
+      font-family: 'Courier New', monospace;
+      font-size: 36px;
+      font-weight: 700;
+      color: #666;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      margin-bottom: 40px;
+    }
+
+    .chapter1-text {
+      max-width: 700px;
+      margin: 0 auto;
+      font-size: 18px;
+      line-height: 1.8;
+      color: #2a2a2a;
+    }
+
+    /* ============================================
+       OPTION 1: GREASE PENCIL DIVIDER
+       ============================================ */
+    .transition-grease-pencil {
+      background: #ffffff;
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .grease-pencil-line {
+      width: 90%;
+      max-width: 1200px;
+      height: 3px;
+    }
+
+    /* ============================================
+       OPTION 2: FILM PERFORATION BAR
+       ============================================ */
+    .transition-film-perforation {
+      background: #000000;
+      height: 50px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .perforation-container {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 20px;
+    }
+
+    .perforation-side {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .perforation-hole {
+      width: 8px;
+      height: 8px;
+      background: #ffffff;
+      border-radius: 1px;
+    }
+
+    /* Create repeating pattern */
+    .perforation-left,
+    .perforation-right {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      padding: 8px 0;
+    }
+
+    .perforation-left {
+      left: 20px;
+    }
+
+    .perforation-right {
+      right: 20px;
+    }
+
+    .perf-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* Edge code style text */
+    .film-edge-code {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Courier New', monospace;
+      font-size: 9px;
+      font-weight: 700;
+      color: #ff6600;
+      letter-spacing: 2px;
+      writing-mode: horizontal-tb;
+    }
+
+    /* ============================================
+       OPTION 3: LOCATION STAMP
+       ============================================ */
+    .transition-location-stamp {
+      background: #ffffff;
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .location-text {
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      font-weight: 400;
+      color: #888;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* ============================================
+       OPTION 4: FADE GRADIENT
+       ============================================ */
+    .transition-fade-gradient {
+      background: linear-gradient(to bottom,
+        #ffffff 0%,
+        #fcfcfc 20%,
+        #f8f8f8 40%,
+        #f5f5f5 60%,
+        #f2f2f2 80%,
+        #f8f8f8 100%
+      );
+      height: 150px;
+    }
+
+    /* Instructions */
+    .instructions {
+      background: #1a1a1a;
+      color: white;
+      padding: 30px 40px;
+      margin-bottom: 40px;
+      border-radius: 8px;
+    }
+
+    .instructions h1 {
+      font-size: 28px;
+      margin-bottom: 15px;
+      color: #ff6b9d;
+    }
+
+    .instructions p {
+      font-size: 16px;
+      line-height: 1.6;
+      color: #ccc;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="comparison-container">
+
+    <!-- Instructions -->
+    <div class="instructions">
+      <h1>Transition Space Comparison</h1>
+      <p><strong>Context:</strong> These transitions sit between the Hero (film contact sheet) and Chapter 1 (Bay Ridge to Academia).</p>
+      <p><strong>Goal:</strong> Mark the transition from "present-day photographer reviewing work" to "beginning of chronological story" with something minimal and intentional.</p>
+      <p><strong>Scroll down to compare each option in context.</strong></p>
+    </div>
+
+    <!-- ==================== OPTION 1 ==================== -->
+    <div class="option-section">
+      <div class="option-label">
+        <span>OPTION 1:</span> Grease Pencil Divider Line
+      </div>
+
+      <!-- Hero Ending -->
+      <div class="hero-ending">
+        <p>documenting the human condition through street photography throughout this earth</p>
+      </div>
+
+      <!-- TRANSITION: Grease Pencil Line -->
+      <div class="transition-grease-pencil">
+        <svg class="grease-pencil-line" viewBox="0 0 1200 3" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M 0,1.5 Q 100,0.8 200,1.2 Q 300,1.8 400,1.3 Q 500,0.9 600,1.4 Q 700,1.9 800,1.2 Q 900,0.7 1000,1.5 Q 1100,2.1 1200,1.5"
+            stroke="#ff6b9d"
+            stroke-width="3"
+            fill="none"
+            stroke-linecap="round"
+            opacity="0.85"
+          />
+        </svg>
+      </div>
+
+      <!-- Chapter 1 Beginning -->
+      <div class="chapter1-beginning">
+        <div class="chapter1-number">CHAPTER 1 |</div>
+        <div class="chapter1-text">
+          They tell me I was born on a snowy February day in Bay Ridge, Brooklyn—a little nook where my shoes still hang from electric lines and the aged paint of my graffiti can be glimpsed through time.
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== OPTION 2 ==================== -->
+    <div class="option-section">
+      <div class="option-label">
+        <span>OPTION 2:</span> Film Perforation Bar
+      </div>
+
+      <!-- Hero Ending -->
+      <div class="hero-ending">
+        <p>documenting the human condition through street photography throughout this earth</p>
+      </div>
+
+      <!-- TRANSITION: Film Perforation Bar -->
+      <div class="transition-film-perforation">
+        <!-- Left perforations -->
+        <div class="perforation-left">
+          <div class="perf-row">
+            <div class="perforation-hole"></div>
+            <div class="perforation-hole"></div>
+          </div>
+          <div class="perf-row">
+            <div class="perforation-hole"></div>
+            <div class="perforation-hole"></div>
+          </div>
+          <div class="perf-row">
+            <div class="perforation-hole"></div>
+            <div class="perforation-hole"></div>
+          </div>
+        </div>
+
+        <!-- Right perforations -->
+        <div class="perforation-right">
+          <div class="perf-row">
+            <div class="perforation-hole"></div>
+            <div class="perforation-hole"></div>
+          </div>
+          <div class="perf-row">
+            <div class="perforation-hole"></div>
+            <div class="perforation-hole"></div>
+          </div>
+          <div class="perf-row">
+            <div class="perforation-hole"></div>
+            <div class="perforation-hole"></div>
+          </div>
+        </div>
+
+        <!-- Edge code text -->
+        <div class="film-edge-code">FRAME 01</div>
+      </div>
+
+      <!-- Chapter 1 Beginning -->
+      <div class="chapter1-beginning">
+        <div class="chapter1-number">CHAPTER 1 |</div>
+        <div class="chapter1-text">
+          They tell me I was born on a snowy February day in Bay Ridge, Brooklyn—a little nook where my shoes still hang from electric lines and the aged paint of my graffiti can be glimpsed through time.
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== OPTION 3 ==================== -->
+    <div class="option-section">
+      <div class="option-label">
+        <span>OPTION 3:</span> Location Stamp
+      </div>
+
+      <!-- Hero Ending -->
+      <div class="hero-ending">
+        <p>documenting the human condition through street photography throughout this earth</p>
+      </div>
+
+      <!-- TRANSITION: Location Stamp -->
+      <div class="transition-location-stamp">
+        <div class="location-text">Bay Ridge, Brooklyn — 1990s</div>
+      </div>
+
+      <!-- Chapter 1 Beginning -->
+      <div class="chapter1-beginning">
+        <div class="chapter1-number">CHAPTER 1 |</div>
+        <div class="chapter1-text">
+          They tell me I was born on a snowy February day in Bay Ridge, Brooklyn—a little nook where my shoes still hang from electric lines and the aged paint of my graffiti can be glimpsed through time.
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== OPTION 4 (BONUS) ==================== -->
+    <div class="option-section">
+      <div class="option-label">
+        <span>OPTION 4:</span> Fade Gradient (Bonus - Most Minimal)
+      </div>
+
+      <!-- Hero Ending -->
+      <div class="hero-ending">
+        <p>documenting the human condition through street photography throughout this earth</p>
+      </div>
+
+      <!-- TRANSITION: Fade Gradient -->
+      <div class="transition-fade-gradient"></div>
+
+      <!-- Chapter 1 Beginning -->
+      <div class="chapter1-beginning">
+        <div class="chapter1-number">CHAPTER 1 |</div>
+        <div class="chapter1-text">
+          They tell me I was born on a snowy February day in Bay Ridge, Brooklyn—a little nook where my shoes still hang from electric lines and the aged paint of my graffiti can be glimpsed through time.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

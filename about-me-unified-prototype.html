@@ -1,0 +1,3719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Me | Flaneur 718</title>
+
+  <!--
+  ============================================
+  FLANEUR 718 - UNIFIED ABOUT ME PAGE
+  ============================================
+
+  WORDPRESS IMPLEMENTATION NOTES FOR DEVELOPER:
+
+  1. PAGE SETUP:
+     - Create new page: "About Me"
+     - Template: Full-width or Blank (no sidebars)
+     - Page Options → Content tab:
+       * Content Width: Full
+       * Show Media/Share/Tags: No
+       * After Content (Author/Related): No
+       * Body CSS class: fl718-about-page
+
+  2. CSS INJECTION:
+     - WordPress Dashboard → Uncode → Theme Options → Utility → CSS & JS
+     - Copy ALL CSS from <style> block below into "CSS" text box
+     - Click SAVE CHANGES
+
+  3. JAVASCRIPT INJECTION:
+     - Same location (Uncode → Theme Options → Utility → CSS & JS)
+     - Copy GSAP CDN links + all JS from <script> blocks into "JavaScript" text box
+     - CRITICAL: CDN scripts must come BEFORE custom code
+     - Click SAVE CHANGES
+
+  4. HTML CONTENT:
+     - Edit page in WordPress
+     - Add "Custom HTML" block
+     - Paste entire <body> content (everything between <body> tags)
+     - Update image src paths to WordPress Media Library URLs
+
+  5. OVERFLOW FIXES (if double scrollbar appears):
+     - Add to CSS injection:
+
+     body.fl718-about-page .post-wrapper,
+     body.fl718-about-page .uncont,
+     body.fl718-about-page .row-container,
+     body.fl718-about-page .row-parent,
+     body.fl718-about-page #wrapper,
+     body.fl718-about-page .wrapper {
+       overflow: visible !important;
+       overflow-x: visible !important;
+       overflow-y: visible !important;
+       max-height: none !important;
+       height: auto !important;
+     }
+
+  6. TESTING CHECKLIST:
+     - [ ] All animations trigger on scroll
+     - [ ] No double scrollbar
+     - [ ] All images load correctly
+     - [ ] Mobile responsive (test on actual device)
+     - [ ] Typewriter effects work
+     - [ ] Scrapbook items drop properly
+     - [ ] Film strip horizontal scroll works
+     - [ ] Reduced motion preference respected
+
+  NARRATIVE ARC:
+  - Hero: Film contact sheet opening (setting the tone)
+  - Chapter 1: Bay Ridge Brooklyn → Academia (urban grays, structured)
+  - Chapter 2: The Builder / Nook Nook Mats (earth tones, agency)
+  - Chapter 3: 2015 Peru HINGE POINT (color explosion, transformation)
+  - Chapter 4: Mexico City Film Mastery (saturated sophistication)
+  - Chapter 5: Flâneur 718 Present (clean arrival, confident)
+
+  COLOR PROGRESSION:
+  Ch1: #666, #2a2a2a (grays) → Ch2: #8b7355, #d4664a (earth) →
+  Ch3: #d4664a, #f4c542 (vibrant) → Ch4: #e87b93, #f4e4a8 (saturated) →
+  Ch5: #c44536, #ffffff (confident arrival)
+
+  ASSETS REQUIRED: See manifest at bottom of this file
+  -->
+
+  <!-- GSAP ScrollTrigger CDN - REQUIRED -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <style>
+    /*
+    ============================================
+    GLOBAL RESET & BASE STYLES
+    ============================================
+    */
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #ffffff;
+      color: #1a1a1a;
+      overflow-x: hidden;
+      line-height: 1.7;
+    }
+
+    /* WordPress/Uncode body class scoping */
+    body.fl718-about-page {
+      overflow-x: hidden;
+    }
+
+    /* Accessibility - Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    /*
+    ============================================
+    HERO SECTION - FILM CONTACT SHEET
+    ============================================
+    */
+
+    .fl718-opening {
+      position: relative;
+      width: 100vw;
+      min-height: 100vh;
+      background: #ffffff;
+      padding: 20px 20px 60px 0;
+      display: flex;
+    }
+
+    /* LEFT: Vertical Title */
+    .fl718-opening__title-container {
+      position: absolute;
+      left: 0;
+      top: 20px;
+      width: 80px;
+      display: flex;
+      align-items: flex-start;
+      z-index: 100;
+    }
+
+    .fl718-opening__title {
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      margin: 0;
+      line-height: 0.85;
+      letter-spacing: -0.02em;
+      opacity: 0;
+      filter: brightness(3) blur(3px);
+    }
+
+    .fl718-opening__title-main {
+      display: block;
+      font-size: 72px;
+      font-weight: 800;
+      color: #000000;
+      text-transform: uppercase;
+    }
+
+    .fl718-opening__title-sub {
+      display: block;
+      font-size: 72px;
+      font-weight: 600;
+      color: #333333;
+      margin-top: -12px;
+    }
+
+    /* RIGHT: Film Strips */
+    .fl718-opening__contact-sheet {
+      flex: 1;
+      position: relative;
+      padding: 0;
+      margin-left: 80px;
+      min-height: 700px;
+      overflow: visible;
+    }
+
+    .fl718-film-strip {
+      position: absolute;
+      background: #000000;
+      padding: 20px 30px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+      opacity: 0;
+    }
+
+    .fl718-film-strip:nth-child(1) {
+      top: 0;
+      left: 20px;
+      transform: rotate(-2deg);
+      z-index: 1;
+    }
+
+    .fl718-film-strip:nth-child(2) {
+      top: 40px;
+      left: 310px;
+      transform: rotate(1.5deg);
+      z-index: 2;
+    }
+
+    .fl718-film-strip:nth-child(3) {
+      top: 80px;
+      left: 600px;
+      transform: rotate(-1deg);
+      z-index: 1;
+    }
+
+    /* Sprocket holes */
+    .fl718-film-strip::before,
+    .fl718-film-strip::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      width: 6px;
+      height: 100%;
+      background: repeating-linear-gradient(
+        to bottom,
+        #000000 0px,
+        #000000 8px,
+        #ffffff 8px,
+        #ffffff 12px,
+        #000000 12px,
+        #000000 20px
+      );
+    }
+
+    .fl718-film-strip::before { left: 8px; }
+    .fl718-film-strip::after { right: 8px; }
+
+    .fl718-film-strip__edge-left,
+    .fl718-film-strip__edge-right {
+      position: absolute;
+      font-family: 'Courier New', monospace;
+      font-size: 7px;
+      font-weight: 700;
+      color: #ff6600;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      letter-spacing: 1px;
+    }
+
+    .fl718-film-strip__edge-left {
+      left: 15px;
+      top: 30px;
+      bottom: 30px;
+    }
+
+    .fl718-film-strip__edge-right {
+      right: 15px;
+      top: 30px;
+      bottom: 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+    }
+
+    .fl718-film-strip__frames {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      padding: 25px 0;
+    }
+
+    .fl718-frame {
+      position: relative;
+      width: 180px;
+      height: 180px;
+      background: #ffffff;
+      border: 2px solid #000000;
+    }
+
+    .fl718-frame__image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .fl718-frame__number {
+      position: absolute;
+      bottom: -18px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: #ff6600;
+      background: #000000;
+      padding: 2px 6px;
+    }
+
+    /* Hand-drawn selection marks */
+    .fl718-frame__hand-drawn {
+      position: absolute;
+      top: -8px;
+      left: -8px;
+      right: -8px;
+      bottom: -8px;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .fl718-frame__hand-drawn svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .fl718-frame__hand-drawn path {
+      fill: none;
+      stroke: #ff3333;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      opacity: 0.85;
+      stroke-dasharray: 1000;
+      stroke-dashoffset: 1000;
+    }
+
+    .fl718-opening__tagline {
+      position: absolute;
+      bottom: 40px;
+      left: 100px;
+      right: 40px;
+      font-size: 14px;
+      font-weight: 400;
+      color: #666666;
+      letter-spacing: 0.5px;
+      line-height: 1.6;
+      max-width: 600px;
+      opacity: 0;
+    }
+
+    /* Hero animations */
+    .fl718-opening.animate .fl718-opening__title {
+      animation: exposureCorrect 1s ease-out forwards;
+    }
+
+    .fl718-opening.animate .fl718-film-strip:nth-child(1) {
+      animation: photoFlash 0.4s ease-out 1s forwards;
+    }
+
+    .fl718-opening.animate .fl718-film-strip:nth-child(2) {
+      animation: photoFlash 0.4s ease-out 1.25s forwards;
+    }
+
+    .fl718-opening.animate .fl718-film-strip:nth-child(3) {
+      animation: photoFlash 0.4s ease-out 1.5s forwards;
+    }
+
+    .fl718-opening.animate .fl718-opening__tagline {
+      animation: fadeUp 0.6s ease-out 1.9s forwards;
+    }
+
+    @keyframes exposureCorrect {
+      from {
+        opacity: 0;
+        filter: brightness(3) blur(3px);
+      }
+      to {
+        opacity: 1;
+        filter: brightness(1) blur(0px);
+      }
+    }
+
+    @keyframes photoFlash {
+      0% {
+        opacity: 0;
+        filter: brightness(5);
+      }
+      30% {
+        opacity: 1;
+        filter: brightness(1.5);
+      }
+      100% {
+        opacity: 1;
+        filter: brightness(1);
+      }
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Grease pencil mark animation */
+    .fl718-opening.animate .fl718-film-strip:nth-child(1) .fl718-frame:nth-child(1) .fl718-frame__hand-drawn path {
+      animation: drawMark 0.6s ease-out 2.6s forwards;
+    }
+
+    .fl718-opening.animate .fl718-film-strip:nth-child(1) .fl718-frame:nth-child(3) .fl718-frame__hand-drawn path {
+      animation: drawMark 0.6s ease-out 3.0s forwards;
+    }
+
+    .fl718-opening.animate .fl718-film-strip:nth-child(2) .fl718-frame:nth-child(2) .fl718-frame__hand-drawn path {
+      animation: drawMark 0.6s ease-out 3.4s forwards;
+    }
+
+    .fl718-opening.animate .fl718-film-strip:nth-child(3) .fl718-frame:nth-child(3) .fl718-frame__hand-drawn path {
+      animation: drawMark 0.6s ease-out 3.8s forwards;
+    }
+
+    @keyframes drawMark {
+      from { stroke-dashoffset: 1000; }
+      to { stroke-dashoffset: 0; }
+    }
+
+    /*
+    ============================================
+    TRANSITION: HERO → CHAPTER 1 (FILM PERFORATION BAR)
+    ============================================
+    */
+
+    .fl718-transition-perforation {
+      position: relative;
+      width: 100%;
+      background: #000000;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: visible;
+    }
+
+    /* Left side perforations */
+    .fl718-perforation-left {
+      position: absolute;
+      left: 20px;
+      top: 0;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      padding: 10px 0;
+      gap: 4px;
+    }
+
+    /* Right side perforations */
+    .fl718-perforation-right {
+      position: absolute;
+      right: 20px;
+      top: 0;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      padding: 10px 0;
+      gap: 4px;
+    }
+
+    .fl718-perf-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .fl718-perforation-hole {
+      width: 7px;
+      height: 7px;
+      background: #ffffff;
+      border-radius: 1px;
+    }
+
+    /* Film edge code (Kodak-style) - TRANSITION BAR ONLY */
+    .fl718-transition-film-code {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      color: #ff6600;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      display: inline-block;
+    }
+
+    /* Mobile adjustments */
+    @media (max-width: 768px) {
+      .fl718-transition-perforation {
+        height: 40px;
+      }
+
+      .fl718-perforation-hole {
+        width: 6px;
+        height: 6px;
+      }
+
+      .fl718-transition-film-code {
+        font-size: 8px;
+        letter-spacing: 1px;
+      }
+    }
+
+    /*
+    ============================================
+    CHAPTER 1: BAY RIDGE TO ACADEMIA
+    ============================================
+    */
+
+    .fl718-chapter1 {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      background: linear-gradient(to bottom, #f8f8f8 0%, #ebebeb 100%);
+      padding: 120px 60px 100px 60px;
+    }
+
+    .fl718-chapter__number {
+      position: absolute;
+      top: -60px;
+      left: 0;
+      font-family: 'Courier New', monospace;
+      font-size: 42px;
+      font-weight: 700;
+      color: #666;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      z-index: 10;
+    }
+
+    .fl718-chapter__number::after {
+      content: '|';
+      animation: fl718-blink 1s step-end infinite;
+      margin-left: 4px;
+      opacity: 0;
+    }
+
+    .fl718-chapter__number.typing::after { opacity: 1; }
+    .fl718-chapter__number.typed::after { opacity: 0; }
+
+    @keyframes fl718-blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+
+    .fl718-chapter__title {
+      max-width: 1200px;
+      margin: 0 auto 140px auto;
+      position: relative;
+    }
+
+    .fl718-chapter__title h1 {
+      font-size: 52px;
+      font-weight: 800;
+      color: #000000;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+    }
+
+    .fl718-chapter__title-line {
+      width: 80px;
+      height: 4px;
+      background: #2a2a2a;
+    }
+
+    .fl718-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .fl718-section {
+      position: relative;
+      margin-bottom: 160px;
+    }
+
+    .fl718-paragraph {
+      font-size: 21px;
+      line-height: 1.8;
+      color: #2a2a2a;
+      margin-bottom: 60px;
+      max-width: 900px;
+      margin-left: 60px;
+    }
+
+    .fl718-paragraph--opening {
+      font-size: 24px;
+      line-height: 1.75;
+      color: #1a1a1a;
+      font-weight: 500;
+      margin-bottom: 120px;
+    }
+
+    /* Scrapbook cluster */
+    .fl718-scrapbook-cluster {
+      position: relative;
+      margin: 100px 0 140px 0;
+      min-height: 900px;
+      width: 100%;
+      perspective: 800px;
+    }
+
+    .fl718-artifact {
+      position: absolute;
+      background: #ffffff;
+      padding: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+      border-radius: 3px;
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+
+    .fl718-artifact--visible {
+      opacity: 1;
+      /* Fallback for reduced-motion: final resting state */
+      transform: translateY(0) rotate(var(--rotation, -2deg)) scale(1);
+    }
+
+    .fl718-artifact img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 2px;
+    }
+
+    /* Artifact positions */
+    .fl718-artifact--library { top: 20px; left: 60px; width: 340px; --rotation: -3deg; z-index: 4; }
+    .fl718-artifact--metrocard { top: 180px; left: 180px; width: 360px; --rotation: 2deg; z-index: 6; }
+    .fl718-artifact--spraypaint { top: 480px; left: 40px; width: 380px; --rotation: -2deg; z-index: 3; }
+    .fl718-artifact--drinks { top: 140px; right: 120px; width: 340px; --rotation: 4deg; z-index: 5; }
+    .fl718-artifact--pizza { top: 60px; right: 280px; width: 320px; --rotation: -1.5deg; z-index: 2; }
+    .fl718-artifact--notes { top: 520px; right: 160px; width: 360px; --rotation: 3deg; z-index: 7; }
+    .fl718-artifact--books {
+      bottom: 20px;
+      left: 50%;
+      width: 420px;
+      --rotation: -1deg;
+      z-index: 8;
+    }
+
+    .fl718-artifact--books.fl718-artifact--visible {
+      transform: translateX(-50%) translateY(0) rotate(-1deg) scale(1);
+    }
+
+    /* Polaroid photos */
+    .fl718-photo-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin: 120px 0 100px 0;
+      position: relative;
+    }
+
+    .fl718-photo {
+      position: relative;
+      background: #fff;
+      padding: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      transform: rotate(-1deg);
+      overflow: hidden;
+    }
+
+    .fl718-photo:nth-child(2) {
+      transform: rotate(2deg) translateY(40px);
+    }
+
+    .fl718-photo__image {
+      width: 100%;
+      aspect-ratio: 4/3;
+      background: #e0e0e0;
+      position: relative;
+      overflow: hidden;
+      filter: brightness(3.5) contrast(0.05) saturate(0) blur(6px);
+    }
+
+    .fl718-photo__image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .fl718-photo__overlay {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      right: 12px;
+      bottom: 42px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(240,240,240,0.9) 100%);
+      z-index: 2;
+      pointer-events: none;
+      opacity: 1;
+    }
+
+    .fl718-photo--developing .fl718-photo__image {
+      animation: fl718-polaroid-develop 4.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
+                 fl718-polaroid-shake 0.6s ease-in-out 0.3s forwards;
+    }
+
+    .fl718-photo--developing .fl718-photo__overlay {
+      animation: fl718-overlay-fade 4.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+
+    /* Polaroid development - more dramatic with color temperature shifts */
+    @keyframes fl718-polaroid-develop {
+      0% {
+        filter: brightness(3.5) contrast(0.05) saturate(0) blur(6px) sepia(0.2);
+      }
+      /* Initial flash/exposure */
+      8% {
+        filter: brightness(4) contrast(0.1) saturate(0) blur(5px) sepia(0.3);
+      }
+      /* First visible hint of image */
+      18% {
+        filter: brightness(3) contrast(0.25) saturate(0.15) blur(4px) sepia(0.35) hue-rotate(-15deg);
+      }
+      /* Colors start to emerge - warm tones */
+      32% {
+        filter: brightness(2.2) contrast(0.45) saturate(0.4) blur(3px) sepia(0.25) hue-rotate(-8deg);
+      }
+      /* Image becoming clearer - cool shift */
+      48% {
+        filter: brightness(1.6) contrast(0.65) saturate(0.65) blur(1.8px) sepia(0.1) hue-rotate(3deg);
+      }
+      /* Sharpening phase */
+      65% {
+        filter: brightness(1.25) contrast(0.85) saturate(0.85) blur(0.8px) sepia(0.05) hue-rotate(2deg);
+      }
+      /* Near final - slight oversaturation */
+      82% {
+        filter: brightness(1.08) contrast(0.96) saturate(1.1) blur(0.3px) sepia(0) hue-rotate(0deg);
+      }
+      /* Settling to normal */
+      94% {
+        filter: brightness(1.02) contrast(0.99) saturate(1.03) blur(0.1px) sepia(0) hue-rotate(0deg);
+      }
+      100% {
+        filter: brightness(1) contrast(1) saturate(1) blur(0) sepia(0) hue-rotate(0deg);
+      }
+    }
+
+    /* Subtle shake effect - simulates chemical reaction */
+    @keyframes fl718-polaroid-shake {
+      0%, 100% {
+        transform: translateX(0) translateY(0) rotate(0deg);
+      }
+      10% {
+        transform: translateX(-1px) translateY(0.5px) rotate(-0.3deg);
+      }
+      20% {
+        transform: translateX(1px) translateY(-0.5px) rotate(0.3deg);
+      }
+      30% {
+        transform: translateX(-0.8px) translateY(0.3px) rotate(-0.2deg);
+      }
+      40% {
+        transform: translateX(0.8px) translateY(-0.3px) rotate(0.2deg);
+      }
+      50% {
+        transform: translateX(-0.5px) translateY(0.2px) rotate(-0.1deg);
+      }
+      60% {
+        transform: translateX(0.5px) translateY(-0.2px) rotate(0.1deg);
+      }
+      70% {
+        transform: translateX(-0.3px) translateY(0.1px) rotate(-0.05deg);
+      }
+      80% {
+        transform: translateX(0.3px) translateY(-0.1px) rotate(0.05deg);
+      }
+      90% {
+        transform: translateX(-0.1px) translateY(0.05px) rotate(0deg);
+      }
+    }
+
+    /* Overlay fade - more dramatic peel-away effect */
+    @keyframes fl718-overlay-fade {
+      0% {
+        opacity: 1;
+        transform: scale(1);
+      }
+      40% {
+        opacity: 0.95;
+        transform: scale(1);
+      }
+      60% {
+        opacity: 0.7;
+        transform: scale(1.01);
+      }
+      75% {
+        opacity: 0.3;
+        transform: scale(1.02);
+      }
+      88% {
+        opacity: 0.1;
+        transform: scale(1.01);
+      }
+      100% {
+        opacity: 0;
+        transform: scale(1);
+      }
+    }
+
+    .fl718-photo__caption {
+      font-size: 12px;
+      color: #666;
+      margin-top: 8px;
+      font-family: 'Courier New', monospace;
+      text-align: center;
+      position: relative;
+      z-index: 3;
+    }
+
+    /*
+    ============================================
+    CHAPTER 1→2 DIVIDER - HAND-DRAWN INK FLOURISH
+    ============================================
+    */
+
+    .fl718-ch-divider {
+      width: 100%;
+      height: 120px;
+      background: linear-gradient(to bottom, #ebebeb 0%, #f0ebe5 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .fl718-ch-divider__mark {
+      width: 160px;
+      height: 40px;
+      opacity: 0;
+      transform: scale(0.8);
+      transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    }
+
+    .fl718-ch-divider__mark.fl718-visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .fl718-ch-divider__stroke {
+      fill: none;
+      stroke: #999;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 300;
+      stroke-dashoffset: 300;
+      transition: stroke-dashoffset 1.2s ease-out 0.3s;
+    }
+
+    .fl718-ch-divider__mark.fl718-visible .fl718-ch-divider__stroke {
+      stroke-dashoffset: 0;
+    }
+
+    .fl718-ch-divider__dot {
+      fill: #b5977a;
+      opacity: 0;
+      transition: opacity 0.5s ease-out 1s;
+    }
+
+    .fl718-ch-divider__mark.fl718-visible .fl718-ch-divider__dot {
+      opacity: 1;
+    }
+
+    /*
+    ============================================
+    CHAPTER 2: THE BUILDER (NOOK NOOK MATS)
+    ============================================
+    */
+
+    .fl718-chapter-transition {
+      position: relative;
+      width: 100%;
+      height: 300px;
+      background: linear-gradient(to bottom, #ebebeb 0%, #f0ebe5 100%);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 80px;
+      overflow: hidden;
+    }
+
+    /* Textile pattern */
+    .fl718-textile-pattern {
+      width: 180px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+    }
+
+    .fl718-textile-pattern svg {
+      width: 100%;
+      height: 200px;
+    }
+
+    .fl718-textile-pattern path {
+      stroke-dasharray: 1000;
+      stroke-dashoffset: 1000;
+      transition: stroke-dashoffset 0.4s ease-out;
+    }
+
+    .fl718-textile-pattern.animate path {
+      animation: fl718-draw-line 0.4s ease-out forwards;
+    }
+
+    .fl718-textile-pattern.animate path:nth-child(1) { animation-delay: 0.0s; }
+    .fl718-textile-pattern.animate path:nth-child(2) { animation-delay: 0.1s; }
+    .fl718-textile-pattern.animate path:nth-child(3) { animation-delay: 0.2s; }
+    .fl718-textile-pattern.animate path:nth-child(4) { animation-delay: 0.3s; }
+    .fl718-textile-pattern.animate path:nth-child(5) { animation-delay: 0.4s; }
+    .fl718-textile-pattern.animate path:nth-child(6) { animation-delay: 0.5s; }
+    .fl718-textile-pattern.animate path:nth-child(7) { animation-delay: 0.6s; }
+    .fl718-textile-pattern.animate path:nth-child(8) { animation-delay: 0.7s; }
+
+    @keyframes fl718-draw-line {
+      to { stroke-dashoffset: 0; }
+    }
+
+    /* Brand logo */
+    .fl718-brand-logo {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      flex-direction: column;
+    }
+
+    .fl718-brand-logo__main {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      line-height: 1;
+    }
+
+    .fl718-brand-logo__nook {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 84px;
+      font-weight: 900;
+      color: #000000;
+      letter-spacing: -0.02em;
+      line-height: 0.9;
+    }
+
+    .fl718-brand-logo__nook span {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    .fl718-brand-logo__dot {
+      width: 16px;
+      height: 16px;
+      background: #d4664a;
+      border-radius: 50%;
+      margin: 0 8px;
+      align-self: center;
+      position: relative;
+      top: -8px;
+      opacity: 0;
+      transform: scale(0.5);
+    }
+
+    .fl718-brand-logo__mats {
+      font-family: 'Brush Script MT', cursive, 'Comic Sans MS', sans-serif;
+      font-size: 52px;
+      font-weight: 400;
+      color: #000000;
+      font-style: italic;
+      position: relative;
+      top: -15px;
+      left: -10px;
+      letter-spacing: 0.02em;
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    /* Organic shape */
+    .fl718-organic-shape {
+      width: 280px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      opacity: 0;
+      transform: scale(0.3) rotate(-90deg);
+      transition: opacity 1.2s ease, transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .fl718-organic-shape.animate {
+      opacity: 1;
+      transform: scale(1.0) rotate(0deg);
+    }
+
+    .fl718-organic-shape svg {
+      width: 220px;
+      height: 220px;
+    }
+
+    /* Chapter 2 content */
+    .fl718-chapter2 {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      background: linear-gradient(to bottom, #faf8f5 0%, #f0ebe5 100%);
+      padding: 120px 60px 200px 60px;
+    }
+
+    .fl718-chapter2 .fl718-chapter__number {
+      color: #8b7355;
+    }
+
+    .fl718-chapter2 .fl718-chapter__number::after {
+      color: #8b7355;
+    }
+
+    .fl718-paragraph--momentum {
+      font-style: italic;
+      font-weight: 500;
+      transform: skewX(-3deg);
+      transition: transform 0.3s ease;
+    }
+
+    .fl718-paragraph--momentum:hover {
+      transform: skewX(-1deg) translateX(5px);
+    }
+
+    .fl718-highlight {
+      font-size: 24px;
+      line-height: 1.75;
+      font-weight: 500;
+      color: #1a1a1a;
+      margin: 100px 0 60px 100px;
+      max-width: 700px;
+    }
+
+    .fl718-ending {
+      font-size: 24px;
+      line-height: 1.75;
+      font-weight: 500;
+      color: #1a1a1a;
+      margin-left: 100px;
+      margin-top: 60px;
+      margin-bottom: 180px;
+    }
+
+    /* ARTISAN SECTION - Chapter 2 */
+    .fl718-artisan-section {
+      margin: 120px 0;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .fl718-artisan-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #8b7355;
+      margin-bottom: 60px;
+      text-align: center;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .fl718-artisan-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+    }
+
+    .fl718-artisan-photo {
+      position: relative;
+      background: #ffffff;
+      padding: 12px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+      border-radius: 2px;
+      opacity: 0;
+      transform: translateY(30px) scale(0.96);
+      will-change: transform, opacity;
+      transition: box-shadow 0.3s ease;
+    }
+
+    .fl718-artisan-photo--presented {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      transition: opacity 0.8s ease-out, transform 0.8s ease-out, box-shadow 0.3s ease;
+    }
+
+    .fl718-artisan-photo:hover {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    .fl718-artisan-photo__image {
+      width: 100%;
+      height: auto;
+      display: block;
+      filter: sepia(0.15) contrast(1.05);
+    }
+
+    /* CHAPTER 2 ARTIFACT POSITIONING */
+    .fl718-artifact--postcards {
+      top: 20px;
+      left: 40px;
+      width: 420px;
+      --rotation: -1.5deg;
+      z-index: 4;
+    }
+
+    .fl718-artifact--shipping-docs {
+      top: 80px;
+      right: 60px;
+      width: 440px;
+      --rotation: 2deg;
+      z-index: 3;
+    }
+
+    .fl718-artifact--mat-product {
+      top: 380px;
+      left: 80px;
+      width: 360px;
+      --rotation: -2.5deg;
+      z-index: 2;
+    }
+
+    .fl718-artifact--business-notes {
+      top: 340px;
+      right: 100px;
+      width: 400px;
+      --rotation: 1deg;
+      z-index: 5;
+    }
+
+    /*
+    ============================================
+    CHAPTER 3: THE HINGE (2015 PERU)
+    ============================================
+    */
+
+    .fl718-threshold {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 60px 120px;
+      overflow: hidden;
+      background: linear-gradient(to bottom, #f0ebe5 0%, #e8a87c 100%);
+    }
+
+    .fl718-threshold__content {
+      max-width: 900px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .fl718-threshold__sentence {
+      font-family: 'Courier New', monospace;
+      font-size: 48px;
+      font-weight: 400;
+      line-height: 1.6;
+      color: #1a1a1a;
+      letter-spacing: 0.02em;
+      opacity: 0;
+    }
+
+    .fl718-typewriter-cursor {
+      display: inline-block;
+      width: 3px;
+      height: 1.1em;
+      background: #d4664a;
+      margin-left: 4px;
+      animation: blink-cursor 1s infinite;
+      vertical-align: text-bottom;
+    }
+
+    @keyframes blink-cursor {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+
+    .fl718-threshold__bg-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, #f0ebe5 0%, #d4664a 50%, #e8a87c 100%);
+      opacity: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .fl718-chapter3 {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      background: linear-gradient(to bottom, #fef3e2 0%, #f4e4d7 100%);
+      padding: 120px 60px 200px 60px;
+    }
+
+    .fl718-chapter3 .fl718-chapter__number {
+      color: #d4664a;
+      left: -140px;
+    }
+
+    .fl718-chapter3 .fl718-chapter__number::after {
+      color: #d4664a;
+    }
+
+    /* Blur to focus transformation */
+    .fl718-transform-container {
+      font-size: 64px;
+      font-weight: 700;
+      line-height: 1.4;
+      color: #1a1a1a;
+      margin: 120px 0;
+      text-align: center;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .fl718-transform-word {
+      display: inline-block;
+      font-weight: 400;
+      filter: blur(3px);
+      opacity: 0.4;
+      letter-spacing: 0.1em;
+      color: #999;
+      transition: all 1.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+    }
+
+    .fl718-transform-word.sharp {
+      font-weight: 700;
+      filter: blur(0px);
+      opacity: 1;
+      letter-spacing: -0.02em;
+      color: #1a1a1a;
+    }
+
+    /* Chapter 3 Scrapbook - container height */
+    #scrapbookCluster3 {
+      min-height: 1350px;
+    }
+
+    /* Chapter 3 Artifacts - positioning only */
+    .fl718-artifact--camera {
+      top: 40px;
+      left: 80px;
+      width: 340px;
+    }
+
+    .fl718-artifact--bodegabag {
+      top: 180px;
+      right: 100px;
+      width: 380px;
+    }
+
+    .fl718-artifact--letters {
+      top: 420px;
+      left: 60px;
+      width: 380px;
+    }
+
+    .fl718-artifact--currency {
+      top: 580px;
+      right: 180px;
+      width: 340px;
+    }
+
+    .fl718-artifact--journal {
+      top: 780px;
+      left: 420px;
+      width: 400px;
+    }
+
+    .fl718-artifact--boardingpass {
+      top: 920px;
+      right: 120px;
+      width: 420px;
+    }
+
+    /*
+    ============================================
+    CHAPTER 4: MEXICO CITY & FILM
+    ============================================
+    */
+
+    .fl718-chapter4 {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      background: #fef3e2;
+    }
+
+    .fl718-chapter4 .fl718-chapter__number {
+      color: #e87b93;
+      top: 60px;
+      left: 60px;
+    }
+
+    .fl718-chapter4 .fl718-chapter__number::after {
+      color: #e87b93;
+    }
+
+    .fl718-chapter4 .fl718-opening {
+      position: relative;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 180px 60px 120px 60px;
+      text-align: center;
+      /* Override hero section styles */
+      background: transparent !important;
+      width: auto !important;
+      min-height: auto !important;
+      display: block !important;
+    }
+
+    .fl718-chapter4 .fl718-opening__text {
+      font-size: 48px;
+      font-weight: 700;
+      line-height: 1.3;
+      color: #1a1a1a;
+      margin-bottom: 40px;
+      letter-spacing: -0.02em;
+    }
+
+    .fl718-chapter4 .fl718-opening__subtitle {
+      font-size: 24px;
+      line-height: 1.7;
+      color: #2a2a2a;
+      font-weight: 400;
+    }
+
+    /* Light & shadow gallery */
+    .fl718-light-shadow {
+      position: relative;
+      width: 100%;
+      min-height: 120vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      margin: 120px 0;
+    }
+
+    .fl718-light-side {
+      background: linear-gradient(to bottom, #f4e4a8 0%, #f0a76b 100%);
+      padding: 100px 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .fl718-shadow-side {
+      background: linear-gradient(to bottom, #1a1a2e 0%, #2a2a2a 100%);
+      padding: 100px 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .fl718-gallery-photo {
+      width: 100%;
+      max-width: 500px;
+      aspect-ratio: 4/3;
+      background: #000;
+      border: 10px solid rgba(255,255,255,0.95);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      overflow: hidden;
+      opacity: 1;  /* Changed from 0 to 1 for testing */
+      transform: scale(1);  /* Changed from 0.9 to 1 for testing */
+    }
+
+    .fl718-gallery-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .fl718-light-side .fl718-gallery-photo {
+      border-color: rgba(255,255,255,0.95);
+    }
+
+    .fl718-shadow-side .fl718-gallery-photo {
+      border-color: rgba(255,255,255,0.3);
+    }
+
+    .fl718-photo-caption {
+      font-family: 'Georgia', serif;
+      font-size: 16px;
+      font-style: italic;
+      margin-top: 20px;
+      color: #1a1a1a;
+      opacity: 1;  /* Changed from 0 to 1 for testing */
+    }
+
+    .fl718-shadow-side .fl718-photo-caption {
+      color: #fff;
+    }
+
+    /* Thesis statement */
+    .fl718-thesis-section {
+      position: relative;
+      width: 100%;
+      min-height: 150vh;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 200px 60px;
+    }
+
+    .fl718-thesis-container {
+      max-width: 1200px;
+      text-align: center;
+      position: relative;
+    }
+
+    .fl718-thesis-text {
+      font-size: 72px;
+      font-weight: 700;
+      line-height: 1.3;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      filter: brightness(2) contrast(0.3);
+      transition: all 0.3s ease;
+    }
+
+    .fl718-thesis-line {
+      margin-bottom: 20px;
+    }
+
+    /* Chemical stain effect */
+    .fl718-thesis-container::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      height: 60%;
+      background: radial-gradient(ellipse at center,
+        rgba(139, 0, 0, 0.03) 0%,
+        transparent 70%);
+      opacity: 0;
+      transition: opacity 2s ease;
+      pointer-events: none;
+    }
+
+    .fl718-thesis-container.developing::before {
+      opacity: 1;
+    }
+
+    /* Film strip gallery */
+    .fl718-film-section {
+      position: relative;
+      width: 100%;
+      padding: 200px 0;
+      background: #1a1a1a;
+      overflow-x: hidden;
+    }
+
+    .fl718-film-wrapper {
+      position: relative;
+      width: 100%;
+      height: 400px;
+      overflow: visible;
+    }
+
+    .fl718-film-strip-horizontal {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 300px;
+      background: #000000;
+      padding: 30px 0;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding-left: 100px;
+      padding-right: 100px;
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.8);
+    }
+
+    /* Sprocket holes - TOP */
+    .fl718-film-strip-horizontal::before {
+      content: '';
+      position: absolute;
+      top: 10px;
+      left: 0;
+      width: 100%;
+      height: 12px;
+      background: repeating-linear-gradient(
+        to right,
+        #000000 0px,
+        #000000 12px,
+        #ffffff 12px,
+        #ffffff 18px,
+        #000000 18px,
+        #000000 30px
+      );
+    }
+
+    /* Sprocket holes - BOTTOM */
+    .fl718-film-strip-horizontal::after {
+      content: '';
+      position: absolute;
+      bottom: 10px;
+      left: 0;
+      width: 100%;
+      height: 12px;
+      background: repeating-linear-gradient(
+        to right,
+        #000000 0px,
+        #000000 12px,
+        #ffffff 12px,
+        #ffffff 18px,
+        #000000 18px,
+        #000000 30px
+      );
+    }
+
+    .fl718-film-frame {
+      position: relative;
+      width: 240px;
+      height: 240px;
+      flex-shrink: 0;
+      background: #e0e0e0;
+      border: 2px solid #333;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  box-shadow 0.4s ease,
+                  z-index 0s 0s;
+      z-index: 1;
+    }
+
+    .fl718-film-frame:hover {
+      transform: scale(1.15) translateY(-20px);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+      z-index: 100;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  box-shadow 0.4s ease,
+                  z-index 0s 0s;
+    }
+
+    .fl718-film-frame__image {
+      width: 100%;
+      height: 100%;
+      background: #000;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .fl718-film-frame__image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .fl718-film-frame__number {
+      position: absolute;
+      bottom: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      font-weight: 700;
+      color: #ff6600;
+      letter-spacing: 1px;
+    }
+
+    .fl718-film-edge-code {
+      position: absolute;
+      font-family: 'Courier New', monospace;
+      font-size: 8px;
+      font-weight: 700;
+      color: #ff6600;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      letter-spacing: 2px;
+    }
+
+    .fl718-film-edge-code--left {
+      left: 22px;
+      top: 50%;
+      transform: translateY(-50%) rotate(180deg);
+    }
+
+    .fl718-film-edge-code--right {
+      right: 22px;
+      top: 50%;
+      transform: translateY(-50%) rotate(180deg);
+    }
+
+    .fl718-film-stock-info {
+      position: absolute;
+      top: -40px;
+      left: 100px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      color: #ff6600;
+      letter-spacing: 2px;
+    }
+
+    /*
+    ============================================
+    CHAPTER 5: FLÂNEUR 718 - THE ARRIVAL
+    ============================================
+    */
+
+    .fl718-chapter5 {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      background: #ffffff;
+    }
+
+    .fl718-chapter5 .fl718-opening {
+      padding: 200px 60px;
+      text-align: center;
+    }
+
+    .fl718-chapter5 .fl718-chapter__number {
+      position: absolute;
+      top: 120px;
+      left: 80px;
+      font-size: 16px;
+      font-weight: 400;
+      color: #999999;
+      letter-spacing: 4px;
+    }
+
+    .fl718-chapter5 .fl718-chapter__number::after {
+      color: #999999;
+    }
+
+    .fl718-chapter__title {
+      font-size: 90px;
+      font-weight: 800;
+      color: #c44536;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      margin-top: 80px;
+      line-height: 1;
+    }
+
+    .fl718-statement {
+      position: relative;
+      width: 100%;
+      padding: 200px 60px;
+      text-align: center;
+      background: #fafafa;
+    }
+
+    .fl718-statement__text {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 40px;
+      font-weight: 400;
+      line-height: 1.6;
+      color: #000000;
+      max-width: 900px;
+      margin: 0 auto;
+      opacity: 0;
+      transform: scale(0.95);
+    }
+
+    .fl718-photo-grid {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+      padding: 240px 60px;
+    }
+
+    .fl718-photo-grid .fl718-photo {
+      background: #ffffff;
+      padding: 20px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+      opacity: 0;
+      transform: scale(0.95);
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+      cursor: pointer;
+    }
+
+    .fl718-photo-grid .fl718-photo:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.16);
+    }
+
+    .fl718-photo--presented {
+      opacity: 1 !important;
+      transform: scale(1) !important;
+      transition: opacity 0.8s ease-out, transform 0.8s ease-out, box-shadow 0.35s ease;
+    }
+
+    /* Product photos in grid - remove Polaroid blur effect */
+    .fl718-photo-grid .fl718-photo__image {
+      filter: none !important;
+      background: transparent;
+    }
+
+    .fl718-photo-grid .fl718-photo__image img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 2px;
+    }
+
+    .fl718-chapter4 .fl718-closing {
+      position: relative;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 160px 60px 200px 60px;
+      text-align: left;
+      background: #fef3e2;
+    }
+
+    .fl718-chapter4 .fl718-closing__text {
+      font-size: 28px;
+      line-height: 1.7;
+      color: #2a2a2a;
+      font-weight: 400;
+      font-style: italic;
+    }
+
+    .fl718-chapter5 .fl718-closing {
+      position: relative;
+      width: 100%;
+      padding: 240px 60px 300px 60px;
+      text-align: center;
+      background: #ffffff;
+    }
+
+    .fl718-chapter5 .fl718-closing__text {
+      font-size: 24px;
+      line-height: 1.7;
+      color: #1a1a1a;
+      max-width: 700px;
+      margin: 0 auto;
+      opacity: 0;
+    }
+
+    /*
+    ============================================
+    RESPONSIVE DESIGN
+    ============================================
+    */
+
+    @media (max-width: 1200px) {
+      .fl718-opening {
+        flex-direction: column;
+        padding: 40px 20px;
+      }
+
+      .fl718-opening__title-container {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .fl718-opening__title {
+        writing-mode: horizontal-tb;
+        transform: none;
+      }
+
+      .fl718-film-strip:nth-child(2),
+      .fl718-film-strip:nth-child(3) {
+        display: none;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .fl718-chapter__number {
+        font-size: 28px;
+        letter-spacing: 4px;
+      }
+
+      .fl718-paragraph {
+        font-size: 18px;
+        margin-left: 0;
+      }
+
+      .fl718-scrapbook-cluster {
+        min-height: 2400px;
+      }
+
+      #scrapbookCluster3 {
+        min-height: 2200px;
+      }
+
+      .fl718-transform-container {
+        font-size: 32px;
+      }
+
+      /* Chapter 3 scrapbook mobile stacking */
+      #scrapbookCluster3 .fl718-artifact--camera {
+        top: 40px;
+      }
+
+      #scrapbookCluster3 .fl718-artifact--bodegabag {
+        top: 380px;
+      }
+
+      #scrapbookCluster3 .fl718-artifact--letters {
+        top: 740px;
+      }
+
+      #scrapbookCluster3 .fl718-artifact--currency {
+        top: 1120px;
+      }
+
+      #scrapbookCluster3 .fl718-artifact--journal {
+        top: 1460px;
+      }
+
+      #scrapbookCluster3 .fl718-artifact--boardingpass {
+        top: 1860px;
+      }
+
+      .fl718-photo-section {
+        grid-template-columns: 1fr;
+      }
+
+      .fl718-light-shadow {
+        grid-template-columns: 1fr;
+      }
+
+      .fl718-photo-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+
+      .fl718-ch-divider {
+        height: 90px;
+      }
+
+      .fl718-ch-divider__mark {
+        width: 120px;
+        height: 30px;
+      }
+
+      .fl718-thesis-text {
+        font-size: 36px;
+      }
+
+      .fl718-film-section {
+        padding: 120px 0;
+      }
+
+      .fl718-chapter4 .fl718-opening {
+        padding: 120px 30px 80px 30px;
+      }
+
+      .fl718-chapter4 .fl718-opening__text {
+        font-size: 32px;
+      }
+
+      .fl718-chapter4 .fl718-opening__subtitle {
+        font-size: 18px;
+      }
+
+      .fl718-chapter4 .fl718-closing__text {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body class="fl718-about-page">
+
+  <!-- ============================================
+       HERO SECTION - FILM CONTACT SHEET
+       ============================================ -->
+
+  <div class="fl718-opening" id="heroSection">
+
+    <!-- LEFT: Vertical Title -->
+    <div class="fl718-opening__title-container">
+      <h1 class="fl718-opening__title">
+        <span class="fl718-opening__title-main">Flaneur</span>
+        <span class="fl718-opening__title-sub">718</span>
+      </h1>
+    </div>
+
+    <!-- RIGHT: Film Strips -->
+    <div class="fl718-opening__contact-sheet">
+
+      <!-- Film Strip 1 - KODAK PORTRA 400 -->
+      <div class="fl718-film-strip">
+        <div class="fl718-film-strip__edge-left">KODAK PORTRA 400</div>
+        <div class="fl718-film-strip__edge-right">
+          <span>15A</span>
+          <span>22</span>
+          <span>8A</span>
+        </div>
+
+        <div class="fl718-film-strip__frames">
+          <!-- Frame 1 - marked -->
+          <div class="fl718-frame fl718-frame--marked">
+            <img src="0.%20Hero/placeholder4.jpeg" alt="Frame 15A" class="fl718-frame__image">
+            <div class="fl718-frame__hand-drawn">
+              <svg viewBox="0 0 196 196" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 4,10 Q 6,8 12,7 L 95,5 Q 140,4 188,7 Q 192,9 193,15 L 194,90 Q 195,140 192,186 Q 190,191 185,192 L 100,194 Q 50,195 8,193 Q 4,192 3,187 L 2,100 Q 1,50 4,10" />
+              </svg>
+            </div>
+            <div class="fl718-frame__number">15A</div>
+          </div>
+
+          <!-- Frame 2 - EMPTY -->
+          <div class="fl718-frame">
+            <img src="https://placehold.co/180x180/e8e8e8/e8e8e8?text=" alt="Frame 22" class="fl718-frame__image">
+            <div class="fl718-frame__number">22</div>
+          </div>
+
+          <!-- Frame 3 - marked -->
+          <div class="fl718-frame fl718-frame--marked">
+            <img src="0.%20Hero/placeholder1.jpg" alt="Frame 8A" class="fl718-frame__image">
+            <div class="fl718-frame__hand-drawn">
+              <svg viewBox="0 0 196 196" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 7,12 Q 10,6 18,5 L 100,3 Q 150,2 189,6 Q 194,8 195,18 L 196,100 Q 197,145 193,188 Q 191,193 184,194 L 95,196 Q 45,196 6,192 Q 2,190 2,185 L 1,95 Q 0,45 7,12" />
+              </svg>
+            </div>
+            <div class="fl718-frame__number">8A</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Film Strip 2 - KODAK TRI-X 400 -->
+      <div class="fl718-film-strip">
+        <div class="fl718-film-strip__edge-left">KODAK TRI-X 400</div>
+        <div class="fl718-film-strip__edge-right">
+          <span>31</span>
+          <span>12</span>
+        </div>
+
+        <div class="fl718-film-strip__frames">
+          <div class="fl718-frame">
+            <img src="https://placehold.co/180x180/e8e8e8/e8e8e8?text=" alt="Frame 31" class="fl718-frame__image">
+            <div class="fl718-frame__number">31</div>
+          </div>
+
+          <div class="fl718-frame fl718-frame--marked">
+            <img src="https://placehold.co/180x180/e8e8e8/e8e8e8?text=" alt="Frame 12" class="fl718-frame__image">
+            <div class="fl718-frame__hand-drawn">
+              <svg viewBox="0 0 196 196" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 5,8 Q 8,4 15,3 L 98,2 Q 145,1 190,5 Q 195,7 196,14 L 197,98 Q 198,148 194,189 Q 192,195 186,196 L 98,197 Q 48,197 7,194 Q 3,193 2,188 L 1,98 Q 0,42 5,8" />
+              </svg>
+            </div>
+            <div class="fl718-frame__number">12</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Film Strip 3 - ILFORD HP5 PLUS -->
+      <div class="fl718-film-strip">
+        <div class="fl718-film-strip__edge-left">ILFORD HP5 PLUS</div>
+        <div class="fl718-film-strip__edge-right">
+          <span>27</span>
+          <span>19A</span>
+          <span>5</span>
+        </div>
+
+        <div class="fl718-film-strip__frames">
+          <div class="fl718-frame">
+            <img src="0.%20Hero/placeholder2.jpg" alt="Frame 27" class="fl718-frame__image">
+            <div class="fl718-frame__number">27</div>
+          </div>
+
+          <div class="fl718-frame">
+            <img src="https://placehold.co/180x180/e8e8e8/e8e8e8?text=" alt="Frame 19A" class="fl718-frame__image">
+            <div class="fl718-frame__number">19A</div>
+          </div>
+
+          <div class="fl718-frame fl718-frame--marked">
+            <img src="0.%20Hero/placeholder3.JPG" alt="Frame 5" class="fl718-frame__image">
+            <div class="fl718-frame__hand-drawn">
+              <svg viewBox="0 0 196 196" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 6,11 Q 9,5 16,4 L 102,2 Q 152,1 191,6 Q 196,9 197,17 L 198,102 Q 199,152 195,190 Q 193,196 187,197 L 100,198 Q 46,198 5,195 Q 1,194 1,189 L 0,100 Q -1,44 6,11" />
+              </svg>
+            </div>
+            <div class="fl718-frame__number">5</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Tagline -->
+    <p class="fl718-opening__tagline">documenting the human condition through street photography throughout this earth</p>
+
+  </div>
+
+  <!-- ============================================
+       TRANSITION: FILM PERFORATION BAR
+       ============================================ -->
+
+  <div class="fl718-transition-perforation">
+    <!-- Left side perforations -->
+    <div class="fl718-perforation-left">
+      <div class="fl718-perf-row">
+        <div class="fl718-perforation-hole"></div>
+        <div class="fl718-perforation-hole"></div>
+      </div>
+      <div class="fl718-perf-row">
+        <div class="fl718-perforation-hole"></div>
+        <div class="fl718-perforation-hole"></div>
+      </div>
+      <div class="fl718-perf-row">
+        <div class="fl718-perforation-hole"></div>
+        <div class="fl718-perforation-hole"></div>
+      </div>
+    </div>
+
+    <!-- Right side perforations -->
+    <div class="fl718-perforation-right">
+      <div class="fl718-perf-row">
+        <div class="fl718-perforation-hole"></div>
+        <div class="fl718-perforation-hole"></div>
+      </div>
+      <div class="fl718-perf-row">
+        <div class="fl718-perforation-hole"></div>
+        <div class="fl718-perforation-hole"></div>
+      </div>
+      <div class="fl718-perf-row">
+        <div class="fl718-perforation-hole"></div>
+        <div class="fl718-perforation-hole"></div>
+      </div>
+    </div>
+
+    <!-- Film edge code -->
+    <div class="fl718-transition-film-code">Kodak Tri-X 400</div>
+  </div>
+
+  <!-- ============================================
+       CHAPTER 1: BAY RIDGE TO ACADEMIA
+       ============================================ -->
+
+  <div class="fl718-chapter1">
+
+    <!-- Chapter Title -->
+    <div class="fl718-chapter__title">
+      <div class="fl718-chapter__number" id="chapterNumber1"></div>
+      <div class="fl718-chapter__title-line"></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="fl718-content">
+
+      <!-- Brooklyn Section -->
+      <section class="fl718-section fl718-section--brooklyn">
+
+        <!-- Opening Paragraph - trigger for Chapter 1 typewriter & scrapbook -->
+        <p class="fl718-paragraph fl718-paragraph--opening" id="chapter1-opening-paragraph">
+          They tell me I was born on a snowy February day in Bay Ridge, Brooklyn—a little nook where my shoes still hang from electric lines and the aged paint of my graffiti can be glimpsed through time. <span id="scrapbook-trigger-phrase">I roamed the streets</span> and foraged for fun. Some say I still do.
+        </p>
+
+        <!-- Scrapbook Cluster -->
+        <div class="fl718-scrapbook-cluster" id="scrapbookCluster1">
+
+          <div class="fl718-artifact fl718-artifact--library" data-index="0">
+            <img src="1.%20chapter%201/chapter1-scrapbook-library-cards.png" alt="Brooklyn Public Library cards">
+          </div>
+
+          <div class="fl718-artifact fl718-artifact--metrocard" data-index="1">
+            <img src="1.%20chapter%201/chapter1-scrapbook-metrocards.png" alt="NYC MetroCard and subway tokens">
+          </div>
+
+          <div class="fl718-artifact fl718-artifact--spraypaint" data-index="2">
+            <img src="1.%20chapter%201/chapter1-scrapbook-spraypaint-street.png" alt="Spray paint cans on street">
+          </div>
+
+          <div class="fl718-artifact fl718-artifact--drinks" data-index="3">
+            <img src="1.%20chapter%201/chapter1-scrapbook-quarter-drinks-street.png" alt="Quarter water bottles">
+          </div>
+
+          <div class="fl718-artifact fl718-artifact--pizza" data-index="4">
+            <img src="1.%20chapter%201/chapter1-scrapbook-pizza-box.png" alt="Joe's Pizzeria box">
+          </div>
+
+          <div class="fl718-artifact fl718-artifact--notes" data-index="5">
+            <img src="1.%20chapter%201/chapter1-scrapbook-research_notes.png" alt="Research notes with equations">
+          </div>
+
+          <div class="fl718-artifact fl718-artifact--books" data-index="6">
+            <img src="1.%20chapter%201/chapter1-scrapbook-books.png" alt="Philosophy books stack">
+          </div>
+
+        </div>
+
+        <!-- Brooklyn Photos -->
+        <div class="fl718-photo-section">
+          <div class="fl718-photo fl718-photo--polaroid" data-develop-delay="0">
+            <div class="fl718-photo__overlay"></div>
+            <div class="fl718-photo__image">
+              <img src="1.%20chapter%201/chapter1.jpg" alt="Bay Ridge, Brooklyn">
+            </div>
+            <div class="fl718-photo__caption">Bay Ridge, Brooklyn</div>
+          </div>
+
+          <div class="fl718-photo fl718-photo--polaroid" data-develop-delay="1000">
+            <div class="fl718-photo__overlay"></div>
+            <div class="fl718-photo__image">
+              <img src="1.%20chapter%201/chapter2-me-2.jpg" alt="Flushing, Queens">
+            </div>
+            <div class="fl718-photo__caption">Flushing, Queens</div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Education Section -->
+      <section class="fl718-section">
+        <p class="fl718-paragraph fl718-paragraph--opening">
+          I canoed through public schools and emerged with degrees in English and History, then later in philosophy and public policy. I loved university and wanted to stay forever, but reality intervened.
+        </p>
+
+        <p class="fl718-paragraph fl718-paragraph--opening">
+          I worked at think tanks and universities, teaching myself to code, master statistics, and design research methods.
+        </p>
+      </section>
+
+    </div>
+
+  </div>
+
+  <!-- ============================================
+       CHAPTER 1→2 DIVIDER - HAND-DRAWN INK FLOURISH
+       ============================================ -->
+
+  <div class="fl718-ch-divider">
+    <svg class="fl718-ch-divider__mark" id="dividerMark"
+         viewBox="0 0 160 40" xmlns="http://www.w3.org/2000/svg">
+      <path class="fl718-ch-divider__stroke"
+            d="M 10,22 Q 20,16 32,18 Q 44,20 55,16 Q 64,13 72,18"/>
+      <path class="fl718-ch-divider__stroke"
+            d="M 88,18 Q 96,13 105,16 Q 116,20 128,18 Q 140,16 150,22"/>
+      <circle class="fl718-ch-divider__dot" cx="80" cy="18" r="3"/>
+    </svg>
+  </div>
+
+  <!-- ============================================
+       CHAPTER 2: THE BUILDER (NOOK NOOK MATS)
+       ============================================ -->
+
+  <!-- Chapter Transition -->
+  <div class="fl718-chapter-transition" id="transitionSection">
+
+    <!-- LEFT: Textile Pattern -->
+    <div class="fl718-textile-pattern" id="textilePattern">
+      <svg viewBox="0 0 180 200" xmlns="http://www.w3.org/2000/svg">
+        <path d="M 15,20 Q 10,35 15,50 Q 20,65 15,80 Q 10,95 15,110 Q 20,125 15,140" stroke="#c8a882" stroke-width="8" fill="none" stroke-linecap="round"/>
+        <path d="M 35,10 Q 30,25 35,40 Q 40,55 35,70 Q 30,85 35,100 Q 40,115 35,130 Q 30,145 35,160" stroke="#c8a882" stroke-width="8" fill="none" stroke-linecap="round"/>
+        <path d="M 55,30 Q 50,45 55,60 Q 60,75 55,90 Q 50,105 55,120" stroke="#c8a882" stroke-width="8" fill="none" stroke-linecap="round"/>
+        <path d="M 75,5 Q 70,20 75,35 Q 80,50 75,65 Q 70,80 75,95 Q 80,110 75,125 Q 70,140 75,155 Q 80,170 75,185" stroke="#c8a882" stroke-width="8" fill="none" stroke-linecap="round"/>
+        <path d="M 95,25 Q 90,40 95,55 Q 100,70 95,85 Q 90,100 95,115 Q 100,130 95,145" stroke="#c8a882" stroke-width="8" fill="none" stroke-linecap="round"/>
+        <path d="M 115,15 Q 110,30 115,45 Q 120,60 115,75 Q 110,90 115,105 Q 120,120 115,135 Q 110,150 115,165" stroke="#c8a882" stroke-width="8" fill="none" stroke-linecap="round"/>
+        <path d="M 135,35 Q 130,50 135,65 Q 140,80 135,95 Q 130,110 135,125 Q 140,140 135,155" stroke="#c8a882" stroke-width="8" fill="none" stroke-linecap="round"/>
+        <path d="M 155,10 Q 150,25 155,40 Q 160,55 155,70 Q 150,85 155,100 Q 160,115 155,130" stroke="#c8a882" stroke-width="8" fill="none" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <!-- CENTER: Brand Logo -->
+    <div class="fl718-brand-logo" id="brandLogo">
+      <div class="fl718-brand-logo__main">
+        <span class="fl718-brand-logo__nook" id="nook1"></span>
+        <div class="fl718-brand-logo__dot" id="dot"></div>
+        <span class="fl718-brand-logo__nook" id="nook2"></span>
+      </div>
+      <span class="fl718-brand-logo__mats" id="mats"></span>
+    </div>
+
+    <!-- RIGHT: Organic Shape -->
+    <div class="fl718-organic-shape" id="organicShape">
+      <svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+        <path d="M 110,20 Q 150,25 170,50 Q 195,80 190,110 Q 185,145 160,170 Q 130,195 95,185 Q 60,175 40,150 Q 20,120 30,85 Q 40,50 75,30 Q 90,20 110,20 Z" fill="#d4664a" opacity="0.85"/>
+      </svg>
+    </div>
+
+  </div>
+
+  <!-- Chapter 2 Content -->
+  <div class="fl718-chapter2">
+
+    <div class="fl718-chapter__title">
+      <div class="fl718-chapter__number" id="chapterNumber2"></div>
+      <div class="fl718-chapter__title-line"></div>
+    </div>
+
+    <div class="fl718-content">
+
+      <section class="fl718-section">
+        <p class="fl718-paragraph fl718-paragraph--opening">
+          While working full-time as a researcher, I founded a sustainable home goods brand. Inspired by Indian coconut coir mats, I designed eco-friendly doormats made by local artisans in Kochi, India. I sought suppliers who paid higher wages, manufactured by hand loom, and limited environmental impact.
+        </p>
+
+        <!-- Product Photos -->
+        <div class="fl718-photo-grid" id="productPhotos">
+          <div class="fl718-photo">
+            <div class="fl718-photo__image">
+              <img src="2.%20chapter%202/nook-nook-1.png" alt="Nook Nook Mats Brand">
+            </div>
+            <div class="fl718-photo__caption">Sustainable • Handmade • Humane</div>
+          </div>
+
+          <div class="fl718-photo">
+            <div class="fl718-photo__image">
+              <img src="2.%20chapter%202/nook-nook-3.jpg" alt="Tree Design Coir Mat">
+            </div>
+            <div class="fl718-photo__caption">Hand-woven Tree Design</div>
+          </div>
+
+          <div class="fl718-photo">
+            <div class="fl718-photo__image">
+              <img src="2.%20chapter%202/nook-nook-2.jpg" alt="Handmade in India">
+            </div>
+            <div class="fl718-photo__caption">From The Earth To Your Home</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="fl718-section">
+        <p class="fl718-paragraph fl718-paragraph--momentum">
+          I learned logistics, accounting, marketing, and management and just kept going.
+        </p>
+
+        <!-- Scrapbook Cluster - Builder Artifacts -->
+        <div class="fl718-scrapbook-cluster" id="scrapbookCluster2">
+          <!-- Vintage Cochin Postcards -->
+          <div class="fl718-artifact fl718-artifact--postcards">
+            <img src="2.%20chapter%202/chapter2-scrap1.png" alt="Greetings from Cochin - Vintage Postcards" class="fl718-artifact__image">
+          </div>
+
+          <!-- Shipping & Freight Documents -->
+          <div class="fl718-artifact fl718-artifact--shipping-docs">
+            <img src="2.%20chapter%202/NookNook-scrap2.png" alt="Shipping Documents - Kochi to New York" class="fl718-artifact__image">
+          </div>
+
+          <!-- Coir Mat Product -->
+          <div class="fl718-artifact fl718-artifact--mat-product">
+            <img src="2.%20chapter%202/chapter2-scrap3.jpg" alt="Handwoven Coir Doormat" class="fl718-artifact__image">
+          </div>
+
+          <!-- Business Planning Notebooks -->
+          <div class="fl718-artifact fl718-artifact--business-notes">
+            <img src="2.%20chapter%202/chapter2-scrap4.png" alt="Business Planning and Strategy Notes" class="fl718-artifact__image">
+          </div>
+        </div>
+      </section>
+
+      <!-- ARTISAN SECTION - HONORED -->
+      <section class="fl718-artisan-section">
+        <div class="fl718-artisan-title">Hand-Woven in Kochi, India</div>
+
+        <div class="fl718-artisan-grid">
+          <div class="fl718-artisan-photo">
+            <img src="2.%20chapter%202/nook-nook4.jpg" alt="Product Benefits - Natural & Sustainable" class="fl718-artisan-photo__image">
+          </div>
+
+          <div class="fl718-artisan-photo">
+            <img src="2.%20chapter%202/Nook-Nook5.JPG" alt="Artisan Preparing Coconut Coir Fiber" class="fl718-artisan-photo__image">
+          </div>
+
+          <div class="fl718-artisan-photo">
+            <img src="2.%20chapter%202/Nook-Nook6.JPG" alt="Hand Loom Weaving in Kochi" class="fl718-artisan-photo__image">
+          </div>
+        </div>
+      </section>
+
+      <section class="fl718-section">
+        <div class="fl718-highlight">
+          The experience changed how I saw the world.
+        </div>
+
+        <p class="fl718-ending">
+          That project ended in 2023.
+        </p>
+      </section>
+
+    </div>
+
+  </div>
+
+  <!-- ============================================
+       CHAPTER 3: THE HINGE (2015 PERU)
+       ============================================ -->
+
+  <!-- Threshold Section -->
+  <div class="fl718-threshold" id="threshold">
+    <div class="fl718-threshold__bg-overlay"></div>
+    <div class="fl718-threshold__content">
+      <div class="fl718-threshold__sentence" id="typewriter-sentence"></div>
+    </div>
+  </div>
+
+  <!-- Chapter 3 Content -->
+  <div class="fl718-chapter3">
+
+    <div class="fl718-content">
+
+      <div class="fl718-chapter__number" id="chapterNumber3"></div>
+
+      <section class="fl718-section">
+        <p class="fl718-paragraph fl718-paragraph--opening">
+          That inexpensive, basic camera survived seven years of travel—through dust, rain, and my habit of using plastic bodega bags as protection.
+        </p>
+      </section>
+
+      <!-- PERU ARTIFACTS - SCRAPBOOK SECTION -->
+      <section class="fl718-scrapbook-cluster" id="scrapbookCluster3">
+
+        <!-- 1. Camera Product Shot (Upper Left) -->
+        <div class="fl718-artifact fl718-artifact--camera" style="--rotation: -3deg;">
+          <img src="3.%20chapter%203/chapter3-scrap1.png" alt="Nikon D3300 Camera">
+        </div>
+
+        <!-- 2. Camera in Bodega Bag - THE ICONIC IMAGE (Upper Right) -->
+        <div class="fl718-artifact fl718-artifact--bodegabag" style="--rotation: 2.5deg;">
+          <img src="3.%20chapter%203/chapter3scrap-6.png" alt="Camera protected in bodega bag">
+        </div>
+
+        <!-- 3. Vintage Letters & Postcards (Middle Left) -->
+        <div class="fl718-artifact fl718-artifact--letters" style="--rotation: -1.5deg;">
+          <img src="3.%20chapter%203/chapter3-scrap3.png" alt="Vintage letters and postcards">
+        </div>
+
+        <!-- 4. Peruvian Currency - 10 Soles (Middle Right) -->
+        <div class="fl718-artifact fl718-artifact--currency" style="--rotation: 4deg;">
+          <img src="3.%20chapter%203/chapter3-scrap2.png" alt="Peruvian 10 Soles note">
+        </div>
+
+        <!-- 5. Travel Journal - Illustrated Sketchbook (Lower Middle) -->
+        <div class="fl718-artifact fl718-artifact--journal" style="--rotation: -2deg;">
+          <img src="3.%20chapter%203/chapter3-scrap5.png" alt="Illustrated travel journal">
+        </div>
+
+        <!-- 6. Boarding Passes - Travel Documentation (Bottom Right) -->
+        <div class="fl718-artifact fl718-artifact--boardingpass" style="--rotation: 1.5deg;">
+          <img src="3.%20chapter%203/chapter3-scrap4.png" alt="International boarding passes">
+        </div>
+
+      </section>
+
+      <section class="fl718-section">
+        <p class="fl718-paragraph">
+          I learned photography by taking thousands of terrible photos, pestering better photographers with questions, and watching them edit.
+        </p>
+
+        <!-- Blur to Focus Transformation -->
+        <div class="fl718-transform-container" id="transform-text">
+          <div>From auto to <span class="fl718-transform-word" data-order="1">manual</span>,</div>
+          <div>from clueless to <span class="fl718-transform-word" data-order="2">certain</span>,</div>
+          <div>my aesthetic emerged.</div>
+        </div>
+      </section>
+
+      <section class="fl718-section">
+        <p class="fl718-paragraph" style="font-size: 32px; line-height: 1.5; font-style: italic; margin: 140px auto; text-align: center;">
+          Walking, paying attention, shooting—this is how I learned to see the frames of life.
+        </p>
+      </section>
+
+    </div>
+
+  </div>
+
+  <!-- ============================================
+       CHAPTER 3→4 TRANSITION: FILM PERFORATION BAR
+       ============================================ -->
+
+  <div class="fl718-transition-perforation">
+    <!-- Left side perforations -->
+    <div class="fl718-perforation-left">
+      <div class="fl718-perf-row">
+        <div class="fl718-perforation-hole"></div>
+        <div class="fl718-perforation-hole"></div>
+      </div>
+      <div class="fl718-perf-row">
+        <div class="fl718-perforation-hole"></div>
+        <div class="fl718-perforation-hole"></div>
+      </div>
+      <div class="fl718-perf-row">
+        <div class="fl718-perforation-hole"></div>
+        <div class="fl718-perforation-hole"></div>
+      </div>
+    </div>
+
+    <!-- Right side perforations -->
+    <div class="fl718-perforation-right">
+      <div class="fl718-perf-row">
+        <div class="fl718-perforation-hole"></div>
+        <div class="fl718-perforation-hole"></div>
+      </div>
+      <div class="fl718-perf-row">
+        <div class="fl718-perforation-hole"></div>
+        <div class="fl718-perforation-hole"></div>
+      </div>
+      <div class="fl718-perf-row">
+        <div class="fl718-perforation-hole"></div>
+        <div class="fl718-perforation-hole"></div>
+      </div>
+    </div>
+
+    <!-- Film edge code -->
+    <div class="fl718-transition-film-code">Fujifilm Superia X-tra 400</div>
+  </div>
+
+  <!-- ============================================
+       CHAPTER 4: MEXICO CITY & FILM
+       ============================================ -->
+
+  <div class="fl718-chapter4">
+
+    <div class="fl718-chapter__number" id="chapterNumber4"></div>
+
+    <section class="fl718-opening">
+      <div class="fl718-opening__text">
+        Later, living in Mexico City, I fell in love with 35mm film photography.
+      </div>
+      <div class="fl718-opening__subtitle">
+        That city's light, shadow, and color were made for analog capture.
+      </div>
+    </section>
+
+    <!-- Light & Shadow Gallery -->
+    <section class="fl718-light-shadow" id="light-shadow">
+      <div class="fl718-light-side">
+        <div class="fl718-gallery-photo fl718-light-photo">
+          <img src="4.%20chapter%204/chapter5-colo1.jpg" alt="Mexico City color film photography">
+        </div>
+        <div class="fl718-photo-caption fl718-light-caption">Fuji 400</div>
+      </div>
+
+      <div class="fl718-shadow-side">
+        <div class="fl718-gallery-photo fl718-shadow-photo">
+          <img src="4.%20chapter%204/chapter5-bnw1.jpg" alt="Mexico City black and white film photography">
+        </div>
+        <div class="fl718-photo-caption fl718-shadow-caption">Kodak Tri-X 400</div>
+      </div>
+    </section>
+
+    <!-- Thesis Statement -->
+    <section class="fl718-thesis-section" id="thesis-section">
+      <div class="fl718-thesis-container" id="thesis-container">
+        <div class="fl718-thesis-text" id="thesis-text">
+          <div class="fl718-thesis-line">Film demands intention;</div>
+          <div class="fl718-thesis-line">every frame costs something.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Film Strip Gallery -->
+    <section class="fl718-film-section">
+      <div class="fl718-film-wrapper">
+        <div class="fl718-film-strip-horizontal" id="film-strip">
+
+          <div class="fl718-film-stock-info">KODAK PORTRA 400 • 35mm</div>
+
+          <div class="fl718-film-edge-code fl718-film-edge-code--left">KODAK PORTRA 400</div>
+          <div class="fl718-film-edge-code fl718-film-edge-code--right">MEXICO CITY 2016</div>
+
+          <!-- Frames -->
+          <div class="fl718-film-frame">
+            <div class="fl718-film-frame__image">
+              <img src="4.%20chapter%204/chapter5-filmstrip1.jpg" alt="Mexico City street photography">
+            </div>
+            <div class="fl718-film-frame__number">1A</div>
+          </div>
+
+          <div class="fl718-film-frame">
+            <div class="fl718-film-frame__image">
+              <img src="4.%20chapter%204/chapter5-filmstrip2.jpg" alt="Mexico City street photography">
+            </div>
+            <div class="fl718-film-frame__number">2</div>
+          </div>
+
+          <div class="fl718-film-frame">
+            <div class="fl718-film-frame__image">
+              <img src="4.%20chapter%204/chapter5-filmstrip3.jpg" alt="Mexico City street photography">
+            </div>
+            <div class="fl718-film-frame__number">3A</div>
+          </div>
+
+          <div class="fl718-film-frame">
+            <div class="fl718-film-frame__image">
+              <img src="4.%20chapter%204/chapter5-filmstrip4.jpg" alt="Mexico City street photography">
+            </div>
+            <div class="fl718-film-frame__number">4</div>
+          </div>
+
+          <div class="fl718-film-frame">
+            <div class="fl718-film-frame__image">
+              <img src="4.%20chapter%204/chapter5-filmstrip5.jpg" alt="Mexico City street photography">
+            </div>
+            <div class="fl718-film-frame__number">5A</div>
+          </div>
+
+          <div class="fl718-film-frame">
+            <div class="fl718-film-frame__image">
+              <img src="4.%20chapter%204/chapter5-filmstrip6.jpg" alt="Mexico City street photography">
+            </div>
+            <div class="fl718-film-frame__number">6</div>
+          </div>
+
+          <div class="fl718-film-frame">
+            <div class="fl718-film-frame__image">
+              <img src="4.%20chapter%204/chapter5-filmstrip7.jpg" alt="Mexico City street photography">
+            </div>
+            <div class="fl718-film-frame__number">7A</div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Closing -->
+    <section class="fl718-closing">
+      <p class="fl718-closing__text">
+        A craftsperson with an old camera and minimal editing can still make timeless photographs.
+      </p>
+    </section>
+
+  </div>
+
+  <!-- ============================================
+       CHAPTER 5: FLÂNEUR 718 - THE ARRIVAL
+       ============================================ -->
+
+  <div class="fl718-chapter5">
+
+    <section class="fl718-opening">
+      <div class="fl718-chapter__number" id="chapterNumber5"></div>
+      <h1 class="fl718-chapter__title">Flâneur 718</h1>
+    </section>
+
+    <section class="fl718-statement">
+      <div class="fl718-statement__text" id="statement-text">
+        Now I document the human condition through street photography throughout this earth.
+      </div>
+    </section>
+
+    <section style="padding: 240px 60px; background: #ffffff;">
+      <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 100px;">
+
+        <div id="practice-left" style="opacity: 0; transform: translateY(20px);">
+          <p class="fl718-paragraph">
+            I shoot both digital and analog, color and black-and-white, capturing daily repetitions, light and shadow, reflections and dualities.
+          </p>
+
+          <p class="fl718-paragraph">
+            I also photograph architecture, abstractions, fine art, conceptual, and landscape work.
+          </p>
+        </div>
+
+        <div id="practice-right" style="opacity: 0; transform: translateY(20px);">
+          <p class="fl718-paragraph">
+            I write photo essays, city essays, and travel observations.
+          </p>
+
+          <p class="fl718-paragraph">
+            I write about philosophy, psychology, history, and architecture.
+          </p>
+
+          <p class="fl718-paragraph">
+            I write criticism and musings on the odd habits witnessed during wandering.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="fl718-closing">
+      <p class="fl718-closing__text" id="closing-text">
+        This website archives my life's photographic work and writing. I add new work regularly.
+      </p>
+    </section>
+
+  </div>
+
+  <!-- ============================================
+       JAVASCRIPT - ANIMATIONS & INTERACTIONS
+       ============================================ -->
+
+  <script>
+    // Register GSAP ScrollTrigger
+    gsap.registerPlugin(ScrollTrigger);
+
+    // ============================================
+    // HERO SECTION - AUTO-TRIGGER ON LOAD
+    // ============================================
+
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.querySelector('.fl718-opening').classList.add('animate');
+      }, 300);
+    });
+
+    // ============================================
+    // TYPEWRITER EFFECT UTILITY
+    // ============================================
+
+    function typewriterEffect(element, text, speed = 80) {
+      let index = 0;
+      element.classList.add('typing');
+
+      function type() {
+        if (index < text.length) {
+          element.textContent += text.charAt(index);
+          index++;
+          const variableSpeed = speed + (Math.random() * 40 - 20);
+          setTimeout(type, variableSpeed);
+        } else {
+          setTimeout(() => {
+            element.classList.remove('typing');
+            element.classList.add('typed');
+          }, 500);
+        }
+      }
+
+      type();
+    }
+
+    // ============================================
+    // CHAPTER 1 - ANIMATIONS
+    // ============================================
+
+    // Chapter number typewriter - fires when the opening sentence comes into view
+    const chapter1Observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = document.getElementById('chapterNumber1');
+          if (el && el.textContent === '') {
+            typewriterEffect(el, 'CHAPTER 1', 90);
+          }
+          chapter1Observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const openingParagraph = document.getElementById('chapter1-opening-paragraph');
+      if (openingParagraph) chapter1Observer.observe(openingParagraph);
+    });
+
+    // Scrapbook animation - organic hand-placement feel
+    // Each artifact is carried in from off-screen and deliberately placed,
+    // as if someone is composing a scrapbook page in real time
+
+    function animateScrapbook() {
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (prefersReducedMotion) {
+        document.querySelectorAll('.fl718-scrapbook-cluster .fl718-artifact')
+          .forEach(a => a.classList.add('fl718-artifact--visible'));
+        return;
+      }
+
+      // Placement order builds the composition naturally:
+      // anchor pieces first, fill the middle, pride piece last
+      const choreography = [
+        {
+          el: '.fl718-artifact--library',
+          entry: { x: -300, y: -100, rot: 22 },    // carried in from upper-left
+          start: 0,
+        },
+        {
+          el: '.fl718-artifact--pizza',
+          entry: { x: 280, y: -130, rot: -18 },     // carried in from upper-right
+          start: 0.7,
+        },
+        {
+          el: '.fl718-artifact--metrocard',
+          entry: { x: -260, y: -60, rot: 14 },      // carried in from left
+          start: 1.3,
+        },
+        {
+          el: '.fl718-artifact--drinks',
+          entry: { x: 320, y: -80, rot: -12 },      // carried in from right
+          start: 1.85,
+        },
+        {
+          el: '.fl718-artifact--spraypaint',
+          entry: { x: -240, y: 120, rot: -20 },     // carried in from lower-left
+          start: 2.5,
+        },
+        {
+          el: '.fl718-artifact--notes',
+          entry: { x: 300, y: -50, rot: 10 },       // carried in from right
+          start: 3.05,
+        },
+        {
+          el: '.fl718-artifact--books',
+          entry: { x: 0, y: 180, rot: -8 },         // carried in from below (final piece)
+          start: 3.7,
+        },
+      ];
+
+      choreography.forEach(item => {
+        const artifact = document.querySelector(item.el);
+        if (!artifact) return;
+
+        const isBooks = item.el.includes('books');
+        const rotStr = getComputedStyle(artifact).getPropertyValue('--rotation').trim() || '-2deg';
+        const finalRot = parseFloat(rotStr) || -2;
+
+        const tl = gsap.timeline({ delay: item.start });
+
+        // Initial state: off-screen, invisible, diffuse shadow (high above surface)
+        const init = {
+          opacity: 0,
+          x: item.entry.x,
+          y: item.entry.y,
+          rotation: item.entry.rot,
+          scale: 1.06,
+          boxShadow: '0 40px 80px rgba(0, 0, 0, 0.08)',
+        };
+        if (isBooks) init.xPercent = -50;
+        gsap.set(artifact, init);
+
+        // Phase 1: Fade in as carry begins
+        tl.to(artifact, { opacity: 1, duration: 0.15, ease: 'power1.in' });
+
+        // Phase 2: Carry to hover position (above final spot)
+        // Fast sweep in, gentle deceleration — like a hand gliding over the page
+        const carryVars = {
+          x: 0,
+          y: -22,
+          rotation: finalRot + (item.entry.rot > 0 ? 4 : -4),
+          scale: 1.04,
+          boxShadow: '0 25px 50px rgba(0, 0, 0, 0.22)',
+          duration: 0.55,
+          ease: 'power3.out',
+        };
+        if (isBooks) carryVars.xPercent = -50;
+        tl.to(artifact, carryVars, '<0.05');
+
+        // Phase 3: Place down — press gently into the surface
+        tl.to(artifact, {
+          y: 5,
+          rotation: finalRot - 0.4,
+          scale: 0.993,
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.22)',
+          duration: 0.28,
+          ease: 'power2.in',
+        });
+
+        // Phase 4: Settle — micro-lift to final resting position
+        tl.to(artifact, {
+          y: 0,
+          rotation: finalRot,
+          scale: 1,
+          boxShadow: '0 8px 24px rgba(0, 0, 0, 0.18)',
+          duration: 0.22,
+          ease: 'power2.out',
+          onComplete: () => artifact.classList.add('fl718-artifact--visible'),
+        });
+      });
+
+      // Post-placement nudges — person goes back to adjust a couple items
+      // This sells the "real person composing" feel
+      gsap.delayedCall(4.6, () => {
+        const mc = document.querySelector('.fl718-artifact--metrocard');
+        if (mc) gsap.to(mc, { x: '+=4', y: '-=2', rotation: '+=0.8', duration: 0.28, ease: 'power1.inOut' });
+      });
+      gsap.delayedCall(5.0, () => {
+        const lib = document.querySelector('.fl718-artifact--library');
+        if (lib) gsap.to(lib, { x: '-=3', rotation: '-=0.5', duration: 0.22, ease: 'power1.inOut' });
+      });
+    }
+
+    // Scrapbook hover — bottom edge lifts like picking up a card from a table
+    document.querySelectorAll('.fl718-scrapbook-cluster .fl718-artifact').forEach(artifact => {
+      artifact.addEventListener('mouseenter', () => {
+        if (!artifact.classList.contains('fl718-artifact--visible')) return;
+        artifact.style.zIndex = '100';
+        gsap.to(artifact, {
+          rotateX: 5,
+          y: -3,
+          scale: 1.015,
+          boxShadow: '0 18px 36px rgba(0, 0, 0, 0.22)',
+          duration: 0.35,
+          ease: 'power2.out',
+          overwrite: 'auto',
+          transformOrigin: 'center top',
+        });
+      });
+
+      artifact.addEventListener('mouseleave', () => {
+        if (!artifact.classList.contains('fl718-artifact--visible')) return;
+        const originalZ = artifact.style.zIndex;
+        gsap.to(artifact, {
+          rotateX: 0,
+          y: 0,
+          scale: 1,
+          boxShadow: '0 8px 24px rgba(0, 0, 0, 0.18)',
+          duration: 0.5,
+          ease: 'power2.out',
+          overwrite: 'auto',
+          onComplete: () => { artifact.style.zIndex = ''; },
+        });
+      });
+    });
+
+    // Scrapbook observer - triggers when user has read 85% of the opening paragraph
+    let scrapbookTriggered = false;
+
+    function checkScrapbookTrigger() {
+      if (scrapbookTriggered) return;
+
+      const paragraph = document.getElementById('chapter1-opening-paragraph');
+      if (!paragraph) return;
+
+      const paragraphRect = paragraph.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
+      const paragraphHeight = paragraphRect.height;
+
+      // Calculate reading progress: when has 85% of the paragraph scrolled above the viewport center?
+      const paragraphTop = paragraphRect.top;
+      const paragraphBottom = paragraphRect.bottom;
+
+      // If the paragraph's 85% mark has reached the middle of the viewport
+      const readThreshold = paragraphTop + (paragraphHeight * 0.85);
+      const viewportMiddle = viewportHeight * 0.5;
+
+      if (readThreshold <= viewportMiddle && paragraphTop < viewportHeight) {
+        animateScrapbook();
+        scrapbookTriggered = true;
+        window.removeEventListener('scroll', checkScrapbookTrigger);
+      }
+    }
+
+    // Use scroll listener for more precise control
+    document.addEventListener('DOMContentLoaded', () => {
+      const openingParagraph = document.getElementById('chapter1-opening-paragraph');
+      if (openingParagraph) {
+        window.addEventListener('scroll', checkScrapbookTrigger);
+        checkScrapbookTrigger(); // Check on load in case already scrolled
+      }
+    });
+
+    // Polaroid development - triggers IMMEDIATELY when top edge comes into view
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const polaroidObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const polaroid = entry.target;
+
+          if (prefersReducedMotion) {
+            polaroid.classList.add('fl718-photo--developing');
+            const overlay = polaroid.querySelector('.fl718-photo__overlay');
+            if (overlay) overlay.style.opacity = '0';
+            const image = polaroid.querySelector('.fl718-photo__image');
+            if (image) image.style.filter = 'none';
+          } else {
+            // Reduced delay - second photo starts just 400ms after first for overlap effect
+            const delay = parseInt(polaroid.dataset.developDelay) || 0;
+            const reducedDelay = delay > 0 ? 400 : 0;
+            setTimeout(() => polaroid.classList.add('fl718-photo--developing'), reducedDelay);
+          }
+
+          polaroidObserver.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0,  // Trigger as soon as ANY part is visible
+      rootMargin: '100px 0px 0px 0px'  // Trigger 100px BEFORE top edge enters viewport
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const polaroids = document.querySelectorAll('.fl718-photo--polaroid');
+      polaroids.forEach(polaroid => polaroidObserver.observe(polaroid));
+    });
+
+    // ============================================
+    // CHAPTER 1→2 DIVIDER - DRAW-IN ANIMATION
+    // ============================================
+
+    const dividerObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('fl718-visible');
+          dividerObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const dividerMark = document.getElementById('dividerMark');
+      if (dividerMark) dividerObserver.observe(dividerMark);
+    });
+
+    // ============================================
+    // CHAPTER 2 - ANIMATIONS
+    // ============================================
+
+    // Chapter number
+    const chapter2Observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = document.getElementById('chapterNumber2');
+          if (el && el.textContent === '') {
+            setTimeout(() => typewriterEffect(el, 'CHAPTER 2', 90), 300);
+          }
+          chapter2Observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const ch2 = document.querySelector('.fl718-chapter2');
+      if (ch2) chapter2Observer.observe(ch2);
+    });
+
+    // Transition animation
+    function animateText(element, text, delay, charDelay = 150) {
+      element.innerHTML = '';
+      text.split('').forEach((char, index) => {
+        const span = document.createElement('span');
+        span.textContent = char;
+        element.appendChild(span);
+        setTimeout(() => {
+          span.style.opacity = '1';
+          span.style.transform = 'translateY(0)';
+          span.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        }, delay + (index * charDelay));
+      });
+    }
+
+    let hasAnimatedTransition = false;
+
+    function triggerTransitionAnimation() {
+      if (hasAnimatedTransition) return;
+
+      const textile = document.getElementById('textilePattern');
+      const nook1 = document.getElementById('nook1');
+      const dot = document.getElementById('dot');
+      const nook2 = document.getElementById('nook2');
+      const mats = document.getElementById('mats');
+      const shape = document.getElementById('organicShape');
+
+      setTimeout(() => textile.classList.add('animate'), 300);
+      setTimeout(() => animateText(nook1, 'nook', 0, 150), 1000);
+      setTimeout(() => {
+        dot.style.opacity = '1';
+        dot.style.transform = 'scale(1.0)';
+        dot.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+      }, 1600);
+      setTimeout(() => animateText(nook2, 'nook', 0, 150), 1700);
+      setTimeout(() => {
+        mats.style.opacity = '1';
+        mats.style.transform = 'translateY(0)';
+        mats.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+      }, 2300);
+      setTimeout(() => shape.classList.add('animate'), 2500);
+
+      hasAnimatedTransition = true;
+    }
+
+    const transitionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) triggerTransitionAnimation();
+      });
+    }, { threshold: 0.5 });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const transition = document.getElementById('transitionSection');
+      if (transition) transitionObserver.observe(transition);
+    });
+
+    // Product Photos Presentation - Chapter 2
+    let hasAnimatedProductPhotos = false;
+
+    function presentProductPhotos() {
+      if (hasAnimatedProductPhotos) return;
+
+      const photos = document.querySelectorAll('#productPhotos .fl718-photo');
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (prefersReducedMotion) {
+        photos.forEach(photo => photo.classList.add('fl718-photo--presented'));
+        hasAnimatedProductPhotos = true;
+        return;
+      }
+
+      setTimeout(() => photos[0]?.classList.add('fl718-photo--presented'), 300);
+      setTimeout(() => photos[1]?.classList.add('fl718-photo--presented'), 800);
+      setTimeout(() => photos[2]?.classList.add('fl718-photo--presented'), 1300);
+
+      hasAnimatedProductPhotos = true;
+
+      setTimeout(() => {
+        photos.forEach(photo => photo.style.willChange = 'auto');
+      }, 2500);
+    }
+
+    const productPhotosObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          presentProductPhotos();
+          productPhotosObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const productPhotos = document.getElementById('productPhotos');
+      if (productPhotos) productPhotosObserver.observe(productPhotos);
+    });
+
+    // Scrapbook Artifacts - Chapter 2
+    // Hand-placed animation - each artifact carried in from off-screen
+    let hasAnimatedScrapbook2 = false;
+
+    function animateScrapbookArtifacts2() {
+      if (hasAnimatedScrapbook2) return;
+
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (prefersReducedMotion) {
+        document.querySelectorAll('#scrapbookCluster2 .fl718-artifact')
+          .forEach(a => a.classList.add('fl718-artifact--visible'));
+        hasAnimatedScrapbook2 = true;
+        return;
+      }
+
+      // Choreography - artifacts carried in naturally to build composition
+      const choreography = [
+        {
+          el: '.fl718-artifact--postcards',
+          entry: { x: -280, y: -90, rot: 18 },    // carried in from upper-left
+          start: 0.4,
+        },
+        {
+          el: '.fl718-artifact--shipping-docs',
+          entry: { x: 300, y: -70, rot: -15 },    // carried in from upper-right
+          start: 1.0,
+        },
+        {
+          el: '.fl718-artifact--mat-product',
+          entry: { x: -260, y: 100, rot: -22 },   // carried in from lower-left
+          start: 1.6,
+        },
+        {
+          el: '.fl718-artifact--business-notes',
+          entry: { x: 280, y: -110, rot: 16 },    // carried in from upper-right
+          start: 2.2,
+        },
+      ];
+
+      choreography.forEach(item => {
+        const artifact = document.querySelector(`#scrapbookCluster2 ${item.el}`);
+        if (!artifact) return;
+
+        const rotStr = getComputedStyle(artifact).getPropertyValue('--rotation').trim() || '-2deg';
+        const finalRot = parseFloat(rotStr) || -2;
+
+        const tl = gsap.timeline({ delay: item.start });
+
+        // Initial state: off-screen, invisible, diffuse shadow (high above surface)
+        gsap.set(artifact, {
+          opacity: 0,
+          x: item.entry.x,
+          y: item.entry.y,
+          rotation: item.entry.rot,
+          scale: 1.06,
+          boxShadow: '0 40px 80px rgba(0, 0, 0, 0.08)',
+        });
+
+        // Phase 1: Fade in as carry begins
+        tl.to(artifact, { opacity: 1, duration: 0.15, ease: 'power1.in' });
+
+        // Phase 2: Carry to hover position (above final spot)
+        // Fast sweep in, gentle deceleration — like a hand gliding over the page
+        tl.to(artifact, {
+          x: 0,
+          y: -22,
+          rotation: finalRot + (item.entry.rot > 0 ? 4 : -4),
+          scale: 1.04,
+          boxShadow: '0 25px 50px rgba(0, 0, 0, 0.22)',
+          duration: 0.55,
+          ease: 'power3.out',
+        }, '<0.05');
+
+        // Phase 3: Place down — press gently into the surface
+        tl.to(artifact, {
+          y: 5,
+          rotation: finalRot - 0.4,
+          scale: 0.993,
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.22)',
+          duration: 0.28,
+          ease: 'power2.in',
+        });
+
+        // Phase 4: Settle — micro-lift to final resting position
+        tl.to(artifact, {
+          y: 0,
+          rotation: finalRot,
+          scale: 1,
+          boxShadow: '0 8px 24px rgba(0, 0, 0, 0.18)',
+          duration: 0.22,
+          ease: 'power2.out',
+          onComplete: () => artifact.classList.add('fl718-artifact--visible'),
+        });
+      });
+
+      // Post-placement nudges — person goes back to adjust items (realistic touch)
+      gsap.delayedCall(3.8, () => {
+        const postcards = document.querySelector('#scrapbookCluster2 .fl718-artifact--postcards');
+        if (postcards) gsap.to(postcards, { x: '+=5', y: '-=3', rotation: '+=0.6', duration: 0.28, ease: 'power1.inOut' });
+      });
+      gsap.delayedCall(4.2, () => {
+        const mat = document.querySelector('#scrapbookCluster2 .fl718-artifact--mat-product');
+        if (mat) gsap.to(mat, { x: '-=4', rotation: '-=0.7', duration: 0.22, ease: 'power1.inOut' });
+      });
+
+      hasAnimatedScrapbook2 = true;
+    }
+
+    // Scrapbook hover effect - Chapter 2 artifacts lift like picking up a card
+    document.querySelectorAll('#scrapbookCluster2 .fl718-artifact').forEach(artifact => {
+      artifact.addEventListener('mouseenter', () => {
+        if (!artifact.classList.contains('fl718-artifact--visible')) return;
+        artifact.style.zIndex = '100';
+        gsap.to(artifact, {
+          rotateX: 5,
+          y: -3,
+          scale: 1.015,
+          boxShadow: '0 18px 36px rgba(0, 0, 0, 0.22)',
+          duration: 0.35,
+          ease: 'power2.out',
+          overwrite: 'auto',
+          transformOrigin: 'center top',
+        });
+      });
+
+      artifact.addEventListener('mouseleave', () => {
+        if (!artifact.classList.contains('fl718-artifact--visible')) return;
+        gsap.to(artifact, {
+          rotateX: 0,
+          y: 0,
+          scale: 1,
+          boxShadow: '0 8px 24px rgba(0, 0, 0, 0.18)',
+          duration: 0.5,
+          ease: 'power2.out',
+          overwrite: 'auto',
+        });
+        setTimeout(() => { artifact.style.zIndex = ''; }, 500);
+      });
+    });
+
+    const scrapbook2Observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateScrapbookArtifacts2();
+          scrapbook2Observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const scrapbook2 = document.getElementById('scrapbookCluster2');
+      if (scrapbook2) scrapbook2Observer.observe(scrapbook2);
+    });
+
+    // Artisan Photos Presentation - Chapter 2
+    let hasAnimatedArtisan = false;
+
+    function presentArtisanPhotos() {
+      if (hasAnimatedArtisan) return;
+
+      const artisanPhotos = document.querySelectorAll('.fl718-artisan-photo');
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (prefersReducedMotion) {
+        artisanPhotos.forEach(photo => photo.classList.add('fl718-artisan-photo--presented'));
+        hasAnimatedArtisan = true;
+        return;
+      }
+
+      setTimeout(() => artisanPhotos[0]?.classList.add('fl718-artisan-photo--presented'), 300);
+      setTimeout(() => artisanPhotos[1]?.classList.add('fl718-artisan-photo--presented'), 800);
+      setTimeout(() => artisanPhotos[2]?.classList.add('fl718-artisan-photo--presented'), 1300);
+
+      hasAnimatedArtisan = true;
+
+      setTimeout(() => {
+        artisanPhotos.forEach(photo => photo.style.willChange = 'auto');
+      }, 2500);
+    }
+
+    const artisanObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          presentArtisanPhotos();
+          artisanObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const artisanSection = document.querySelector('.fl718-artisan-section');
+      if (artisanSection) artisanObserver.observe(artisanSection);
+    });
+
+    // ============================================
+    // CHAPTER 3 - ANIMATIONS
+    // ============================================
+
+    // Chapter number
+    const chapter3Observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = document.getElementById('chapterNumber3');
+          if (el && el.textContent === '') {
+            setTimeout(() => typewriterEffect(el, 'CHAPTER 3', 90), 300);
+          }
+          chapter3Observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const ch3 = document.querySelector('.fl718-chapter3');
+      if (ch3) chapter3Observer.observe(ch3);
+    });
+
+    // Threshold typewriter
+    const typewriterSentence = document.getElementById('typewriter-sentence');
+    const fullText = "In 2015, I bought a Nikon D3300 before a trip to Peru.";
+    let typewriterTriggered = false;
+
+    async function typewriterEffect3() {
+      if (typewriterTriggered) return;
+      typewriterTriggered = true;
+
+      typewriterSentence.style.opacity = '1';
+
+      for (let i = 0; i < fullText.length; i++) {
+        typewriterSentence.textContent = fullText.substring(0, i + 1);
+
+        const cursor = document.createElement('span');
+        cursor.className = 'fl718-typewriter-cursor';
+        typewriterSentence.appendChild(cursor);
+
+        const speed = fullText[i] === ',' || fullText[i] === '.' ? 200 : 50 + Math.random() * 30;
+        await new Promise(resolve => setTimeout(resolve, speed));
+      }
+    }
+
+    const thresholdObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.intersectionRatio > 0.3) {
+          typewriterEffect3();
+        }
+      });
+    }, { threshold: [0, 0.3, 0.5, 1] });
+
+    thresholdObserver.observe(document.getElementById('threshold'));
+
+    // Color transition
+    gsap.to('.fl718-threshold__bg-overlay', {
+      opacity: 0.6,
+      scrollTrigger: {
+        trigger: '.fl718-threshold',
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: 1,
+      }
+    });
+
+    // Chapter 3: Scrapbook Choreography (Peru artifacts)
+    const scrapbook3Observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting || hasAnimatedScrapbook3) return;
+        hasAnimatedScrapbook3 = true;
+
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        if (prefersReducedMotion) {
+          document.querySelectorAll('#scrapbookCluster3 .fl718-artifact')
+            .forEach(a => a.classList.add('fl718-artifact--visible'));
+          return;
+        }
+
+        // Choreography - artifacts carried in from different directions
+        const choreography = [
+          {
+            el: '.fl718-artifact--camera',
+            entry: { x: -280, y: -90, rot: 20 },      // carried in from upper-left
+            start: 0,
+          },
+          {
+            el: '.fl718-artifact--bodegabag',
+            entry: { x: 300, y: -110, rot: -16 },     // carried in from upper-right (iconic image)
+            start: 0.6,
+          },
+          {
+            el: '.fl718-artifact--letters',
+            entry: { x: -260, y: 80, rot: -18 },      // carried in from left
+            start: 1.2,
+          },
+          {
+            el: '.fl718-artifact--currency',
+            entry: { x: 290, y: -70, rot: 15 },       // carried in from right
+            start: 1.8,
+          },
+          {
+            el: '.fl718-artifact--journal',
+            entry: { x: -240, y: 100, rot: -14 },     // carried in from lower-left
+            start: 2.4,
+          },
+          {
+            el: '.fl718-artifact--boardingpass',
+            entry: { x: 280, y: -90, rot: 12 },       // carried in from upper-right
+            start: 3.0,
+          },
+        ];
+
+        choreography.forEach(item => {
+          const artifact = document.querySelector(`#scrapbookCluster3 ${item.el}`);
+          if (!artifact) return;
+
+          const rotStr = getComputedStyle(artifact).getPropertyValue('--rotation').trim() || '-2deg';
+          const finalRot = parseFloat(rotStr) || -2;
+
+          const tl = gsap.timeline({ delay: item.start });
+
+          // Initial state: off-screen, invisible, diffuse shadow (high above surface)
+          gsap.set(artifact, {
+            opacity: 0,
+            x: item.entry.x,
+            y: item.entry.y,
+            rotation: item.entry.rot,
+            scale: 1.06,
+            boxShadow: '0 40px 80px rgba(0, 0, 0, 0.08)',
+          });
+
+          // Phase 1: Fade in as carry begins
+          tl.to(artifact, { opacity: 1, duration: 0.15, ease: 'power1.in' });
+
+          // Phase 2: Carry to hover position (above final spot)
+          tl.to(artifact, {
+            x: 0,
+            y: -22,
+            rotation: finalRot + (item.entry.rot > 0 ? 4 : -4),
+            scale: 1.04,
+            boxShadow: '0 25px 50px rgba(0, 0, 0, 0.22)',
+            duration: 0.55,
+            ease: 'power3.out',
+          }, '<0.05');
+
+          // Phase 3: Place down — press gently into the surface
+          tl.to(artifact, {
+            y: 5,
+            rotation: finalRot - 0.4,
+            scale: 0.993,
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.22)',
+            duration: 0.28,
+            ease: 'power2.in',
+          });
+
+          // Phase 4: Settle — final micro-adjustment
+          tl.to(artifact, {
+            y: 0,
+            rotation: finalRot,
+            scale: 1,
+            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.18)',
+            duration: 0.22,
+            ease: 'power1.out',
+            onComplete: () => {
+              artifact.classList.add('fl718-artifact--visible');
+            }
+          });
+        });
+      });
+    }, { threshold: 0.3 });
+
+    let hasAnimatedScrapbook3 = false;
+    const scrapbookCluster3 = document.getElementById('scrapbookCluster3');
+    if (scrapbookCluster3) {
+      scrapbook3Observer.observe(scrapbookCluster3);
+    }
+
+    // Blur to focus transformation
+    const transformWords = document.querySelectorAll('.fl718-transform-word');
+
+    transformWords.forEach((word) => {
+      const order = parseInt(word.dataset.order);
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: '#transform-text',
+          start: 'top 60%',
+          end: 'bottom 70%',
+          scrub: 1,
+        }
+      });
+
+      tl.to(word, {
+        filter: 'blur(0px)',
+        opacity: 1,
+        letterSpacing: '-0.02em',
+        color: '#1a1a1a',
+        fontWeight: 700,
+        duration: 0.5,
+        ease: 'power2.out',
+        delay: (order - 1) * 0.5
+      });
+    });
+
+    // ============================================
+    // CHAPTER 4 - ANIMATIONS
+    // ============================================
+
+    // Chapter number - with flag to prevent re-triggering
+    let chapter4Triggered = false;
+    const chapter4Observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !chapter4Triggered) {
+          chapter4Triggered = true;
+          const el = document.getElementById('chapterNumber4');
+          if (el) {
+            // Clear any existing content
+            el.textContent = '';
+            // Start typewriter immediately (no delay)
+            typewriterEffect(el, 'CHAPTER 4', 90);
+          }
+          chapter4Observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.1,  // Trigger when 10% visible
+      rootMargin: '0px 0px 150px 0px'  // Triggers 150px before entering viewport (sweet spot)
+    });
+
+    // Set up observer immediately (script is at end of body, so DOM is ready)
+    const ch4Element = document.querySelector('.fl718-chapter4');
+    if (ch4Element) {
+      chapter4Observer.observe(ch4Element);
+    } else {
+      console.warn('Chapter 4 element not found for observer');
+    }
+
+    // Light & Shadow Gallery - Photo fade-in
+    gsap.to('.fl718-light-photo', {
+      opacity: 1,
+      scale: 1,
+      duration: 1.2,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: '#light-shadow',
+        start: 'top 60%',
+        toggleActions: 'play none none reverse'
+      }
+    });
+
+    gsap.to('.fl718-shadow-photo', {
+      opacity: 1,
+      scale: 1,
+      duration: 1.2,
+      delay: 0.2,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: '#light-shadow',
+        start: 'top 60%',
+        toggleActions: 'play none none reverse'
+      }
+    });
+
+    // Photo captions fade-in
+    gsap.to('.fl718-light-caption, .fl718-shadow-caption', {
+      opacity: 1,
+      duration: 0.8,
+      delay: 0.6,
+      scrollTrigger: {
+        trigger: '#light-shadow',
+        start: 'top 60%',
+        toggleActions: 'play none none reverse'
+      }
+    });
+
+    // Parallax movement - light and shadow sides move in opposite directions
+    gsap.to('.fl718-light-side', {
+      y: -50,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '#light-shadow',
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: 1
+      }
+    });
+
+    gsap.to('.fl718-shadow-side', {
+      y: 50,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '#light-shadow',
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: 1
+      }
+    });
+
+    // Thesis development
+    gsap.to('#thesis-text', {
+      color: '#1a1a1a',
+      filter: 'brightness(1) contrast(1)',
+      scrollTrigger: {
+        trigger: '#thesis-section',
+        start: 'top 70%',
+        end: 'center 30%',
+        scrub: 0.5,
+        onEnter: () => {
+          const container = document.getElementById('thesis-container');
+          if (container) container.classList.add('developing');
+        },
+        onLeaveBack: () => {
+          const container = document.getElementById('thesis-container');
+          if (container) container.classList.remove('developing');
+        }
+      }
+    });
+
+    // Film strip horizontal scroll
+    document.addEventListener('DOMContentLoaded', () => {
+      const filmStrip = document.getElementById('film-strip');
+      if (filmStrip) {
+        const filmStripWidth = filmStrip.scrollWidth;
+        const viewportWidth = window.innerWidth;
+        const maxScroll = filmStripWidth - viewportWidth;
+
+        gsap.to('#film-strip', {
+          x: -maxScroll,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '.fl718-film-section',
+            start: 'top top',
+            end: '+=3000',
+            scrub: 1,
+            pin: true,
+            anticipatePin: 1,
+          }
+        });
+      }
+    });
+
+    // ============================================
+    // CHAPTER 5 - ANIMATIONS
+    // ============================================
+
+    // Chapter number
+    let hasTyped5 = false;
+
+    function triggerTypewriter5() {
+      if (hasTyped5) return;
+      const el = document.getElementById('chapterNumber5');
+      if (el && el.textContent === '') {
+        setTimeout(() => typewriterEffect(el, 'CHAPTER 5', 90), 300);
+      }
+      hasTyped5 = true;
+    }
+
+    const typewriter5Observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) triggerTypewriter5();
+      });
+    }, { threshold: 0.2 });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const opening5 = document.querySelector('.fl718-chapter5 .fl718-opening');
+      if (opening5) typewriter5Observer.observe(opening5);
+    });
+
+    // Statement fade in
+    gsap.to('#statement-text', {
+      opacity: 1,
+      scale: 1,
+      duration: 1.2,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: '.fl718-statement',
+        start: 'top 70%',
+        toggleActions: 'play none none reverse'
+      }
+    });
+
+    // Practice columns
+    gsap.to('#practice-left', {
+      opacity: 1,
+      y: 0,
+      duration: 1,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: '#practice-left',
+        start: 'top 70%',
+        toggleActions: 'play none none reverse'
+      }
+    });
+
+    gsap.to('#practice-right', {
+      opacity: 1,
+      y: 0,
+      duration: 1,
+      delay: 0.2,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: '#practice-right',
+        start: 'top 70%',
+        toggleActions: 'play none none reverse'
+      }
+    });
+
+    // Closing
+    gsap.to('#closing-text', {
+      opacity: 1,
+      duration: 1,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: '.fl718-closing',
+        start: 'top 70%',
+        toggleActions: 'play none none reverse'
+      }
+    });
+  </script>
+
+</body>
+</html>
+
+<!--
+============================================
+ASSET MANIFEST - REQUIRED IMAGES
+============================================
+
+HERO SECTION (0. Hero/):
+- placeholder1.jpg (motorcycle reflection)
+- placeholder2.jpg (street shooting)
+- placeholder3.JPG (Brooklyn stoop)
+- placeholder4.jpeg (burning dollar)
+
+CHAPTER 1 (1. chapter 1/):
+- chapter1-scrapbook-library-cards.png
+- chapter1-scrapbook-metrocards.png
+- chapter1-scrapbook-spraypaint-street.png
+- chapter1-scrapbook-quarter-drinks-street.png
+- chapter1-scrapbook-pizza-box.png
+- chapter1-scrapbook-research_notes.png
+- chapter1-scrapbook-books.png
+- chapter1.jpg (Bay Ridge portrait)
+- chapter2-me-2.jpg (Flushing portrait)
+
+CHAPTER 2 (2. chapter 2/):
+- chapter2-scrap1.png (Cochin postcards)
+- NookNook-scrap2.png (shipping docs)
+- chapter2-scrap3.jpg (coir mat product)
+- chapter2-scrap4.png (business notes)
+- nook-nook-1.png (brand logo)
+- nook-nook-2.jpg (mat design)
+- nook-nook-3.jpg (tree design mat)
+- nook-nook4.jpg (product benefits)
+- Nook-Nook5.JPG (artisan preparing fiber)
+- Nook-Nook6.JPG (hand loom weaving)
+
+CHAPTER 3 (3. chapter 3/):
+- chapter3-scrap1.png (Nikon D3300 camera)
+- chapter3scrap-6.png (camera in bodega bag)
+- chapter3-scrap3.png (vintage letters)
+- chapter3-scrap2.png (Peruvian currency)
+- chapter3-scrap5.png (travel journal)
+- chapter3-scrap4.png (boarding passes)
+- chapter3-myfoto1.jpg (child in pink)
+- chapter3-myfoto2.jpg (shattered windshield)
+- chapter3-myfoto3.jpg (B&W framed woman)
+- chapter3-myfoto5.jpg (woman at van)
+
+CHAPTER 4 (4. chapter 4/):
+- chapter5-colo1.jpg (Mexico City color)
+- chapter5-bnw1.jpg (Mexico City B&W)
+- chapter5-filmstrip1.jpg (Frame 1A)
+- chapter5-filmstrip2.jpg (Frame 2)
+- chapter5-filmstrip3.jpg (Frame 3A)
+- chapter5-filmstrip4.jpg (Frame 4)
+- chapter5-filmstrip5.jpg (Frame 5A)
+- chapter5-filmstrip6.jpg (Frame 6)
+- chapter5-filmstrip7.jpg (Frame 7A)
+
+CHAPTER 5 (5. chapter 5/):
+- Chapter5-foto1.jpg (Bad Habits neon)
+- Chapter5-foto2.jpg (street vendor)
+- Chapter5-foto3.jpg (burning dollar portrait)
+- Chapter5-foto4.jpg (carnival scene)
+- Chapter5-foto5.jpg (urban art)
+- Chapter5-foto6.jpg (self portrait with camera)
+
+TOTAL: 50+ image assets
+
+WORDPRESS UPLOAD INSTRUCTIONS:
+1. Upload all images to WordPress Media Library
+2. Organize in folders by chapter (optional but recommended)
+3. Replace image src paths in HTML with WordPress URLs
+4. Format: https://yourdomain.com/wp-content/uploads/YYYY/MM/filename.ext
+
+============================================
+END OF FILE
+============================================
+-->

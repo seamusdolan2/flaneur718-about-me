@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 3 - The Hinge (2015 Peru) | Flaneur 718</title>
+  
+  <!-- GSAP ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  
+  <style>
+    /*
+    ============================================
+    CHAPTER 3: THE HINGE - PERU 2015
+    ============================================
+    
+    NARRATIVE MOMENT:
+    - The threshold crossing from "before photography" to "after photography"
+    - Color explodes from muted grays/browns → vibrant Peru palette
+    - Typography becomes kinetic and playful (discovery/experimentation)
+    - Photos scattered dynamically (work-in-progress aesthetic)
+    
+    COLOR PALETTE:
+    ---------------
+    BACKGROUNDS:
+    - #fef3e2 → Warm cream (Peruvian limestone)
+    - #f4e4d7 → Sand/adobe
+    - #e8a87c → Warm amber (sunset over Andes)
+    - #d4664a → Terracotta (transition color)
+    
+    ACCENT COLORS:
+    - #c44536 → Deep red-orange (alpaca textiles)
+    - #f4c542 → Golden yellow (marigolds, sun)
+    - #5a7d9a → Sky blue (Cusco sky)
+    - #2d5a3d → Forest green (Sacred Valley)
+    - #8b4789 → Purple (Andean corn, textiles)
+    
+    TEXT:
+    - #1a1a1a → Primary text
+    - #2a2a2a → Body paragraphs
+    - #d4664a → Accent headers
+    
+    TYPOGRAPHY TRANSFORMATIONS:
+    ---------------------------
+    Blur to Sharp on: "manual", "clueless", "certain"
+    - Start: blur(3px), opacity 0.4, font-weight 400, letter-spacing 0.1em, color #999
+    - End: blur(0), opacity 1.0, font-weight 700, letter-spacing -0.02em, color #1a1a1a
+    
+    NO WORD SWAPPING - words stay constant, only visual transformation
+    */
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #fef3e2;
+      color: #1a1a1a;
+      overflow-x: hidden;
+      line-height: 1.7;
+    }
+    
+    /* ==================== CHAPTER TRANSITION FROM CH2 ==================== */
+    .fl718-transition {
+      position: relative;
+      width: 100%;
+      height: 400px;
+      background: linear-gradient(to bottom, 
+        #f0ebe5 0%, 
+        #fef3e2 100%);
+    }
+    
+    /* ==================== THRESHOLD SECTION ==================== */
+    /* This is the HINGE MOMENT - typewriter reveal */
+    .fl718-threshold {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 60px 120px;
+      overflow: hidden;
+      /* Start with Chapter 2 color, transition to terracotta */
+      background: linear-gradient(to bottom, 
+        #f0ebe5 0%,
+        #e8a87c 100%
+      );
+    }
+    
+    .fl718-threshold__content {
+      max-width: 900px;
+      position: relative;
+      z-index: 10;
+    }
+    
+    .fl718-threshold__sentence {
+      font-family: 'Courier New', monospace;
+      font-size: 48px;
+      font-weight: 400;
+      line-height: 1.6;
+      color: #1a1a1a;
+      letter-spacing: 0.02em;
+      text-align: left;
+      opacity: 0;
+    }
+    
+    /* Typewriter cursor */
+    .fl718-typewriter-cursor {
+      display: inline-block;
+      width: 3px;
+      height: 1.1em;
+      background: #d4664a;
+      margin-left: 4px;
+      animation: blink-cursor 1s infinite;
+      vertical-align: text-bottom;
+    }
+    
+    @keyframes blink-cursor {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+    
+    /* Background color overlay that transitions on scroll */
+    .fl718-threshold__bg-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, 
+        #f0ebe5 0%,
+        #d4664a 50%,
+        #e8a87c 100%
+      );
+      opacity: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+    
+    /* ==================== CHAPTER 3 MAIN CONTAINER ==================== */
+    .fl718-chapter {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      background: linear-gradient(to bottom, #fef3e2 0%, #f4e4d7 100%);
+      padding: 120px 60px 200px 60px;
+    }
+    
+    /* ==================== CHAPTER NUMBER - TYPEWRITER STYLE ==================== */
+    .fl718-chapter__number {
+      position: absolute;
+      top: -60px;
+      left: -140px;
+      font-family: 'Courier New', monospace;
+      font-size: 42px;
+      font-weight: 700;
+      color: #d4664a;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      z-index: 10;
+      display: inline-block;
+      opacity: 1;
+    }
+    
+    /* Blinking cursor effect */
+    .fl718-chapter__number::after {
+      content: '|';
+      color: #d4664a;
+      animation: fl718-blink-ch3 1s step-end infinite;
+      margin-left: 4px;
+      opacity: 0;
+    }
+    
+    .fl718-chapter__number.typing::after {
+      opacity: 1;
+    }
+    
+    .fl718-chapter__number.typed::after {
+      animation: none;
+      opacity: 0;
+    }
+    
+    @keyframes fl718-blink-ch3 {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+    
+    /* ==================== CONTENT WRAPPER ==================== */
+    .fl718-content {
+      max-width: 900px;
+      margin: 0 auto;
+      position: relative;
+    }
+    
+    /* ==================== SECTION SPACING ==================== */
+    .fl718-section {
+      position: relative;
+      margin-bottom: 160px;
+    }
+    
+    /* ==================== PARAGRAPH STYLES ==================== */
+    .fl718-paragraph {
+      font-size: 21px;
+      line-height: 1.8;
+      color: #2a2a2a;
+      margin-bottom: 60px;
+      max-width: 700px;
+      margin-left: 100px;
+    }
+    
+    .fl718-paragraph--opening {
+      font-size: 28px;
+      line-height: 1.75;
+      color: #1a1a1a;
+      font-weight: 500;
+      margin-left: 0;
+      margin-bottom: 80px;
+    }
+    
+    /* Kinetic paragraph - forward momentum */
+    .fl718-paragraph--kinetic {
+      font-size: 20px;
+      line-height: 1.6;
+      font-style: italic;
+      font-weight: 500;
+      transform: skewX(-1deg);
+      transition: transform 0.3s ease;
+      margin-bottom: 80px;
+      text-align: left;
+      white-space: nowrap;
+      overflow: visible;
+      
+      /* Break out of centered container */
+      width: 100vw;
+      position: relative;
+      left: 50%;
+      right: 50%;
+      margin-left: -50vw;
+      margin-right: -50vw;
+      padding-left: 100px;
+      padding-right: 100px;
+      box-sizing: border-box;
+    }
+    
+    .fl718-paragraph--kinetic:hover {
+      transform: skewX(0deg) translateX(3px);
+    }
+    
+    /* ==================== BLUR TO FOCUS TRANSFORMATION ==================== */
+    .fl718-transform-container {
+      font-size: 64px;
+      font-weight: 700;
+      line-height: 1.4;
+      color: #1a1a1a;
+      margin: 120px 0;
+      text-align: center;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    /* Words that transform: manual, clueless, certain */
+    .fl718-transform-word {
+      display: inline-block;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-weight: 400;
+      filter: blur(3px);
+      opacity: 0.4;
+      letter-spacing: 0.1em;
+      color: #999;
+      transition: all 1.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+    }
+    
+    /* Transformed state - applied via GSAP */
+    .fl718-transform-word.sharp {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-weight: 700;
+      filter: blur(0px);
+      opacity: 1;
+      letter-spacing: -0.02em;
+      color: #1a1a1a;
+    }
+    
+    /* ==================== ARTIFACTS - PERU 2015 ==================== */
+    .fl718-artifacts {
+      position: relative;
+      margin: 100px 0;
+      min-height: 1100px;
+    }
+    
+    .fl718-artifact {
+      position: absolute;
+      background: #fff;
+      padding: 20px;
+      box-shadow: 0 3px 15px rgba(0, 0, 0, 0.15);
+      font-size: 11px;
+      color: #666;
+      text-align: center;
+      border: 1px solid #ddd;
+      font-family: 'Courier New', monospace;
+      cursor: pointer;
+      
+      /* INITIAL STATE - HIDDEN ABOVE VIEWPORT */
+      opacity: 0;
+      transform: translateY(-800px) scale(0.8);
+      
+      /* Will be animated via JavaScript */
+      transition: none;
+    }
+    
+    /* LANDED STATE - Enable hover transitions */
+    .fl718-artifact.landed {
+      transition: 
+        transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow 0.4s ease,
+        z-index 0s;
+    }
+    
+    /* HOVER EFFECT - Lift artifact off page */
+    .fl718-artifact.landed:hover {
+      transform: translateY(-12px) rotate(0deg) scale(1.08) !important;
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.28) !important;
+      z-index: 100 !important;
+    }
+    
+    /* Subtle image zoom on hover */
+    .fl718-artifact img {
+      transition: transform 0.4s ease;
+    }
+    
+    .fl718-artifact.landed:hover img {
+      transform: scale(1.03);
+    }
+    
+    /* ==================== DROP ANIMATIONS ==================== */
+    
+    /* Heavy items - Camera, Passport */
+    @keyframes fl718-drop-heavy {
+      0% {
+        transform: translateY(-800px) rotate(-15deg) scale(0.8);
+        opacity: 0;
+      }
+      60% {
+        transform: translateY(30px) rotate(8deg) scale(1.05);
+        opacity: 1;
+      }
+      75% {
+        transform: translateY(-15px) rotate(-3deg) scale(0.98);
+      }
+      85% {
+        transform: translateY(8px) rotate(2deg) scale(1.02);
+      }
+      95% {
+        transform: translateY(-3px) rotate(-1deg) scale(1);
+      }
+      100% {
+        transform: translateY(0) rotate(var(--final-rotation, -2deg)) scale(1);
+        opacity: 1;
+      }
+    }
+    
+    /* Medium items - Boarding Pass, Bodega Bag */
+    @keyframes fl718-drop-medium {
+      0% {
+        transform: translateY(-600px) rotate(-20deg) scale(0.85);
+        opacity: 0;
+      }
+      65% {
+        transform: translateY(20px) rotate(5deg) scale(1.03);
+        opacity: 1;
+      }
+      80% {
+        transform: translateY(-8px) rotate(-2deg) scale(0.99);
+      }
+      90% {
+        transform: translateY(4px) rotate(1deg) scale(1.01);
+      }
+      100% {
+        transform: translateY(0) rotate(var(--final-rotation, 1deg)) scale(1);
+        opacity: 1;
+      }
+    }
+    
+    /* Light items - Lens Cap, SD Card */
+    @keyframes fl718-drop-light {
+      0% {
+        transform: translateY(-400px) rotate(25deg) scale(0.9);
+        opacity: 0;
+      }
+      40% {
+        transform: translateY(100px) rotate(-15deg) scale(0.95);
+        opacity: 0.6;
+      }
+      70% {
+        transform: translateY(10px) rotate(3deg) scale(1.02);
+        opacity: 1;
+      }
+      85% {
+        transform: translateY(-3px) rotate(-1deg) scale(1);
+      }
+      95% {
+        transform: translateY(2px) rotate(0.5deg) scale(1);
+      }
+      100% {
+        transform: translateY(0) rotate(var(--final-rotation, -3deg)) scale(1);
+        opacity: 1;
+      }
+    }
+    
+    /* Shadow fade-in on landing */
+    @keyframes fl718-shadow-appear {
+      0% {
+        box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+      }
+      100% {
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+      }
+    }
+    
+    /* ==================== ARTIFACT POSITIONING & STYLES ==================== */
+    
+    /* Camera - Product Shot (Upper Left) */
+    .fl718-artifact--camera {
+      top: 40px;
+      left: 80px;
+      width: 340px;
+      background: #ffffff;
+      border: 1px solid #ddd;
+      padding: 16px;
+    }
+    
+    .fl718-artifact--camera img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    
+    /* Camera in Bodega Bag - THE ICONIC IMAGE (Upper Right) */
+    .fl718-artifact--bodegabag {
+      top: 180px;
+      right: 100px;
+      width: 380px;
+      background: #ffffff;
+      border: 1px solid #ddd;
+      padding: 16px;
+    }
+    
+    .fl718-artifact--bodegabag img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    
+    /* Vintage Letters & Postcards (Middle Left) */
+    .fl718-artifact--letters {
+      top: 420px;
+      left: 60px;
+      width: 380px;
+      background: #ffffff;
+      border: 1px solid #ddd;
+      padding: 16px;
+    }
+    
+    .fl718-artifact--letters img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    
+    /* Peruvian Currency - 10 Soles (Middle Right) */
+    .fl718-artifact--currency {
+      top: 580px;
+      right: 180px;
+      width: 340px;
+      background: #ffffff;
+      border: 1px solid #ddd;
+      padding: 16px;
+    }
+    
+    .fl718-artifact--currency img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    
+    /* Travel Journal - Illustrated Sketchbook (Lower Middle) */
+    .fl718-artifact--journal {
+      top: 780px;
+      left: 420px;
+      width: 400px;
+      background: #ffffff;
+      border: 1px solid #ddd;
+      padding: 16px;
+    }
+    
+    .fl718-artifact--journal img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    
+    /* Boarding Passes - Travel Documentation (Bottom Right) */
+    .fl718-artifact--boardingpass {
+      top: 920px;
+      right: 120px;
+      width: 420px;
+      background: #ffffff;
+      border: 1px solid #ddd;
+      padding: 16px;
+    }
+    
+    .fl718-artifact--boardingpass img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    
+    /* ==================== FLOATING PHOTO GRID ==================== */
+    .fl718-photo-scatter {
+      position: relative;
+      margin: 120px 0;
+      min-height: 950px;
+    }
+    
+    .fl718-photo {
+      position: absolute;
+      background: #1a1a1a;
+      padding: 0;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      overflow: hidden;
+      
+      /* Initial state for animation */
+      opacity: 0;
+      transform: scale(0.8);
+      
+      /* Will be animated via JavaScript */
+      transition: none;
+    }
+    
+    .fl718-photo.loaded {
+      opacity: 1;
+      transform: scale(1);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    
+    .fl718-photo__image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: filter 0.6s ease;
+      
+      /* Progressive loading effect */
+      filter: blur(20px) brightness(0.7);
+    }
+    
+    .fl718-photo.loaded .fl718-photo__image {
+      filter: blur(0) brightness(1);
+    }
+    
+    /* Clean lift hover effect */
+    .fl718-photo.loaded {
+      transition: 
+        transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow 0.4s ease;
+    }
+    
+    .fl718-photo.loaded:hover {
+      transform: translateY(-16px) scale(1.05) !important;
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.3) !important;
+      z-index: 100 !important;
+    }
+    
+    /* Photo positioning (4 photos with spacing) */
+    
+    /* Hero Photo - Woman at Van (Landscape) - Upper Left */
+    .fl718-photo--hero {
+      top: 40px;
+      left: 60px;
+      width: 520px;
+      height: 390px;
+      transform: rotate(-2deg) scale(0.8);
+      z-index: 4;
+    }
+    
+    .fl718-photo--hero.loaded {
+      transform: rotate(-2deg) scale(1);
+    }
+    
+    /* Medium Photo 1 - Black & White Framed Woman - Upper Right */
+    .fl718-photo--medium-1 {
+      top: 80px;
+      right: 60px;
+      width: 380px;
+      height: 380px;
+      transform: rotate(2.5deg) scale(0.8);
+      z-index: 5;
+    }
+    
+    .fl718-photo--medium-1.loaded {
+      transform: rotate(2.5deg) scale(1);
+    }
+    
+    /* Medium Photo 2 - Child in Pink - Lower Right */
+    .fl718-photo--medium-2 {
+      top: 520px;
+      right: 180px;
+      width: 360px;
+      height: 360px;
+      transform: rotate(-1.5deg) scale(0.8);
+      z-index: 3;
+    }
+    
+    .fl718-photo--medium-2.loaded {
+      transform: rotate(-1.5deg) scale(1);
+    }
+    
+    /* Small Photo - Shattered Windshield - Lower Left */
+    .fl718-photo--small-1 {
+      top: 480px;
+      left: 80px;
+      width: 320px;
+      height: 240px;
+      transform: rotate(3deg) scale(0.8);
+      z-index: 2;
+    }
+    
+    .fl718-photo--small-1.loaded {
+      transform: rotate(3deg) scale(1);
+    }
+    
+    /* ==================== PULL QUOTE ==================== */
+    .fl718-pullquote {
+      font-size: 32px;
+      line-height: 1.5;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin: 140px auto;
+      padding-left: 40px;
+      border-left: 5px solid #d4664a;
+      max-width: 700px;
+      font-style: italic;
+    }
+    
+    /* ==================== RESPONSIVE DESIGN ==================== */
+    @media (max-width: 768px) {
+      .fl718-threshold {
+        padding: 40px 30px;
+      }
+      
+      .fl718-threshold__sentence {
+        font-size: 28px;
+      }
+      
+      .fl718-chapter {
+        padding: 80px 30px 120px 30px;
+      }
+      
+      .fl718-chapter__number {
+        top: -40px;
+        font-size: 18px;
+        letter-spacing: 2px;
+      }
+      
+      .fl718-transform-container {
+        font-size: 32px;
+      }
+      
+      .fl718-paragraph {
+        font-size: 18px;
+        margin-left: 0;
+      }
+      
+      .fl718-paragraph--opening {
+        font-size: 22px;
+      }
+      
+      .fl718-paragraph--kinetic {
+        font-size: 16px;
+        padding-left: 30px;
+        padding-right: 30px;
+        white-space: normal;
+      }
+      
+      .fl718-photo-scatter {
+        min-height: 1200px;
+      }
+      
+      .fl718-photo--hero {
+        width: 100%;
+        left: 0;
+        max-width: 300px;
+      }
+      
+      .fl718-photo--medium-1,
+      .fl718-photo--medium-2 {
+        width: 100%;
+        max-width: 250px;
+      }
+      
+      .fl718-photo--small-1,
+      .fl718-photo--small-2 {
+        width: 100%;
+        max-width: 200px;
+      }
+      
+      .fl718-artifacts {
+        min-height: 2400px;
+        padding: 0 20px;
+      }
+      
+      /* Stack artifacts vertically with generous spacing on mobile */
+      .fl718-artifact--camera {
+        top: 40px;
+        left: 20px;
+        right: 20px;
+        width: auto;
+      }
+      
+      .fl718-artifact--bodegabag {
+        top: 380px;
+        left: 20px;
+        right: 20px;
+        width: auto;
+      }
+      
+      .fl718-artifact--letters {
+        top: 740px;
+        left: 20px;
+        right: 20px;
+        width: auto;
+      }
+      
+      .fl718-artifact--currency {
+        top: 1120px;
+        left: 20px;
+        right: 20px;
+        width: auto;
+      }
+      
+      .fl718-artifact--journal {
+        top: 1460px;
+        left: 20px;
+        right: 20px;
+        width: auto;
+      }
+      
+      .fl718-artifact--boardingpass {
+        top: 1860px;
+        left: 20px;
+        right: 20px;
+        width: auto;
+      }
+      
+      .fl718-pullquote {
+        font-size: 22px;
+        padding-left: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TRANSITION FROM CHAPTER 2 -->
+  <div class="fl718-transition"></div>
+
+  <!-- THRESHOLD SECTION - THE HINGE MOMENT -->
+  <div class="fl718-threshold" id="threshold">
+    <div class="fl718-threshold__bg-overlay"></div>
+    <div class="fl718-threshold__content">
+      <div class="fl718-threshold__sentence" id="typewriter-sentence"></div>
+    </div>
+  </div>
+
+  <!-- CHAPTER 3 -->
+  <div class="fl718-chapter">
+    
+    <!-- Main Content -->
+    <div class="fl718-content">
+      
+      <!-- Chapter Number -->
+      <div class="fl718-chapter__number" id="chapterNumber"></div>
+      
+      <!-- OPENING PARAGRAPH -->
+      <section class="fl718-section">
+        <p class="fl718-paragraph fl718-paragraph--opening">
+          That inexpensive, basic camera survived seven years of travel—through dust, rain, and my habit of using plastic bodega bags as protection.
+        </p>
+      </section>
+      
+      <!-- PERU ARTIFACTS -->
+      <section class="fl718-artifacts" id="artifactsSection">
+        
+        <!-- 1. Camera Product Shot (Upper Left) -->
+        <div class="fl718-artifact fl718-artifact--camera" 
+             data-weight="heavy" 
+             data-delay="500" 
+             data-rotation="-3deg">
+          <img src="chapter3-scrap1.png" alt="Nikon D3300 Camera">
+        </div>
+        
+        <!-- 2. Camera in Bodega Bag - THE ICONIC IMAGE (Upper Right) -->
+        <div class="fl718-artifact fl718-artifact--bodegabag" 
+             data-weight="heavy" 
+             data-delay="1200" 
+             data-rotation="2.5deg">
+          <img src="chapter3scrap-6.png" alt="Camera protected in bodega bag">
+        </div>
+        
+        <!-- 3. Vintage Letters & Postcards (Middle Left) -->
+        <div class="fl718-artifact fl718-artifact--letters" 
+             data-weight="medium" 
+             data-delay="2500" 
+             data-rotation="-1.5deg">
+          <img src="chapter3-scrap3.png" alt="Vintage letters and postcards">
+        </div>
+        
+        <!-- 4. Peruvian Currency - 10 Soles (Middle Right) -->
+        <div class="fl718-artifact fl718-artifact--currency" 
+             data-weight="light" 
+             data-delay="3800" 
+             data-rotation="4deg">
+          <img src="chapter3-scrap2.png" alt="Peruvian 10 Soles note">
+        </div>
+        
+        <!-- 5. Travel Journal - Illustrated Sketchbook (Lower Middle) -->
+        <div class="fl718-artifact fl718-artifact--journal" 
+             data-weight="medium" 
+             data-delay="5500" 
+             data-rotation="-2deg">
+          <img src="chapter3-scrap5.png" alt="Illustrated travel journal">
+        </div>
+        
+        <!-- 6. Boarding Passes - Travel Documentation (Bottom Right) -->
+        <div class="fl718-artifact fl718-artifact--boardingpass" 
+             data-weight="medium" 
+             data-delay="6800" 
+             data-rotation="1.5deg">
+          <img src="chapter3-scrap4.png" alt="International boarding passes">
+        </div>
+        
+      </section>
+      
+      <!-- LEARNING SECTION -->
+      <section class="fl718-section">
+        
+        <p class="fl718-paragraph fl718-paragraph--kinetic">
+          I learned photography by taking thousands of terrible photos, pestering better photographers with questions, and watching them edit.
+        </p>
+        
+        <!-- BLUR TO FOCUS TRANSFORMATION - NO WORD SWAPPING -->
+        <div class="fl718-transform-container" id="transform-text">
+          <div>From auto to <span class="fl718-transform-word" data-order="1">manual</span>,</div>
+          <div>from clueless to <span class="fl718-transform-word" data-order="2">certain</span>,</div>
+          <div>my aesthetic emerged.</div>
+        </div>
+        
+      </section>
+      
+      <!-- PHOTO SECTION - STREET PHOTOGRAPHY -->
+      <section class="fl718-section">
+        
+        <div class="fl718-photo-scatter">
+          
+          <!-- Hero Photo - Woman at Van -->
+          <div class="fl718-photo fl718-photo--hero" data-delay="200">
+            <img src="chapter3-myfoto5.jpg" alt="Street photography" class="fl718-photo__image">
+          </div>
+          
+          <!-- Medium Photo 1 - Black & White Framed Woman -->
+          <div class="fl718-photo fl718-photo--medium-1" data-delay="400">
+            <img src="chapter3-myfoto3.jpg" alt="Street photography" class="fl718-photo__image">
+          </div>
+          
+          <!-- Medium Photo 2 - Child in Pink -->
+          <div class="fl718-photo fl718-photo--medium-2" data-delay="600">
+            <img src="chapter3-myfoto1.jpg" alt="Street photography" class="fl718-photo__image">
+          </div>
+          
+          <!-- Small Photo - Shattered Windshield -->
+          <div class="fl718-photo fl718-photo--small-1" data-delay="800">
+            <img src="chapter3-myfoto2.jpg" alt="Street photography" class="fl718-photo__image">
+          </div>
+          
+        </div>
+        
+      </section>
+      
+      <!-- CLOSING SECTION -->
+      <section class="fl718-section">
+        
+        <p class="fl718-pullquote">
+          Walking, paying attention, shooting—this is how I learned to see the frames of life.
+        </p>
+        
+      </section>
+      
+    </div>
+    
+  </div>
+
+  <!-- GSAP SCROLLTRIGGER ANIMATIONS -->
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+    
+    // ============================================
+    // CHAPTER NUMBER - TYPEWRITER EFFECT
+    // ============================================
+    
+    function typewriterEffectChapterNumber(element, text, speed = 80) {
+      let index = 0;
+      element.classList.add('typing');
+      
+      function type() {
+        if (index < text.length) {
+          element.textContent += text.charAt(index);
+          index++;
+          
+          // Variable speed - slightly irregular like human typing
+          const variableSpeed = speed + (Math.random() * 40 - 20);
+          setTimeout(type, variableSpeed);
+        } else {
+          // Typing complete - remove cursor after brief pause
+          setTimeout(() => {
+            element.classList.remove('typing');
+            element.classList.add('typed');
+          }, 500);
+        }
+      }
+      
+      type();
+    }
+    
+    // Chapter number observer
+    const chapterNumberObserverOptions = {
+      threshold: 0.2,
+      rootMargin: '0px'
+    };
+    
+    const chapterNumberObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const chapterNumber = document.getElementById('chapterNumber');
+          if (chapterNumber && chapterNumber.textContent === '') {
+            setTimeout(() => {
+              typewriterEffectChapterNumber(chapterNumber, 'CHAPTER 3', 90);
+            }, 300);
+          }
+          chapterNumberObserver.unobserve(entry.target);
+        }
+      });
+    }, chapterNumberObserverOptions);
+    
+    // Initialize chapter number observer
+    document.addEventListener('DOMContentLoaded', () => {
+      const chapterElement = document.querySelector('.fl718-chapter');
+      if (chapterElement) {
+        chapterNumberObserver.observe(chapterElement);
+      }
+    });
+    
+    // ============================================
+    // THRESHOLD SECTION - TYPEWRITER EFFECT
+    // ============================================
+    
+    const typewriterSentence = document.getElementById('typewriter-sentence');
+    const fullText = "In 2015, I bought a Nikon D3300 before a trip to Peru.";
+    let typewriterTriggered = false;
+    
+    // Typewriter function
+    async function typewriterEffect() {
+      if (typewriterTriggered) return;
+      typewriterTriggered = true;
+      
+      // Make container visible
+      typewriterSentence.style.opacity = '1';
+      
+      // Type each character
+      for (let i = 0; i < fullText.length; i++) {
+        typewriterSentence.textContent = fullText.substring(0, i + 1);
+        
+        // Add cursor
+        const cursor = document.createElement('span');
+        cursor.className = 'fl718-typewriter-cursor';
+        typewriterSentence.appendChild(cursor);
+        
+        // Variable speed for natural feel
+        const speed = fullText[i] === ',' || fullText[i] === '.' ? 200 : 50 + Math.random() * 30;
+        await new Promise(resolve => setTimeout(resolve, speed));
+      }
+      
+      // Keep cursor blinking at the end
+    }
+    
+    // Trigger typewriter when scrolling into view
+    const thresholdObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.intersectionRatio > 0.3) {
+          typewriterEffect();
+        }
+      });
+    }, {
+      threshold: [0, 0.3, 0.5, 1]
+    });
+    
+    thresholdObserver.observe(document.getElementById('threshold'));
+    
+    // Color transition on scroll
+    gsap.to('.fl718-threshold__bg-overlay', {
+      opacity: 0.6,
+      scrollTrigger: {
+        trigger: '.fl718-threshold',
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: 1,
+      }
+    });
+    
+    
+    // ============================================
+    // BLUR TO FOCUS TRANSFORMATION
+    // manual (first) → then certain (second)
+    // clueless stays normal (no effect)
+    // ============================================
+    
+    const transformWords = document.querySelectorAll('.fl718-transform-word');
+    
+    transformWords.forEach((word) => {
+      const order = parseInt(word.dataset.order);
+      
+      // Create timeline for each word
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: '#transform-text',
+          start: 'top 60%',
+          end: 'bottom 70%',
+          scrub: 1,
+        }
+      });
+      
+      // Animate from blurry/soft to sharp/bold
+      // NO text content changes - words stay the same
+      // Stagger by order: manual first (order=1), then certain (order=2)
+      tl.to(word, {
+        filter: 'blur(0px)',
+        opacity: 1,
+        letterSpacing: '-0.02em',
+        color: '#1a1a1a',
+        fontWeight: 700,
+        duration: 0.5,
+        ease: 'power2.out',
+        delay: (order - 1) * 0.5 // manual starts at 0, certain starts at 0.5
+      });
+    });
+    
+    
+    // ============================================
+    // FLOATING PHOTO GRID - PROGRESSIVE LOADING
+    // ============================================
+    
+    const photoObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !entry.target.classList.contains('loaded')) {
+          const delay = parseInt(entry.target.dataset.delay) || 0;
+          setTimeout(() => {
+            entry.target.classList.add('loaded');
+          }, delay);
+        }
+      });
+    }, {
+      threshold: 0.2
+    });
+    
+    // Observe all photos
+    const photos = document.querySelectorAll('.fl718-photo');
+    photos.forEach(photo => {
+      photoObserver.observe(photo);
+    });
+    
+    
+    // ============================================
+    // ARTIFACTS - DROP ANIMATION WITH HOVER
+    // ============================================
+    
+    function animateArtifacts() {
+      const artifacts = document.querySelectorAll('.fl718-artifact');
+      
+      // Check for reduced motion preference
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      
+      if (prefersReducedMotion) {
+        // Instant reveal for reduced motion users
+        artifacts.forEach(artifact => {
+          const finalRotation = artifact.dataset.rotation || '0deg';
+          artifact.style.cssText = `
+            opacity: 1;
+            transform: translateY(0) rotate(${finalRotation}) scale(1);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+          `;
+          artifact.classList.add('landed');
+        });
+        return;
+      }
+      
+      // Animate each artifact based on weight and timing
+      artifacts.forEach((artifact) => {
+        const weight = artifact.dataset.weight || 'medium';
+        const delay = parseInt(artifact.dataset.delay) || 0;
+        const finalRotation = artifact.dataset.rotation || '0deg';
+        
+        // Set CSS variable for final rotation
+        artifact.style.setProperty('--final-rotation', finalRotation);
+        
+        // Determine animation duration based on weight
+        const durations = {
+          heavy: 1100,   // Heavy items: longer fall, bigger bounce
+          medium: 900,   // Medium items: moderate fall and bounce
+          light: 1300    // Light items: flutter down slowly
+        };
+        
+        const duration = durations[weight];
+        
+        // Schedule the drop animation
+        setTimeout(() => {
+          // Apply drop animation
+          artifact.style.animation = `
+            fl718-drop-${weight} ${duration}ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+            fl718-shadow-appear ${duration}ms ease-out forwards
+          `;
+          
+          // After animation completes, lock in final state and enable hover
+          setTimeout(() => {
+            artifact.style.cssText = `
+              opacity: 1;
+              transform: translateY(0) rotate(${finalRotation}) scale(1);
+              box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+              animation: none;
+            `;
+            // Add 'landed' class to enable smooth hover transitions
+            artifact.classList.add('landed');
+          }, duration);
+          
+        }, delay);
+      });
+    }
+    
+    // Artifacts observer - trigger when section comes into view
+    const artifactsObserverOptions = {
+      threshold: 0.3,
+      rootMargin: '0px'
+    };
+    
+    const artifactsObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateArtifacts();
+          artifactsObserver.unobserve(entry.target);
+        }
+      });
+    }, artifactsObserverOptions);
+    
+    // Initialize artifacts observer
+    document.addEventListener('DOMContentLoaded', () => {
+      const artifactsSection = document.getElementById('artifactsSection');
+      if (artifactsSection) {
+        artifactsObserver.observe(artifactsSection);
+      }
+    });
+    
+    
+    // ============================================
+    // ARTIFACTS - SUBTLE ROTATION ON SCROLL (DISABLED - REPLACED BY DROP ANIMATION)
+    // ============================================
+    
+    /* Original rotation animation - now replaced by drop animation above
+    const artifacts = document.querySelectorAll('.fl718-artifact');
+    
+    artifacts.forEach((artifact, index) => {
+      const rotation = (index % 2 === 0) ? 5 : -5;
+      
+      gsap.to(artifact, {
+        rotation: rotation,
+        scrollTrigger: {
+          trigger: '.fl718-artifacts',
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 1,
+        }
+      });
+    });
+    */
+    
+    
+    // ============================================
+    // KINETIC PARAGRAPH - SUBTLE MOVEMENT
+    // ============================================
+    
+    gsap.to('.fl718-paragraph--kinetic', {
+      x: 10,
+      scrollTrigger: {
+        trigger: '.fl718-paragraph--kinetic',
+        start: 'top 80%',
+        end: 'bottom 60%',
+        scrub: 1,
+      }
+    });
+    
+    
+    // ============================================
+    // PULL QUOTE - FADE IN & SCALE
+    // ============================================
+    
+    gsap.from('.fl718-pullquote', {
+      opacity: 0,
+      scale: 0.95,
+      scrollTrigger: {
+        trigger: '.fl718-pullquote',
+        start: 'top 80%',
+        end: 'top 50%',
+        scrub: 1,
+      }
+    });
+    
+  </script>
+
+</body>
+</html>

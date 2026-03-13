@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>About Me | Flaneur 718</title>
-  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400;0,500;1,400;1,500;1,600&family=Oswald:wght@700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&family=Rock+Salt&family=Caveat:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400;0,500;1,400;1,500;1,600&family=Oswald:wght@700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&family=Rock+Salt&family=Caveat:wght@400;700&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
 
   <!--
   ============================================
@@ -81,7 +81,7 @@
   ASSETS REQUIRED: See manifest at bottom of this file
   -->
 
-  <!-- GSAP ScrollTrigger CDN - REQUIRED -->
+  <!-- GSAP ScrollTrigger CDN - REQUIRED — pinned to 3.12.5 (do not change without testing ScrollTrigger pin API) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 
@@ -98,15 +98,16 @@
       box-sizing: border-box;
     }
 
-    html {
-      overflow-x: hidden;
-    }
 
+    /* NOTE: overflow-x intentionally NOT set on html — breaks position:sticky on film strip section */
+    /* NOTE: overflow-x: clip (NOT hidden) — clip prevents horizontal scrollbar without creating a new
+       scroll container. overflow-x: hidden on body makes body the scroll container in some browsers,
+       which causes GSAP ScrollTrigger pin:true to never engage (listens to window scroll, not body). */
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       background: #ffffff;
       color: #1a1a1a;
-      overflow-x: hidden;
+      overflow-x: clip;
       line-height: 1.7;
     }
 
@@ -137,9 +138,9 @@
     /* LEFT: Vertical Title */
     .fl718-opening__title-container {
       position: absolute;
-      left: 0;
+      left: 16px;
       top: 20px;
-      width: 80px;
+      width: 100px;
       display: flex;
       align-items: flex-start;
       z-index: 100;
@@ -621,7 +622,7 @@
       width: 100%;
       min-height: 100vh;
       background: linear-gradient(to bottom, #f8f8f8 0%, #ebebeb 100%);
-      padding: 120px 60px 100px 60px;
+      padding: 120px 60px 220px 60px;
     }
 
     .fl718-chapter__number {
@@ -725,6 +726,11 @@
       z-index: 1;
       pointer-events: none;
     }
+
+    /* Pre-animation hidden state — prevents flash of visible content before observer fires */
+    #subway-context-lines { opacity: 0; }
+    #subway-r-line        { opacity: 0; }
+    #pizzaOuter           { opacity: 0; }
 
     .subway-station {
       opacity: 0;
@@ -939,7 +945,8 @@
       width: 100%;
       height: 660px;
       overflow: visible;
-      margin-top: -80px;
+      margin-top: -120px;
+      margin-bottom: 150px;
     }
 
     /* Centered cluster: [SAS terminal] [book stack] [notebook] */
@@ -950,6 +957,12 @@
       width: 1060px;
       height: 660px;
       top: 0;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-evenly;
+      align-items: flex-end;
+      padding-bottom: 100px;
+      box-sizing: border-box;
     }
     .uni-surface {
       position: absolute;
@@ -961,37 +974,39 @@
     }
 
     /* Books */
+    #uni-books-stack {
+      position: relative;
+      width: 370px;
+      height: 530px;
+      flex-shrink: 0;
+    }
     .uni-book { position: absolute; width: 360px; opacity: 0; }
     .uni-book img { width: 100%; display: block; }
-    #uni-b1 { left: 415px; top: 365px; }
-    #uni-b2 { left: 422px; top: 337px; }
-    #uni-b3 { left: 415px; top: 309px; }
-    #uni-b4 { left: 420px; top: 147px; }
-    #uni-b5 { left: 418px; top: 183px; }
+    #uni-b1 { left: 0px; top: 365px; }
+    #uni-b2 { left: 7px; top: 313px; }
+    #uni-b3 { left: 0px; top: 277px; }
+    #uni-b4 { left: 5px; top: 147px; }
+    #uni-b5 { left: 3px; top: 183px; }
 
     /* Notebook */
     #uni-notebook {
-      position: absolute;
       width: 300px;
-      left: 745px;
-      top: 325px;
       opacity: 0;
       transform-origin: center center;
+      flex-shrink: 0;
     }
     #uni-notebook img { width: 100%; display: block; border-radius: 2px; }
 
     /* SAS Terminal window */
     #uni-sas {
-      position: absolute;
       width: 380px;
-      left: 15px;
-      top: 235px;
       opacity: 0;
       transform-origin: center center;
       border-radius: 3px;
       overflow: hidden;
       box-shadow: 0 4px 20px rgba(0,0,0,0.20);
       user-select: none;
+      flex-shrink: 0;
     }
     .uni-sas-titlebar {
       background: linear-gradient(to bottom, #24478f, #1a3570);
@@ -1138,14 +1153,14 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 40px;
-      margin: 220px 0 100px 0;
+      margin: 430px 0 250px 0;
       position: relative;
     }
 
     .fl718-photo {
       position: relative;
       background: #fff;
-      padding: 12px;
+      padding: 12px 12px 44px;
       border: 1px solid rgba(0, 0, 0, 0.18);
       box-shadow:
         0 6px 28px rgba(0, 0, 0, 0.22),
@@ -1299,7 +1314,7 @@
     .fl718-photo__caption {
       font-size: 12px;
       color: #666;
-      margin-top: 8px;
+      margin-top: 10px;
       font-family: 'Courier New', monospace;
       text-align: center;
       position: relative;
@@ -1405,7 +1420,7 @@
     }
 
     .fl718-brand-logo__mats {
-      font-family: 'Brush Script MT', cursive, 'Comic Sans MS', sans-serif;
+      font-family: 'Brush Script MT', 'Dancing Script', cursive, 'Comic Sans MS', sans-serif;
       font-size: 52px;
       font-weight: 400;
       color: #000000;
@@ -1585,7 +1600,7 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      outline: 1px solid rgba(0,0,0,0.13);
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.13);
     }
 
     /* Thumbtack — colour set per photo via CSS vars */
@@ -1668,7 +1683,7 @@
     .tip-item.photo img { filter: drop-shadow(2px 6px 18px rgba(0,0,0,0.35)); }
 
     #tip-camera   { width: 215px; left: 370px; top: 370px; }
-    #tip-sol      { width: 108px; left:  40px; top: 530px; }
+    #tip-sol      { width: 108px; left: 60px; top: 760px; }
     #tip-lira     { width: 148px; left: 790px; top: 648px; }
     #tip-matchbook{ width: 118px; left: 545px; top: 605px; }
     #tip-pass     { width: 198px; left: 175px; top: 578px; }
@@ -1699,22 +1714,18 @@
       position: absolute; top: 0; left: 0; width: 100%; height: 100%;
       pointer-events: none;
     }
-    .subway-station {
-      opacity: 0; transform-origin: center; transform-box: fill-box;
-    }
-    .subway-label {
-      font-family: Helvetica, Arial, sans-serif;
-      font-size: 11px; fill: #333; font-weight: 500; opacity: 0;
+    /* Ch.3 map label: darker fill (#333) than Ch.1 scrapbook label (#555) — intentional */
+    .fl718-chapter3 .subway-label {
+      fill: #333;
     }
     .subway-label-sm { font-size: 9px; fill: #666; }
-    .line-bullet      { opacity: 0; }
-    .line-bullet-text {
-      font-family: Helvetica, Arial, sans-serif;
-      font-size: 12px; font-weight: 700; fill: #fff;
-      text-anchor: middle; dominant-baseline: central; opacity: 0;
+    /* Ch.3 map bullet text: 12px vs Ch.1 scrapbook 11px — intentional, scoped */
+    #mapSvg .line-bullet-text {
+      font-size: 12px;
     }
     .pulse-ring     { opacity: 0; }
     .photo-connector { opacity: 0; }
+    #d-line, #seven-line, #j-line { opacity: 0; }
     .photo-pin {
       position: absolute;
       background: #faf8f4;
@@ -1726,18 +1737,18 @@
       text-align: center; font-family: Helvetica, Arial, sans-serif;
       text-transform: uppercase; letter-spacing: 0.08em; color: #999;
     }
-    #photo1 { left: 75%; top: 7%;  padding: 7px 7px 28px; transform: rotate(1.8deg); }
-    #photo1 img { width: 118px; height: 90px; filter: grayscale(0.60) brightness(0.9); }
-    #photo1 .photo-pin-caption { font-size: 7px; margin-top: 7px; }
-    #photo2 { left: 75%; top: 74%; padding: 7px 7px 28px; transform: rotate(-2.2deg); }
-    #photo2 img { width: 118px; height: 90px; filter: grayscale(0.95) brightness(0.82); }
-    #photo2 .photo-pin-caption { font-size: 7px; margin-top: 7px; }
-    #photo3 { left: 53%; top: 2%;  padding: 7px 7px 28px; transform: rotate(-1.5deg); }
-    #photo3 img { width: 118px; height: 90px; filter: grayscale(0.28); }
-    #photo3 .photo-pin-caption { font-size: 7px; margin-top: 7px; }
-    #photo4 { left: 5%;  top: 14%; padding: 9px 9px 36px; transform: rotate(1.0deg); }
-    #photo4 img { width: 150px; height: 115px; filter: grayscale(0); }
-    #photo4 .photo-pin-caption { font-size: 8px; margin-top: 9px; color: #c8602a; font-weight: 700; letter-spacing: 0.12em; }
+    #photo1 { left: 75%; top: 7%;  padding: 10px 10px 40px; transform: rotate(1.8deg); }
+    #photo1 img { width: 180px; height: 138px; filter: grayscale(0.60) brightness(0.9); }
+    #photo1 .photo-pin-caption { font-size: 9px; margin-top: 10px; }
+    #photo2 { left: 75%; top: 74%; padding: 9px 9px 36px; transform: rotate(-2.2deg); }
+    #photo2 img { width: 150px; height: 115px; }
+    #photo2 .photo-pin-caption { font-size: 8px; margin-top: 9px; }
+    #photo3 { left: 53%; top: 2%;  padding: 9px 9px 36px; transform: rotate(-1.5deg); }
+    #photo3 img { width: 150px; height: 115px; filter: grayscale(0.28); }
+    #photo3 .photo-pin-caption { font-size: 8px; margin-top: 9px; }
+    #photo4 { left: 5%;  top: 14%; padding: 10px 10px 40px; transform: rotate(1.0deg); }
+    #photo4 img { width: 180px; height: 138px; filter: grayscale(0); }
+    #photo4 .photo-pin-caption { font-size: 9px; margin-top: 10px; color: #c8602a; font-weight: 700; letter-spacing: 0.12em; }
     #mapCaption {
       margin-top: 28px;
       font-size: 11px; letter-spacing: 0.26em; color: rgba(90,70,48,0.55);
@@ -1745,7 +1756,7 @@
     }
 
     /* ── CHAPTER 2: LEDGER + MANIFEST ── */
-    .ch2-ledger-section { position: relative; width: 100%; margin: 0 0 72px; }
+    .ch2-ledger-section { position: relative; width: 100%; margin: 0 0 192px; }
     .ch2-book-spread { position: relative; display: flex; width: 100%; border-radius: 2px; overflow: hidden; box-shadow: 0 12px 48px rgba(0,0,0,0.22), 0 2px 8px rgba(0,0,0,0.12); }
     .ch2-page-left { flex: 1; background: #f7f2e8; background-image: radial-gradient(ellipse at 8% 45%, rgba(220,200,150,0.35) 0%, transparent 65%), radial-gradient(ellipse at 92% 90%, rgba(200,180,120,0.15) 0%, transparent 50%); position: relative; padding: 32px 22px 36px 32px; }
     .ch2-page-right { flex: 1; background: #f5f0e5; background-image: radial-gradient(ellipse at 92% 45%, rgba(220,200,150,0.35) 0%, transparent 65%), radial-gradient(ellipse at 8% 90%, rgba(200,180,120,0.15) 0%, transparent 50%); position: relative; padding: 32px 32px 36px 22px; }
@@ -1926,6 +1937,7 @@
       filter: blur(6px);
       color: #999;
       transform: translateY(4px);
+      will-change: filter;
     }
 
     .fl718-ch3-closing-quote {
@@ -2014,13 +2026,13 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 16px;
     }
 
     .fl718-darkroom-print {
       background: #fff;
       padding: 10px 10px 38px 10px;
       box-shadow: 0 6px 40px rgba(0,0,0,0.75), 0 2px 8px rgba(0,0,0,0.4);
+      position: relative;
     }
 
     .fl718-darkroom-print img {
@@ -2035,7 +2047,15 @@
       font-size: 10px;
       letter-spacing: 0.28em;
       text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.22);
+      color: #999;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     @media (max-width: 1000px) {
@@ -2054,23 +2074,24 @@
     .fl718-film-section {
       position: relative;
       width: 100%;
-      padding: 200px 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
       background: #1a1a1a;
-      overflow-x: hidden;
     }
 
     .fl718-film-wrapper {
       position: relative;
       width: 100%;
       height: 560px;
-      overflow: visible;
+      overflow: hidden;
     }
 
     .fl718-film-strip-horizontal {
       position: absolute;
       left: 0;
       top: 50%;
-      transform: translateY(-50%);
+      width: max-content;
       height: 440px;
       background: #000000;
       padding: 45px 0;
@@ -2161,7 +2182,7 @@
 
     .fl718-film-frame__number {
       position: absolute;
-      bottom: -25px;
+      bottom: 8px;
       left: 50%;
       transform: translateX(-50%);
       font-family: 'Courier New', monospace;
@@ -2278,7 +2299,7 @@
       display: flex;
       flex-direction: column;
       gap: 72px;
-      padding: 60px 0 80px;
+      padding: 60px 0 140px;
       max-width: 860px;
       margin: 0 auto;
     }
@@ -2492,7 +2513,21 @@
       }
 
       .fl718-film-section {
-        padding: 120px 0;
+        height: auto;
+        display: block;
+        padding: 60px 0;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      .fl718-film-wrapper {
+        overflow: visible;
+        height: auto;
+      }
+      .fl718-film-strip-horizontal {
+        position: relative;
+        top: auto;
+        transform: none !important;
+        width: max-content;
       }
 
       .fl718-chapter4 .fl718-opening {
@@ -2524,7 +2559,7 @@
     <!-- LEFT: Vertical Title -->
     <div class="fl718-opening__title-container">
       <h1 class="fl718-opening__title">
-        <span class="fl718-opening__title-main">Flaneur</span>
+        <span class="fl718-opening__title-main">Flâneur</span>
         <span class="fl718-opening__title-sub">718</span>
       </h1>
     </div>
@@ -2544,7 +2579,7 @@
         <div class="fl718-film-strip__frames">
           <!-- Frame 1 - marked -->
           <div class="fl718-frame fl718-frame--marked">
-            <img src="0.%20Hero/placeholder4.jpeg" alt="Frame 15A" class="fl718-frame__image">
+            <img src="Assets/0.%20Hero/seamus-mirror.jpg" alt="Seamus Dolan reflected in a mirror" class="fl718-frame__image">
             <div class="fl718-frame__hand-drawn">
               <svg viewBox="0 0 196 196" xmlns="http://www.w3.org/2000/svg">
                 <path d="M 4,10 Q 6,8 12,7 L 95,5 Q 140,4 188,7 Q 192,9 193,15 L 194,90 Q 195,140 192,186 Q 190,191 185,192 L 100,194 Q 50,195 8,193 Q 4,192 3,187 L 2,100 Q 1,50 4,10" />
@@ -2555,13 +2590,13 @@
 
           <!-- Frame 2 - EMPTY -->
           <div class="fl718-frame">
-            <img src="https://placehold.co/180x180/e8e8e8/e8e8e8?text=" alt="Frame 22" class="fl718-frame__image">
+            <img src="Assets/0.%20Hero/seamus-fire.jpg" alt="Seamus Dolan photographing a fire scene" class="fl718-frame__image">
             <div class="fl718-frame__number">22</div>
           </div>
 
           <!-- Frame 3 - marked -->
           <div class="fl718-frame fl718-frame--marked">
-            <img src="0.%20Hero/placeholder1.jpg" alt="Frame 8A" class="fl718-frame__image">
+            <img src="Assets/0.%20Hero/seamus-desert.jpg" alt="Seamus Dolan in the desert" class="fl718-frame__image">
             <div class="fl718-frame__hand-drawn">
               <svg viewBox="0 0 196 196" xmlns="http://www.w3.org/2000/svg">
                 <path d="M 7,12 Q 10,6 18,5 L 100,3 Q 150,2 189,6 Q 194,8 195,18 L 196,100 Q 197,145 193,188 Q 191,193 184,194 L 95,196 Q 45,196 6,192 Q 2,190 2,185 L 1,95 Q 0,45 7,12" />
@@ -2582,12 +2617,12 @@
 
         <div class="fl718-film-strip__frames">
           <div class="fl718-frame">
-            <img src="https://placehold.co/180x180/e8e8e8/e8e8e8?text=" alt="Frame 31" class="fl718-frame__image">
+            <img src="Assets/0.%20Hero/seamus-bridge.jpg" alt="Seamus Dolan on a bridge" class="fl718-frame__image">
             <div class="fl718-frame__number">31</div>
           </div>
 
           <div class="fl718-frame fl718-frame--marked">
-            <img src="https://placehold.co/180x180/e8e8e8/e8e8e8?text=" alt="Frame 12" class="fl718-frame__image">
+            <img src="Assets/0.%20Hero/seamus-cdmx-eyes.jpg" alt="Close-up street portrait, Mexico City" class="fl718-frame__image">
             <div class="fl718-frame__hand-drawn">
               <svg viewBox="0 0 196 196" xmlns="http://www.w3.org/2000/svg">
                 <path d="M 5,8 Q 8,4 15,3 L 98,2 Q 145,1 190,5 Q 195,7 196,14 L 197,98 Q 198,148 194,189 Q 192,195 186,196 L 98,197 Q 48,197 7,194 Q 3,193 2,188 L 1,98 Q 0,42 5,8" />
@@ -2609,17 +2644,17 @@
 
         <div class="fl718-film-strip__frames">
           <div class="fl718-frame">
-            <img src="0.%20Hero/placeholder2.jpg" alt="Frame 27" class="fl718-frame__image">
+            <img src="Assets/0.%20Hero/seamus-simone.jpg" alt="Portrait photograph" class="fl718-frame__image">
             <div class="fl718-frame__number">27</div>
           </div>
 
           <div class="fl718-frame">
-            <img src="https://placehold.co/180x180/e8e8e8/e8e8e8?text=" alt="Frame 19A" class="fl718-frame__image">
+            <img src="Assets/0.%20Hero/seamus-smoke.jpg" alt="Street scene with smoke" class="fl718-frame__image">
             <div class="fl718-frame__number">19A</div>
           </div>
 
           <div class="fl718-frame fl718-frame--marked">
-            <img src="0.%20Hero/placeholder3.JPG" alt="Frame 5" class="fl718-frame__image">
+            <img src="Assets/0.%20Hero/seamus-mosque.jpg" alt="Street scene near a mosque" class="fl718-frame__image">
             <div class="fl718-frame__hand-drawn">
               <svg viewBox="0 0 196 196" xmlns="http://www.w3.org/2000/svg">
                 <path d="M 6,11 Q 9,5 16,4 L 102,2 Q 152,1 191,6 Q 196,9 197,17 L 198,102 Q 199,152 195,190 Q 193,196 187,197 L 100,198 Q 46,198 5,195 Q 1,194 1,189 L 0,100 Q -1,44 6,11" />
@@ -2804,19 +2839,19 @@
           <!-- GHOST LAYER: wiffle ball stroboscopic echoes -->
           <div class="fl718-ghost-layer" id="ghostLayer">
             <div class="fl718-ghost" id="ghost1" style="left: 7.6%; top: 13.6%;">
-              <img src="1.%20chapter%201/wiffle ball.png" alt="" width="38" style="transform: rotate(-8deg);" />
+              <img src="Assets/1.%20chapter%201/wiffle-ball.png" alt="" width="38" style="transform: rotate(-8deg);" />
             </div>
             <div class="fl718-ghost" id="ghost2" style="left: 25.2%; top: 20.8%;">
-              <img src="1.%20chapter%201/wiffle ball.png" alt="" width="44" style="transform: rotate(5deg);" />
+              <img src="Assets/1.%20chapter%201/wiffle-ball.png" alt="" width="44" style="transform: rotate(5deg);" />
             </div>
             <div class="fl718-ghost" id="ghost3" style="left: 40.3%; top: 25.9%;">
-              <img src="1.%20chapter%201/wiffle ball.png" alt="" width="50" style="transform: rotate(12deg);" />
+              <img src="Assets/1.%20chapter%201/wiffle-ball.png" alt="" width="50" style="transform: rotate(12deg);" />
             </div>
             <div class="fl718-ghost" id="ghost4" style="left: 51.7%; top: 36.6%;">
-              <img src="1.%20chapter%201/wiffle ball.png" alt="" width="56" style="transform: rotate(22deg);" />
+              <img src="Assets/1.%20chapter%201/wiffle-ball.png" alt="" width="56" style="transform: rotate(22deg);" />
             </div>
             <div class="fl718-ghost" id="ghost5" style="left: 62.9%; top: 54.6%;">
-              <img src="1.%20chapter%201/wiffle ball.png" alt="" width="62" style="transform: rotate(34deg);" />
+              <img src="Assets/1.%20chapter%201/wiffle-ball.png" alt="" width="62" style="transform: rotate(34deg);" />
             </div>
           </div>
 
@@ -2827,31 +2862,31 @@
 
             <div class="fl718-pizza-outer" id="pizzaOuter">
               <div class="fl718-pizza-inner" id="pizzaInner">
-                <img src="1.%20chapter%201/pizzascrap book.png" alt="Brooklyn pizza box" class="fl718-pizza-img" id="pizzaImg" draggable="false" />
+                <img src="Assets/1.%20chapter%201/pizza-scrapbook.png" alt="Brooklyn pizza box" class="fl718-pizza-img" id="pizzaImg" draggable="false" />
               </div>
             </div>
 
             <div class="fl718-drink-outer fl718-drink-green" id="drinkGreenOuter">
               <div class="fl718-drink-inner" id="drinkGreenInner">
-                <img src="1.%20chapter%201/quarter drink 1.png" alt="Green quarter water" class="fl718-drink-img" id="drinkGreenImg" draggable="false" />
+                <img src="Assets/1.%20chapter%201/quarter-drink-1.png" alt="Green quarter water" class="fl718-drink-img" id="drinkGreenImg" draggable="false" />
               </div>
             </div>
 
             <div class="fl718-drink-outer fl718-drink-orange" id="drinkOrangeOuter">
               <div class="fl718-drink-inner" id="drinkOrangeInner">
-                <img src="1.%20chapter%201/quarter drink 3.png" alt="Orange quarter water" class="fl718-drink-img" id="drinkOrangeImg" draggable="false" />
+                <img src="Assets/1.%20chapter%201/quarter-drink-3.png" alt="Orange quarter water" class="fl718-drink-img" id="drinkOrangeImg" draggable="false" />
               </div>
             </div>
 
             <div class="fl718-drink-outer fl718-drink-blue" id="drinkBlueOuter">
               <div class="fl718-drink-inner" id="drinkBlueInner">
-                <img src="1.%20chapter%201/quarter drink 2.png" alt="Blue quarter water" class="fl718-drink-img" id="drinkBlueImg" draggable="false" />
+                <img src="Assets/1.%20chapter%201/quarter-drink-2.png" alt="Blue quarter water" class="fl718-drink-img" id="drinkBlueImg" draggable="false" />
               </div>
             </div>
 
             <div class="fl718-drink-outer fl718-drink-purple" id="drinkPurpleOuter">
               <div class="fl718-drink-inner" id="drinkPurpleInner">
-                <img src="1.%20chapter%201/quarter drink 4.png" alt="Purple quarter water" class="fl718-drink-img" id="drinkPurpleImg" draggable="false" />
+                <img src="Assets/1.%20chapter%201/quarter-drink-4.png" alt="Purple quarter water" class="fl718-drink-img" id="drinkPurpleImg" draggable="false" />
               </div>
             </div>
 
@@ -2862,7 +2897,7 @@
             <div class="fl718-ball-shadow" id="ballShadow"></div>
             <div class="fl718-ball-outer" id="ballOuter">
               <div class="fl718-ball-inner" id="ballInner">
-                <img src="1.%20chapter%201/wiffle ball.png" alt="Wiffle ball" class="fl718-ball-img" id="ballImg" draggable="false" />
+                <img src="Assets/1.%20chapter%201/wiffle-ball.png" alt="Wiffle ball" class="fl718-ball-img" id="ballImg" draggable="false" />
               </div>
             </div>
           </div>
@@ -2871,7 +2906,7 @@
           <div class="fl718-can-layer">
             <div class="fl718-can-outer" id="canOuter">
               <div class="fl718-can-inner" id="canInner">
-                <img src="1.%20chapter%201/spray paint can.png" alt="718 spray paint can" class="fl718-can-img" id="canImg" draggable="false" />
+                <img src="Assets/1.%20chapter%201/spray-paint-can.png" alt="718 spray paint can" class="fl718-can-img" id="canImg" draggable="false" />
               </div>
             </div>
           </div>
@@ -2927,17 +2962,17 @@
           <div class="fl718-photo fl718-photo--polaroid" data-develop-delay="0">
             <div class="fl718-photo__overlay"></div>
             <div class="fl718-photo__image">
-              <img src="1.%20chapter%201/chapter1.jpg" alt="Bay Ridge, Brooklyn">
+              <img src="Assets/0.%20Hero/seamus-5points.jpg" alt="Bay Ridge, Brooklyn" loading="lazy">
             </div>
-            <div class="fl718-photo__caption">Bay Ridge, Brooklyn</div>
+            <div class="fl718-photo__caption">5-Pointz, Queens</div>
           </div>
 
           <div class="fl718-photo fl718-photo--polaroid" data-develop-delay="1000">
             <div class="fl718-photo__overlay"></div>
             <div class="fl718-photo__image">
-              <img src="1.%20chapter%201/chapter2-me-2.jpg" alt="Flushing, Queens">
+              <img src="Assets/1.%20chapter%201/seamus-bedsuy.jpg" alt="Flushing, Queens" loading="lazy">
             </div>
-            <div class="fl718-photo__caption">Flushing, Queens</div>
+            <div class="fl718-photo__caption">Bed-Stuy, Brooklyn</div>
           </div>
         </div>
 
@@ -2959,28 +2994,6 @@
         <div id="universityScrapbook" class="fl718-university-scrapbook-stage">
           <div id="uniCluster">
             <div class="uni-surface"></div>
-
-            <!-- Phase 1: 5 books — parabolic toss from different directions -->
-            <div class="uni-book" id="uni-b1">
-              <img src="1.%20chapter%201/book%201.png" alt="Antonio Gramsci — Selections from the Prison Notebooks">
-            </div>
-            <div class="uni-book" id="uni-b2">
-              <img src="1.%20chapter%201/book%202.png" alt="Walter Benjamin — Illuminations">
-            </div>
-            <div class="uni-book" id="uni-b3">
-              <img src="1.%20chapter%201/book%203.png" alt="Don DeLillo — White Noise">
-            </div>
-            <div class="uni-book" id="uni-b4">
-              <img src="1.%20chapter%201/book4.png" alt="George Orwell — Down and Out in Paris and London">
-            </div>
-            <div class="uni-book" id="uni-b5">
-              <img src="1.%20chapter%201/book5.png" alt="Wei Liang — The Century of Red and Thunder">
-            </div>
-
-            <!-- Phase 2: College notebook — skids in from right -->
-            <div id="uni-notebook">
-              <img src="1.%20chapter%201/college%20notebook.png" alt="College research notebook">
-            </div>
 
             <!-- Phase 3: SAS Enterprise Guide terminal — skids in from left -->
             <div id="uni-sas">
@@ -3038,6 +3051,30 @@
               </div>
 
             </div><!-- /uni-sas -->
+
+            <!-- Phase 1: 5 books — parabolic toss from different directions -->
+            <div id="uni-books-stack">
+              <div class="uni-book" id="uni-b1">
+                <img src="Assets/1.%20chapter%201/book1.png" alt="Antonio Gramsci — Selections from the Prison Notebooks" loading="lazy">
+              </div>
+              <div class="uni-book" id="uni-b2">
+                <img src="Assets/1.%20chapter%201/book2.png" alt="Walter Benjamin — Illuminations" loading="lazy">
+              </div>
+              <div class="uni-book" id="uni-b3">
+                <img src="Assets/1.%20chapter%201/book3.png" alt="Don DeLillo — White Noise" loading="lazy">
+              </div>
+              <div class="uni-book" id="uni-b4">
+                <img src="Assets/1.%20chapter%201/book4.png" alt="George Orwell — Down and Out in Paris and London" loading="lazy">
+              </div>
+              <div class="uni-book" id="uni-b5">
+                <img src="Assets/1.%20chapter%201/book5.png" alt="Wei Liang — The Century of Red and Thunder" loading="lazy">
+              </div>
+            </div><!-- /uni-books-stack -->
+
+            <!-- Phase 2: College notebook — skids in from right -->
+            <div id="uni-notebook">
+              <img src="Assets/1.%20chapter%201/college-notebook.png" alt="College research notebook" loading="lazy">
+            </div>
 
           </div><!-- /uniCluster -->
         </div><!-- /universityScrapbook -->
@@ -3131,7 +3168,7 @@
               <span class="fl718-pstack-item__index-num">01</span>
               <div class="fl718-pstack-item__index-line"></div>
             </div>
-            <img src="2.%20chapter%202/nook-nook-3.jpg" alt="Hand-woven Tree Design Mat">
+            <img src="Assets/2.%20chapter%202/nook-nook-3.jpg" alt="Hand-woven Tree Design Mat" loading="lazy">
             <div class="fl718-pstack-item__footer">
               <span class="fl718-pstack-item__caption">Hand-Woven · Kochi, India</span>
             </div>
@@ -3142,7 +3179,7 @@
               <span class="fl718-pstack-item__index-num">02</span>
               <div class="fl718-pstack-item__index-line"></div>
             </div>
-            <img src="2.%20chapter%202/nook-nook-1.jpg" alt="Nook Nook Mats Brand">
+            <img src="Assets/2.%20chapter%202/nook-nook-1.jpg" alt="Nook Nook Mats Brand" loading="lazy">
             <div class="fl718-pstack-item__footer">
               <span class="fl718-pstack-item__caption">Sustainable · Handmade · Humane</span>
             </div>
@@ -3153,7 +3190,7 @@
               <span class="fl718-pstack-item__index-num">03</span>
               <div class="fl718-pstack-item__index-line"></div>
             </div>
-            <img src="2.%20chapter%202/nook-nook-2.png" alt="Handmade in India">
+            <img src="Assets/2.%20chapter%202/nook-nook-2.png" alt="Handmade in India" loading="lazy">
             <div class="fl718-pstack-item__footer">
               <span class="fl718-pstack-item__caption">From The Earth To Your Home</span>
             </div>
@@ -3166,7 +3203,7 @@
         </p>
       </section>
 
-      <section class="fl718-section">
+      <section class="fl718-section" style="padding-top: 90px;">
 
         <!-- ── CH2 LEDGER ── -->
         <div class="ch2-ledger-section" id="ch2LedgerSection">
@@ -3256,7 +3293,7 @@
         <!-- ── CH2 MANIFEST MAP ── -->
         <div class="ch2-manifest-section" id="ch2ManifestSection">
 
-          <img class="ch2-chart-map" src="2.%20chapter%202/nook-nook-map.png" alt="Antique trade route map — Kochi, India to Port of New York">
+          <img class="ch2-chart-map" src="Assets/2.%20chapter%202/nook-nook-map.png" alt="Antique trade route map — Kochi, India to Port of New York" loading="lazy">
 
           <svg class="ch2-chart-overlay" id="ch2ChartOverlay"
             viewBox="0 0 600 400" preserveAspectRatio="none"
@@ -3273,6 +3310,7 @@
                  C 192,108 160,96  132,88 C 96,82  64,74   36,72"
               fill="none" stroke="#7a1a00" stroke-width="2.2"
               stroke-linecap="round" stroke-linejoin="round"
+              stroke-dasharray="9999" stroke-dashoffset="9999"
               opacity="0.88" filter="url(#ch2RouteGlow)"/>
             <circle id="ch2DotKochi" cx="558" cy="240" r="5.5" fill="#7a1a00" opacity="0"/>
             <circle id="ch2DotSuez"  cx="372" cy="128" r="4.5" fill="#7a1a00" opacity="0"/>
@@ -3289,7 +3327,7 @@
 
           <!-- Mat materializes at NY area after route arrives -->
           <div class="ch2-mat-surface" id="ch2MatSurface">
-            <img src="2.%20chapter%202/nook-nook-map-journey.png" alt="Nook Nook coir doormat — tree of life design">
+            <img src="Assets/2.%20chapter%202/nook-nook-map-journey.png" alt="Nook Nook coir doormat — tree of life design" loading="lazy">
           </div>
 
           <!-- CLEARED ink impression -->
@@ -3380,33 +3418,30 @@
           <div class="fl718-ch2-pin-stage">
 
             <div class="fl718-ch2-pin-item fl718-ch2-pin-item--p1" id="ch2pi1">
-              <img src="2.%20chapter%202/nn4.JPG" alt="Artisan trimming mat edges, Kochi">
+              <img src="Assets/2.%20chapter%202/nook-nook-industry.jpg" alt="Artisan trimming mat edges, Kochi" loading="lazy">
               <div class="fl718-ch2-pin-label">Kochi · Finishing by hand</div>
             </div>
 
             <div class="fl718-ch2-pin-item fl718-ch2-pin-item--p2" id="ch2pi2">
-              <img src="2.%20chapter%202/nn3.JPG" alt="Hand loom weaving, Kochi">
+              <img src="Assets/2.%20chapter%202/nook-nook-industry_2.jpg" alt="Hand loom weaving, Kochi" loading="lazy">
               <div class="fl718-ch2-pin-label">Hand loom · Kochi, India</div>
             </div>
 
             <div class="fl718-ch2-pin-item fl718-ch2-pin-item--p3" id="ch2pi3">
-              <img src="2.%20chapter%202/nn5.JPG" alt="Mat craftsmanship detail, Kochi">
-              <div class="fl718-ch2-pin-label">Kochi · Detail work</div>
+              <img src="Assets/2.%20chapter%202/nook-nook-industry-woman.jpg" alt="Mat craftsmanship detail, Kochi" loading="lazy">
+              <div class="fl718-ch2-pin-label">Coconut husk · Where it begins</div>
             </div>
 
             <div class="fl718-ch2-pin-item fl718-ch2-pin-item--p4" id="ch2pi4">
-              <img src="2.%20chapter%202/nn1.jpg" alt="Tree Design mat at a door">
-              <div class="fl718-ch2-pin-label">Tree Design · Nook Nook Mats</div>
+              <img src="Assets/2.%20chapter%202/nook-nook-industry-door.jpg" alt="Tree Design mat at a door" loading="lazy">
             </div>
 
             <div class="fl718-ch2-pin-item fl718-ch2-pin-item--p5" id="ch2pi5">
-              <img src="2.%20chapter%202/nn2.jpg" alt="Twin Tree mat at a door">
-              <div class="fl718-ch2-pin-label">Twin Tree · Made to last</div>
+              <img src="Assets/2.%20chapter%202/nook-nook-mat-floor.jpg" alt="Twin Tree mat at a door" loading="lazy">
             </div>
 
             <div class="fl718-ch2-pin-item fl718-ch2-pin-item--p6" id="ch2pi6">
-              <img src="2.%20chapter%202/nn6.jpeg" alt="Nook Nook mat, finished product">
-              <div class="fl718-ch2-pin-label">Nook Nook · Brooklyn, NY</div>
+              <img src="Assets/2.%20chapter%202/nook-nook-mat-tall.jpg" alt="Nook Nook mat, finished product" loading="lazy">
             </div>
 
           </div>
@@ -3415,7 +3450,7 @@
 
       <section class="fl718-section">
         <p class="fl718-paragraph fl718-paragraph--opening">
-          I built it all out, stubbornly, completely. When things broke, I fixed them. When they broke again, I fixed them again. But, this path was carving too long an arc. Underneath all that, if I listened, the creative gods were calling out, but what were they offering?
+          I built it all out, stubbornly, completely. When things broke, I fixed them. When they broke again, I fixed them again. Amazon for sellers breaks a lot. This cycle was pulling me away from where I needed to go. Whether growing a business or sketching a research plan, the melody of creativity always rang clearer to me. Lost and uncertain, I looked up to the clouds and listened. The creative gods were calling out, but what were they offering?
         </p>
       </section>
 
@@ -3474,7 +3509,7 @@
 
       <section class="fl718-section">
         <p class="fl718-paragraph fl718-paragraph--opening">
-          I'd always enjoyed shooting photos and thinking visually in frames and motion–a real camera seemed like the obvious next step. That inexpensive, basic camera survived seven years of travel, through dust, rain, and my habit of using plastic bodega bags as protection.
+          I'd always enjoyed shooting photos and thinking visually in frames and motion, a real camera seemed like the obvious next step. That inexpensive, basic camera survived seven years of travel, through dust, rain, and my habit of using plastic bodega bags as protection.
         </p>
       </section>
 
@@ -3483,34 +3518,34 @@
         <div id="tipStage">
 
           <div id="tip-bag">
-            <img src="3.%20chapter%203/nyc%20bodega%20bag.png" alt="NYC bodega bag">
+            <img src="Assets/3.%20chapter%203/nyc%20bodega%20bag.png" alt="NYC bodega bag" loading="lazy">
           </div>
 
           <div class="tip-item heavy" id="tip-camera">
-            <img src="3.%20chapter%203/nikond3300.png" alt="Nikon D3300">
+            <img src="Assets/3.%20chapter%203/nikond3300.png" alt="Nikon D3300" loading="lazy">
           </div>
           <div class="tip-item heavy" id="tip-beer">
-            <img src="3.%20chapter%203/china%20beer.png" alt="Chinese beer">
+            <img src="Assets/3.%20chapter%203/china%20beer.png" alt="Chinese beer" loading="lazy">
           </div>
 
           <div class="tip-item paper" id="tip-sol">
-            <img src="3.%20chapter%203/peruvian%20sol.png" alt="Peruvian sol">
+            <img src="Assets/3.%20chapter%203/peruvian%20sol.png" alt="Peruvian sol" loading="lazy">
           </div>
           <div class="tip-item paper" id="tip-lira">
-            <img src="3.%20chapter%203/turkish%20lira.png" alt="Turkish lira">
+            <img src="Assets/3.%20chapter%203/turkish%20lira.png" alt="Turkish lira" loading="lazy">
           </div>
           <div class="tip-item paper" id="tip-matchbook">
-            <img src="3.%20chapter%203/vietnam%20matchbook.png" alt="Vietnam matchbook">
+            <img src="Assets/3.%20chapter%203/vietnam%20matchbook.png" alt="Vietnam matchbook" loading="lazy">
           </div>
           <div class="tip-item paper" id="tip-pass">
-            <img src="3.%20chapter%203/mexico%20city%20pass.png" alt="Mexico City pass">
+            <img src="Assets/3.%20chapter%203/mexico%20city%20pass.png" alt="Mexico City pass" loading="lazy">
           </div>
 
           <div class="tip-item photo" id="tip-photo1">
-            <img src="3.%20chapter%203/DSC_8156.jpg" alt="Street photograph">
+            <img src="Assets/2.%20chapter%202/photo-peru_1.jpg" alt="Street photograph, Peru" loading="lazy">
           </div>
           <div class="tip-item photo" id="tip-photo2">
-            <img src="3.%20chapter%203/Valle%20de%20Bravo_101824_17.jpg" alt="Valle de Bravo">
+            <img src="Assets/2.%20chapter%202/photo-china.jpg" alt="Street photograph, China" loading="lazy">
           </div>
 
         </div>
@@ -3522,7 +3557,7 @@
         </p>
 
         <!-- Long Walk Map -->
-        <div id="mapSection" style="margin-top: 80px;">
+        <div id="mapSection" style="margin-top: 220px;">
           <div id="mapContainer">
             <svg id="mapSvg" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
               <defs>
@@ -3546,21 +3581,23 @@
                 <text font-family="Helvetica, Arial, sans-serif" font-size="9" fill="#777" x="660" y="746">Atlantic Av – Barclays Ctr</text>
               </g>
               <!-- D LINE (Orange, lower Manhattan → Norwood-205 St) -->
-              <path id="d-line" d="M 628,609 L 645,559 L 657,510 L 665,469 L 670,425 L 667,380 L 663,330 L 657,278 L 651,225 L 646,178 L 643,135 L 641,115" stroke="#FF6319" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- curves left fast from Grand St, leftmost ~x=431 at Harlem, arcs back right into Bronx -->
+              <path id="d-line" d="M 628,609 L 566,562 L 553,511 L 527,461 L 500,426 L 475,394 L 454,360 L 443,325 L 431,296 L 437,267 L 445,231 L 456,197 L 473,169 L 497,148 L 527,130 L 565,118 L 608,114 L 641,115" stroke="#FF6319" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
               <!-- 7 LINE (Purple, Times Square → Flushing) -->
-              <path id="seven-line" d="M 670,425 L 748,423 L 820,418 L 890,410 L 955,400 L 1025,388 L 1090,373 L 1145,360" stroke="#B933AD" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              <path id="seven-line" d="M 580,425 L 748,423 L 820,418 L 890,410 L 955,400 L 1025,388 L 1090,373 L 1145,360" stroke="#B933AD" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
               <!-- J LINE (Brown, Broad St → Jamaica) -->
               <path id="j-line" d="M 580,638 L 616,663 L 658,688 L 710,710 L 782,725 L 856,731 L 922,725 L 1002,713 L 1080,695 L 1140,685" stroke="#996633" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
               <!-- Station dots -->
               <circle class="subway-station" id="st-gran"  cx="628"  cy="609" r="4.5" fill="#fff" stroke="#FF6319" stroke-width="2"/>
-              <circle class="subway-station" id="st-34h"   cx="657"  cy="510" r="3.5" fill="#fff" stroke="#FF6319" stroke-width="1.5"/>
-              <circle class="subway-station" id="st-tsq"   cx="670"  cy="425" r="8"   fill="#fff" stroke="#333"    stroke-width="2.5"/>
-              <circle class="pulse-ring"     id="ring-tsq-d" cx="670" cy="425" r="8" fill="none" stroke="#FF6319" stroke-width="2.5"/>
-              <circle class="pulse-ring"     id="ring-tsq-7" cx="670" cy="425" r="8" fill="none" stroke="#B933AD" stroke-width="2"/>
-              <circle class="subway-station" id="st-125"   cx="663"  cy="330" r="3.5" fill="#fff" stroke="#FF6319" stroke-width="1.5"/>
-              <circle class="subway-station" id="st-145"   cx="657"  cy="278" r="3.5" fill="#fff" stroke="#FF6319" stroke-width="1.5"/>
+              <circle class="subway-station" id="st-34h"   cx="533"  cy="472" r="3.5" fill="#fff" stroke="#FF6319" stroke-width="1.5"/>
+              <circle class="subway-station" id="st-42d"   cx="500"  cy="426" r="3.5" fill="#fff" stroke="#FF6319" stroke-width="1.5"/>
+              <circle class="subway-station" id="st-tsq"   cx="580"  cy="425" r="8"   fill="#fff" stroke="#333"    stroke-width="2.5"/>
+              <circle class="pulse-ring"     id="ring-tsq-d" cx="500" cy="426" r="8" fill="none" stroke="#FF6319" stroke-width="2.5"/>
+              <circle class="pulse-ring"     id="ring-tsq-7" cx="580" cy="425" r="8" fill="none" stroke="#B933AD" stroke-width="2"/>
+              <circle class="subway-station" id="st-161"   cx="464"  cy="183" r="3.5" fill="#fff" stroke="#FF6319" stroke-width="1.5"/>
               <circle class="subway-station" id="st-norw"  cx="641"  cy="115" r="5.5" fill="#fff" stroke="#FF6319" stroke-width="2.5"/>
-              <circle class="subway-station" id="st-jh"    cx="955"  cy="400" r="4.5" fill="#fff" stroke="#B933AD" stroke-width="2"/>
+              <circle class="subway-station" id="st-wds"   cx="834"  cy="416" r="3.5" fill="#fff" stroke="#B933AD" stroke-width="1.5"/>
+              <circle class="subway-station" id="st-jh"    cx="902"  cy="408" r="4.5" fill="#fff" stroke="#B933AD" stroke-width="2"/>
               <circle class="subway-station" id="st-flu"   cx="1145" cy="360" r="5.5" fill="#fff" stroke="#B933AD" stroke-width="2.5"/>
               <circle class="subway-station" id="st-broad" cx="580"  cy="638" r="4.5" fill="#fff" stroke="#996633" stroke-width="2"/>
               <circle class="subway-station" id="st-marcy" cx="710"  cy="710" r="3.5" fill="#fff" stroke="#996633" stroke-width="1.5"/>
@@ -3572,20 +3609,26 @@
               <line class="photo-connector" id="conn2" x1="1140" y1="691" x2="1140" y2="723" stroke="#996633" stroke-width="1" stroke-dasharray="3,4" opacity="0"/>
               <line class="photo-connector" id="conn3" x1="647"  y1="115" x2="742"  y2="115" stroke="#FF6319" stroke-width="1" stroke-dasharray="3,4" opacity="0"/>
               <!-- Station labels -->
-              <text class="subway-label"                 id="lbl-tsq"   x="682"  y="420">Times Sq – 42 St</text>
+              <text class="subway-label subway-label-sm" id="lbl-gran"  x="640"  y="605">Grand St</text>
+              <text class="subway-label subway-label-sm" id="lbl-34h"   x="545"  y="468">34 St – Herald Sq</text>
+              <text class="subway-label subway-label-sm" id="lbl-42d"   x="488"  y="420" text-anchor="end">42 St – Bryant Park</text>
+              <text class="subway-label"                 id="lbl-tsq"   x="592"  y="420">Times Sq – 42 St</text>
+              <text class="subway-label subway-label-sm" id="lbl-161"   x="476"  y="179">161 St – Yankee Stadium</text>
               <text class="subway-label subway-label-sm" id="lbl-norw"  x="657"  y="110">Norwood – 205 St</text>
-              <text class="subway-label subway-label-sm" id="lbl-jh"    x="968"  y="396">Jackson Hts – Roosevelt Av</text>
+              <text class="subway-label subway-label-sm" id="lbl-wds"   x="827"  y="399" text-anchor="end">61 St – Woodside</text>
+              <text class="subway-label subway-label-sm" id="lbl-jh"    x="909"  y="374">Jackson Hts – Roosevelt Av</text>
               <text class="subway-label subway-label-sm" id="lbl-flu"   x="1057" y="355">Flushing – Main St</text>
-              <text class="subway-label subway-label-sm" id="lbl-broad" x="592"  y="633">Broad St</text>
-              <text class="subway-label subway-label-sm" id="lbl-bjx"   x="936"  y="720">Broadway Junction</text>
+              <text class="subway-label subway-label-sm" id="lbl-broad" x="568"  y="626" text-anchor="start">Broad St</text>
+              <text class="subway-label subway-label-sm" id="lbl-marcy" x="710"  y="700" text-anchor="middle">Marcy Av</text>
+              <text class="subway-label subway-label-sm" id="lbl-bjx"   x="922"  y="712" text-anchor="middle">Broadway Junction</text>
               <text class="subway-label subway-label-sm" id="lbl-jam"   x="1058" y="680">Jamaica Center</text>
               <!-- Train bullets -->
-              <circle class="line-bullet" id="bullet-d" cx="600" cy="613" r="10" fill="#FF6319"/>
-              <text   class="line-bullet-text" x="600" y="613" id="bt-d">D</text>
-              <circle class="line-bullet" id="bullet-7" cx="694" cy="460" r="10" fill="#B933AD"/>
-              <text   class="line-bullet-text" x="694" y="460" id="bt-7">7</text>
-              <circle class="line-bullet" id="bullet-j" cx="554" cy="668" r="10" fill="#996633"/>
-              <text   class="line-bullet-text" x="554" y="668" id="bt-j">J</text>
+              <circle class="line-bullet" id="bullet-d" cx="604" cy="609" r="10" fill="#FF6319"/>
+              <text   class="line-bullet-text" x="604" y="609" id="bt-d">D</text>
+              <circle class="line-bullet" id="bullet-7" cx="580" cy="407" r="10" fill="#B933AD"/>
+              <text   class="line-bullet-text" x="580" y="407" id="bt-7">7</text>
+              <circle class="line-bullet" id="bullet-j" cx="555" cy="638" r="10" fill="#996633"/>
+              <text   class="line-bullet-text" x="555" y="638" id="bt-j">J</text>
               <!-- Borough labels -->
               <text id="bronx-label"    font-family="Helvetica, Arial, sans-serif" font-size="9" fill="#888" opacity="0" letter-spacing="3" x="490"  y="113" text-anchor="middle">THE BRONX</text>
               <line id="bronx-border"   x1="370" y1="118" x2="680"  y2="118" stroke="#aaa" stroke-width="0.8" stroke-dasharray="4,4" opacity="0"/>
@@ -3596,20 +3639,20 @@
             </svg>
             <!-- Polaroid photos (HTML, positioned by SVG coordinate %) -->
             <div class="photo-pin" id="photo1">
-              <img src="3.%20chapter%203/000187510025.jpg" alt="Flushing, Queens">
+              <img src="Assets/3.%20chapter%203/photo-woman.jpg" alt="Flushing, Queens" loading="lazy">
               <div class="photo-pin-caption">Flushing, Queens</div>
             </div>
             <div class="photo-pin" id="photo2">
-              <img src="3.%20chapter%203/DSC_8370.jpg" alt="Jamaica, Queens">
+              <img src="Assets/3.%20chapter%203/photo-train-guy.jpg" alt="Jamaica, Queens" loading="lazy">
               <div class="photo-pin-caption">Jamaica, Queens</div>
             </div>
             <div class="photo-pin" id="photo3">
-              <img src="3.%20chapter%203/DSC_8156.jpg" alt="The Bronx">
-              <div class="photo-pin-caption">The Bronx</div>
+              <img src="Assets/3.%20chapter%203/photo-train-guy_1.jpg" alt="The Bronx" loading="lazy">
+              <div class="photo-pin-caption">Fordham Road, The Bronx</div>
             </div>
             <div class="photo-pin" id="photo4">
-              <img src="3.%20chapter%203/Valle%20de%20Bravo_101824_17.jpg" alt="Brooklyn — the keeper">
-              <div class="photo-pin-caption" style="color:#c8602a; font-weight:700;">The one</div>
+              <img src="Assets/3.%20chapter%203/photo-guy.jpg" alt="Brooklyn — the keeper" loading="lazy">
+              <div class="photo-pin-caption" style="color:#c8602a; font-weight:700;">Manhattan</div>
             </div>
           </div><!-- /mapContainer -->
           <div id="mapCaption">Brooklyn. Queens. The Bronx. Walk far enough, and something opens.</div>
@@ -3654,7 +3697,7 @@
 
     <div class="fl718-content">
       <section class="fl718-section">
-        <p class="fl718-paragraph fl718-paragraph--opening">
+        <p id="ch4-opening-paragraph" class="fl718-paragraph fl718-paragraph--opening">
           Later, living in Mexico City, I fell in love with 35mm film photography. That city's light, shadow, and color were made for analog capture. Film demands intention; every frame costs something. A craftsperson with an old camera and minimal editing can still make timeless photographs.
         </p>
       </section>
@@ -3668,27 +3711,31 @@
           <div class="fl718-darkroom-item">
             <div class="fl718-darkroom-print">
               <img id="ch4ImgColor"
-                   src="4.%20chapter%204/chapter5-colo1.jpg"
-                   alt="Mexico City, Fuji 400">
+                   src="Assets/4.%20chapter%204/photo-man-ledge.jpg"
+                   alt="Mexico City, Fuji 400"
+                   loading="lazy">
+              <div class="fl718-darkroom-stock">Fuji 400</div>
             </div>
-            <div class="fl718-darkroom-stock">Fuji 400</div>
           </div>
 
           <div class="fl718-darkroom-item">
             <div class="fl718-darkroom-print">
               <img id="ch4ImgBnw"
-                   src="4.%20chapter%204/chapter5-bnw1.jpg"
-                   alt="Mexico City, Kodak Tri-X 400">
+                   src="Assets/4.%20chapter%204/photo-mexico-bw.jpg"
+                   alt="Mexico City, Kodak Tri-X 400"
+                   loading="lazy">
+              <div class="fl718-darkroom-stock">Kodak Tri-X 400</div>
             </div>
-            <div class="fl718-darkroom-stock">Kodak Tri-X 400</div>
           </div>
 
         </div>
       </div>
     </section>
 
-    <div class="fl718-content" style="padding-top: 140px; padding-bottom: 160px;">
-      <section class="fl718-section">
+    <!-- TODO: move to scoped CSS before WordPress integration -->
+    <div class="fl718-content" style="padding-top: 200px; padding-bottom: 200px;">
+      <!-- TODO: move to scoped CSS before WordPress integration -->
+      <section class="fl718-section" style="margin-bottom: 0;">
         <p class="fl718-paragraph fl718-paragraph--opening">
           And then there's the phone, the camera you carry without thinking about it. Everyone else scrolls; I shoot. If the device is going to dominate modern life, it might as well make something worth looking at. Turns out, pointing a camera at the world is a better use of the thing than most of what it was designed for.
         </p>
@@ -3708,49 +3755,49 @@
           <!-- Frames -->
           <div class="fl718-film-frame">
             <div class="fl718-film-frame__image">
-              <img src="4.%20chapter%204/chapter5-filmstrip1.jpg" alt="Mexico City street photography">
+              <img src="Assets/4.%20chapter%204/photo-mexico-color.jpg" alt="Mexico City street photography" loading="lazy">
             </div>
             <div class="fl718-film-frame__number">1A</div>
           </div>
 
           <div class="fl718-film-frame">
             <div class="fl718-film-frame__image">
-              <img src="4.%20chapter%204/chapter5-filmstrip2.jpg" alt="Mexico City street photography">
+              <img src="Assets/4.%20chapter%204/photo-mexico-bw-boy.jpg" alt="Mexico City street photography" loading="lazy">
             </div>
             <div class="fl718-film-frame__number">2</div>
           </div>
 
           <div class="fl718-film-frame">
             <div class="fl718-film-frame__image">
-              <img src="4.%20chapter%204/chapter5-filmstrip3.jpg" alt="Mexico City street photography">
+              <img src="Assets/4.%20chapter%204/photo-mexico-color_me.jpg" alt="Mexico City street photography" loading="lazy">
             </div>
             <div class="fl718-film-frame__number">3A</div>
           </div>
 
           <div class="fl718-film-frame">
             <div class="fl718-film-frame__image">
-              <img src="4.%20chapter%204/chapter5-filmstrip4.jpg" alt="Mexico City street photography">
+              <img src="Assets/4.%20chapter%204/photo-mexico-bw-camera-raw.jpg" alt="Mexico City street photography" loading="lazy">
             </div>
             <div class="fl718-film-frame__number">4</div>
           </div>
 
           <div class="fl718-film-frame">
             <div class="fl718-film-frame__image">
-              <img src="4.%20chapter%204/chapter5-filmstrip5.jpg" alt="Mexico City street photography">
+              <img src="Assets/4.%20chapter%204/photo-mexico-bw-camera-raw_1.jpg" alt="Mexico City street photography" loading="lazy">
             </div>
             <div class="fl718-film-frame__number">5A</div>
           </div>
 
           <div class="fl718-film-frame">
             <div class="fl718-film-frame__image">
-              <img src="4.%20chapter%204/chapter5-filmstrip6.jpg" alt="Mexico City street photography">
+              <img src="Assets/4.%20chapter%204/photo-mexico-bw-family.jpg" alt="Mexico City street photography" loading="lazy">
             </div>
             <div class="fl718-film-frame__number">6</div>
           </div>
 
           <div class="fl718-film-frame">
             <div class="fl718-film-frame__image">
-              <img src="4.%20chapter%204/chapter5-filmstrip7.jpg" alt="Mexico City street photography">
+              <img src="Assets/4.%20chapter%204/photo-mexico-bw-metro.jpg" alt="Mexico City street photography" loading="lazy">
             </div>
             <div class="fl718-film-frame__number">7A</div>
           </div>
@@ -3776,7 +3823,7 @@
     <section class="fl718-opening">
       <div class="fl718-chapter__number" id="chapterNumber5"></div>
       <div class="fl718-chapter__title-line"></div>
-      <h1 class="fl718-ch5-title">Flâneur 718</h1>
+      <h2 class="fl718-ch5-title">Flâneur 718</h2>
     </section>
 
     <section class="fl718-statement">
@@ -3785,9 +3832,12 @@
       </div>
     </section>
 
+    <!-- TODO: move to scoped CSS before WordPress integration -->
     <section style="padding: 240px 60px; background: #ffffff;">
+      <!-- TODO: move to scoped CSS before WordPress integration -->
       <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 100px;">
 
+        <!-- TODO: move to scoped CSS before WordPress integration -->
         <div id="practice-left" style="opacity: 0; transform: translateY(20px);">
           <p class="fl718-paragraph">
             I shoot both digital and analog, color and black-and-white, capturing daily repetitions, light and shadow, reflections and dualities.
@@ -3798,6 +3848,7 @@
           </p>
         </div>
 
+        <!-- TODO: move to scoped CSS before WordPress integration -->
         <div id="practice-right" style="opacity: 0; transform: translateY(20px);">
           <p class="fl718-paragraph">
             I write photo essays, city essays, and travel observations.
@@ -4036,6 +4087,9 @@
       var ring86      = document.getElementById('station-86-ring');
       var label86     = document.getElementById('label-86');
 
+      gsap.set('#subway-context-lines', { opacity: 1 });
+      gsap.set('#subway-r-line', { opacity: 1 });
+
       [lineF, lineG, lineD, lineN, lineBQ, rMain, rTerm].forEach(prepareLine);
 
       // Phase 1: context lines
@@ -4089,6 +4143,8 @@
       var inner  = document.getElementById('pizzaInner');
       var img    = document.getElementById('pizzaImg');
       var shadow = document.getElementById('pizzaShadow');
+
+      gsap.set(outer, { opacity: 1 });
 
       var LAND_TIME      = PIZZA_DELAY + FLIGHT_DUR;
       var TOTAL_SPIN_DUR = FLIGHT_DUR + SLIDE_DUR;
@@ -4405,7 +4461,7 @@
             }
           }
         });
-      }, { threshold: 0.15 });
+      }, { threshold: 0.4 });
       var section = document.getElementById('scrapbookSection');
       if (section) ch1Observer.observe(section);
     })();
@@ -4423,7 +4479,7 @@
       // ── BOOK CONFIGS ──
       var uniBookConfig = [
         { id: '#uni-b1', xFrom: -900, yFrom:  100, rotFrom: -35, rotTo:  2, delay: 0.0 },
-        { id: '#uni-b2', xFrom:  800, yFrom:  -80, rotFrom:  28, rotTo: -1, delay: 0.5 },
+        { id: '#uni-b2', xFrom:  800, yFrom:  -80, rotFrom:  28, rotTo:  8, delay: 0.5 },
         { id: '#uni-b3', xFrom: -600, yFrom: -200, rotFrom: -22, rotTo:  2, delay: 1.0 },
         { id: '#uni-b4', xFrom:  700, yFrom: -150, rotFrom:  40, rotTo: -2, delay: 1.5 },
         { id: '#uni-b5', xFrom: -500, yFrom:   80, rotFrom: -18, rotTo:  1, delay: 2.0 },
@@ -4570,7 +4626,7 @@
             }
           }
         });
-      }, { threshold: 0.50 });
+      }, { threshold: 0.70 });
 
       var uniSection = document.getElementById('universityScrapbook');
       if (uniSection) uniObserver.observe(uniSection);
@@ -4792,8 +4848,8 @@
           gsap.to('#ch2PulseNY', { opacity: 0.8, duration: 0.15, onComplete: () => gsap.to('#ch2PulseNY', { r: 22, opacity: 0, duration: 1.3, ease: 'power2.out' }) });
         }, null, 'go+=' + DRAW)
         .to('#ch2ShipIcon', { opacity: 1, duration: 0.5, ease: 'back.out(1.8)' }, 'go+=' + (DRAW + 0.15))
-        .to('#ch2MatSurface', { opacity: 1, y: 0, duration: 0.55, ease: 'power2.out' }, 'go+=' + (DRAW + 1.6))
-        .to('#ch2MapStampWrapper', { y: stampDropY, duration: 0.42, ease: 'power3.in' }, 'go+=' + (DRAW + 2.9))
+        .to('#ch2MatSurface', { opacity: 1, y: 0, duration: 0.55, ease: 'power2.out' }, 'go+=' + (DRAW + 1.2))
+        .to('#ch2MapStampWrapper', { y: stampDropY, duration: 0.42, ease: 'power3.in' }, 'go+=' + (DRAW + 2.5))
         .to('#ch2MatSurface',      { scaleY: 0.94, scaleX: 1.03, duration: 0.06, ease: 'none' }, '-=0.03')
         .to('#ch2ManifestSection', { scaleY: 0.988, duration: 0.055, ease: 'none' }, '<')
         .to('#ch2MatSurface',      { scaleY: 1, scaleX: 1, duration: 0.32, ease: 'elastic.out(1.3, 0.4)' })
@@ -4803,8 +4859,11 @@
     }
 
     const ch2ManifestObs = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) runCh2Manifest();
-    }, { threshold: 0.3 });
+      if (entries[0].isIntersecting) {
+        ch2ManifestObs.disconnect();
+        runCh2Manifest();
+      }
+    }, { threshold: 0.5 });
     const ch2ManifestEl = document.getElementById('ch2ManifestSection');
     if (ch2ManifestEl) ch2ManifestObs.observe(ch2ManifestEl);
 
@@ -4847,7 +4906,7 @@
           delay: p.delay,
           scrollTrigger: {
             trigger: '#ch2PinboardSection',
-            start: 'top 72%',
+            start: 'top 40%',
             once: true
           }
         });
@@ -4877,7 +4936,8 @@
         var rules = document.querySelectorAll('.fl718-fstop-rule');
         var texts = document.querySelectorAll('.fl718-fstop-text');
 
-        if (ch1ReducedMotion) {
+        // Uses the shared reducedMotion utility declared at top of this script block
+        if (reducedMotion) {
           gsap.set(marks, { opacity: 1 });
           return;
         }
@@ -4950,6 +5010,7 @@
         if (shutterTriggered) return;
         shutterTriggered = true;
 
+        // Depends on ch1ReducedMotion declared by the Brooklyn scrapbook IIFE above
         if (ch1ReducedMotion) {
           gsap.set(sentence, { opacity: 1 });
           return;
@@ -4989,53 +5050,13 @@
 
 
     // Ch. 3 blur-to-focus + closing quote — see separate <script> at bottom of <body>
+    // Ch. 4 chapter number typewriter — see separate <script> at bottom of <body>
 
     // ============================================
     // CHAPTER 4 - ANIMATIONS
     // ============================================
 
-    // Chapter number — observe the number element itself, not the full chapter div
-    // (the film-strip pin makes .fl718-chapter4 thousands of px tall, so threshold-based
-    //  observation on the parent never fires)
-    const chapter4Observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const el = document.getElementById('chapterNumber4');
-          if (el && el.textContent === '') {
-            setTimeout(() => typewriterEffect(el, 'CHAPTER 4', 90), 300);
-          }
-          chapter4Observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.15 });
-
-    onReady(() => {
-      const ch4Number = document.getElementById('chapterNumber4');
-      if (ch4Number) chapter4Observer.observe(ch4Number);
-    });
-
-    // Film strip horizontal scroll
-    onReady(() => {
-      const filmStrip = document.getElementById('film-strip');
-      if (filmStrip) {
-        const filmStripWidth = filmStrip.scrollWidth;
-        const viewportWidth = window.innerWidth;
-        const maxScroll = filmStripWidth - viewportWidth;
-
-        gsap.to('#film-strip', {
-          x: -maxScroll,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: '.fl718-film-section',
-            start: 'top top',
-            end: '+=3000',
-            scrub: 1,
-            pin: true,
-            anticipatePin: 1,
-          }
-        });
-      }
-    });
+    // Film strip horizontal scroll — see separate <script> at bottom of <body>
 
     // ============================================
     // CHAPTER 5 - ANIMATIONS
@@ -5171,6 +5192,7 @@
         entries.forEach(function(entry) {
           if (entry.isIntersecting && !triggered) {
             triggered = true;
+            observer.disconnect();
             runTip();
           }
         });
@@ -5203,6 +5225,7 @@
         var dLine     = document.getElementById('d-line');
         var sevenLine = document.getElementById('seven-line');
         var jLine     = document.getElementById('j-line');
+        gsap.set([dLine, sevenLine, jLine], { opacity: 1 });
         prepLine(dLine);
         prepLine(sevenLine);
         prepLine(jLine);
@@ -5227,31 +5250,34 @@
         tl.to('#ghost-d',   { opacity: 0.32, duration: 1.1 }, 0.2);
         tl.to(['#brooklyn-border', '#brooklyn-label'], { opacity: 0.28, duration: 0.9 }, 0.3);
 
-        tl.to('#st-gran',  { opacity:1, scale:1, duration:0.4, ease:'back.out(2.5)' }, 0.5);
-        tl.to('#bullet-d', { opacity:1, scale:1, duration:0.35, ease:'back.out(2)' }, 0.6);
+        tl.fromTo('#st-gran',  { opacity:0, scale:0 }, { opacity:1, scale:1, duration:0.4, ease:'back.out(2.5)' }, 0.5);
+        tl.to('#lbl-gran', { opacity:1, duration:0.4 }, 0.62);
+        tl.fromTo('#bullet-d', { opacity:0, scale:0 }, { opacity:1, scale:1, duration:0.35, ease:'back.out(2)' }, 0.6);
         tl.to('#bt-d',     { opacity:1, duration:0.2 }, 0.72);
 
         tl.to(dLine, { strokeDashoffset:0, duration:2.0, ease:'power1.inOut' }, 1.0);
-        tl.to('#st-34h', { opacity:1, scale:1, duration:0.3, ease:'back.out(2)' }, 1.4);
+        tl.fromTo('#st-34h', { opacity:0, scale:0 }, { opacity:1, scale:1, duration:0.3, ease:'back.out(2)' }, 1.4);
+        tl.to('#lbl-34h', { opacity:1, duration:0.4 }, 1.5);
+        tl.fromTo('#st-42d', { opacity:0, scale:0 }, { opacity:1, scale:1, duration:0.3, ease:'back.out(2)' }, 1.6);
+        tl.to('#lbl-42d', { opacity:1, duration:0.4 }, 1.7);
 
         tl.fromTo('#photo4',
           { opacity:0, scale:0.78, y:10 },
           { opacity:1, scale:1, y:0, duration:0.7, ease:'back.out(1.3)' }, 1.5);
 
-        tl.to('#st-tsq',  { opacity:1, scale:1.2, duration:0.45, ease:'back.out(2)' }, 1.8);
-        tl.to('#st-tsq',  { scale:1, duration:0.3 }, 2.25);
+        tl.fromTo('#st-tsq', { opacity:0, scale:0 }, { opacity:1, scale:1, duration:0.45, ease:'back.out(2.5)' }, 1.8);
         tl.to('#lbl-tsq', { opacity:1, duration:0.5 }, 1.9);
         tl.to('#ring-tsq-d', { scale:4.2, opacity:0, duration:1.0, ease:'power2.out' }, 1.85);
         tl.to('#ring-tsq-7', { scale:3.4, opacity:0, duration:0.9, ease:'power2.out' }, 2.02);
 
-        tl.to('#bullet-7', { opacity:1, scale:1, duration:0.35, ease:'back.out(2)' }, 2.1);
+        tl.fromTo('#bullet-7', { opacity:0, scale:0 }, { opacity:1, scale:1, duration:0.35, ease:'back.out(2)' }, 2.1);
         tl.to('#bt-7',     { opacity:1, duration:0.2 }, 2.22);
 
-        tl.to('#st-125',  { opacity:1, scale:1, duration:0.3, ease:'back.out(2)' }, 2.2);
-        tl.to('#st-145',  { opacity:1, scale:1, duration:0.3, ease:'back.out(2)' }, 2.4);
+        tl.fromTo('#st-161', { opacity:0, scale:0 }, { opacity:1, scale:1, duration:0.3, ease:'back.out(2)' }, 2.4);
+        tl.to('#lbl-161', { opacity:1, duration:0.4 }, 2.65);
         tl.to('#bronx-border', { opacity:1, duration:0.6 }, 2.5);
         tl.to('#bronx-label',  { opacity:1, duration:0.5 }, 2.6);
-        tl.to('#st-norw', { opacity:1, scale:1, duration:0.4, ease:'back.out(2)' }, 2.9);
+        tl.fromTo('#st-norw', { opacity:0, scale:0 }, { opacity:1, scale:1, duration:0.4, ease:'back.out(2)' }, 2.9);
         tl.to('#lbl-norw',{ opacity:1, duration:0.4 }, 3.0);
         tl.to('#conn3', { opacity:1, strokeDashoffset:0, duration:0.3 }, 3.1);
         tl.fromTo('#photo3',
@@ -5259,9 +5285,11 @@
           { opacity:1, scale:1, y:0, duration:0.55, ease:'back.out(1.4)' }, 3.2);
 
         tl.to(sevenLine, { strokeDashoffset:0, duration:1.6, ease:'power1.inOut' }, 2.1);
-        tl.to('#st-jh',  { opacity:1, scale:1, duration:0.4, ease:'back.out(2)' }, 2.85);
+        tl.fromTo('#st-wds', { opacity:0, scale:0 }, { opacity:1, scale:1, duration:0.35, ease:'back.out(2)' }, 2.65);
+        tl.to('#lbl-wds', { opacity:1, duration:0.3 }, 2.8);
+        tl.fromTo('#st-jh',  { opacity:0, scale:0 }, { opacity:1, scale:1, duration:0.4, ease:'back.out(2)' }, 2.85);
         tl.to('#lbl-jh', { opacity:1, duration:0.4 }, 3.0);
-        tl.to('#st-flu', { opacity:1, scale:1, duration:0.4, ease:'back.out(2)' }, 3.55);
+        tl.fromTo('#st-flu', { opacity:0, scale:0 }, { opacity:1, scale:1, duration:0.4, ease:'back.out(2)' }, 3.55);
         tl.to('#lbl-flu',{ opacity:1, duration:0.4 }, 3.67);
         tl.to('#queens-border', { opacity:1, duration:0.6 }, 3.15);
         tl.to('#queens-label',  { opacity:1, duration:0.5 }, 3.25);
@@ -5270,16 +5298,17 @@
           { opacity:0, scale:0.82, y:8 },
           { opacity:1, scale:1, y:0, duration:0.55, ease:'back.out(1.4)' }, 3.85);
 
-        tl.to('#bullet-j',  { opacity:1, scale:1, duration:0.35, ease:'back.out(2)' }, 2.0);
+        tl.fromTo('#bullet-j', { opacity:0, scale:0 }, { opacity:1, scale:1, duration:0.35, ease:'back.out(2)' }, 2.0);
         tl.to('#bt-j',      { opacity:1, duration:0.2 }, 2.12);
-        tl.to('#st-broad',  { opacity:1, scale:1, duration:0.4, ease:'back.out(2)' }, 2.1);
+        tl.fromTo('#st-broad', { opacity:0, scale:0 }, { opacity:1, scale:1, duration:0.4, ease:'back.out(2)' }, 2.1);
         tl.to('#lbl-broad', { opacity:1, duration:0.4 }, 2.25);
         tl.to(jLine, { strokeDashoffset:0, duration:2.0, ease:'power1.inOut' }, 2.1);
-        tl.to('#st-marcy', { opacity:1, scale:1, duration:0.3, ease:'back.out(2)' }, 2.62);
-        tl.to('#st-bjx',  { opacity:1, scale:1, duration:0.4, ease:'back.out(2)' }, 3.18);
+        tl.fromTo('#st-marcy', { opacity:0, scale:0 }, { opacity:1, scale:1, duration:0.3, ease:'back.out(2)' }, 2.62);
+        tl.to('#lbl-marcy', { opacity:1, duration:0.4 }, 2.75);
+        tl.fromTo('#st-bjx',  { opacity:0, scale:0 }, { opacity:1, scale:1, duration:0.4, ease:'back.out(2)' }, 3.18);
         tl.to('#lbl-bjx', { opacity:1, duration:0.4 }, 3.32);
         tl.to('#ring-bjx',{ scale:3.5, opacity:0, duration:0.8, ease:'power2.out' }, 3.2);
-        tl.to('#st-jam',  { opacity:1, scale:1, duration:0.4, ease:'back.out(2)' }, 4.0);
+        tl.fromTo('#st-jam',  { opacity:0, scale:0 }, { opacity:1, scale:1, duration:0.4, ease:'back.out(2)' }, 4.0);
         tl.to('#lbl-jam', { opacity:1, duration:0.4 }, 4.12);
         tl.to('#conn2', { opacity:1, strokeDashoffset:0, duration:0.3 }, 4.25);
         tl.fromTo('#photo2',
@@ -5293,6 +5322,7 @@
         entries.forEach(function(entry) {
           if (entry.isIntersecting && !walkTriggered) {
             walkTriggered = true;
+            walkObs.disconnect();
             setTimeout(runWalkAnimation, 300);
           }
         });
@@ -5448,6 +5478,56 @@
   }());
   </script>
 
+  <!-- Ch4 chapter number typewriter — separate script, IIFE (main script block silently
+       breaks IntersectionObserver when the film-strip ScrollTrigger pin is present) -->
+  <script>
+  (function() {
+    var ch4NumberTriggered = false;
+    var ch4ReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function ch4Typewriter(element, text, speed) {
+      speed = speed || 90;
+      if (ch4ReducedMotion) {
+        element.textContent = text;
+        element.classList.add('typed');
+        return;
+      }
+      var index = 0;
+      element.classList.add('typing');
+      function type() {
+        if (index < text.length) {
+          element.textContent += text.charAt(index);
+          index++;
+          var variableSpeed = speed + (Math.random() * 40 - 20);
+          setTimeout(type, variableSpeed);
+        } else {
+          setTimeout(function() {
+            element.classList.remove('typing');
+            element.classList.add('typed');
+          }, 500);
+        }
+      }
+      type();
+    }
+
+    var ch4Observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting && !ch4NumberTriggered) {
+          ch4NumberTriggered = true;
+          var el = document.getElementById('chapterNumber4');
+          if (el && el.textContent === '') {
+            setTimeout(function() { ch4Typewriter(el, 'CHAPTER 4', 90); }, 300);
+          }
+          ch4Observer.disconnect();
+        }
+      });
+    }, { threshold: 0.15 });
+
+    var ch4Target = document.getElementById('chapterNumber4');
+    if (ch4Target) ch4Observer.observe(ch4Target);
+  }());
+  </script>
+
   <!-- Ch5 colophon ornament — separate script, IIFE -->
   <script>
   (function() {
@@ -5458,6 +5538,7 @@
       entries.forEach(function(entry) {
         if (entry.isIntersecting && !colophonTriggered) {
           colophonTriggered = true;
+          colophonObs.disconnect();
           if (colophonReduced) {
             document.getElementById('fl718Colophon').style.opacity = 1;
             return;
@@ -5468,7 +5549,6 @@
             ease: 'power1.out',
             delay: 0.8
           });
-          colophonObs.disconnect();
         }
       });
     }, { threshold: 0.5 });
@@ -5477,81 +5557,66 @@
   }());
   </script>
 
+  <!-- ── FILM STRIP HORIZONTAL SCROLL — Ch.4 ── -->
+  <script>
+  (function() {
+    var filmReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (filmReducedMotion) return;
+    if (window.innerWidth < 768) return;
+
+    var filmStrip = document.getElementById('film-strip');
+    if (!filmStrip) return;
+
+    function setupFilmScroll() {
+      // Set vertical centering via GSAP so it's preserved alongside the x animation.
+      // CSS uses top:50% for initial paint; GSAP takes over transform ownership here.
+      gsap.set('#film-strip', { yPercent: -50 });
+
+      // x and end are functions so invalidateOnRefresh:true can recalculate on resize.
+      // end '+=3000' is intentional: user scrolls 3000px to pan the full strip width
+      // (cinematic slow pan — do not reduce to match maxScroll 1:1).
+      gsap.to('#film-strip', {
+        x: function() {
+          return -(filmStrip.scrollWidth - filmStrip.parentElement.clientWidth);
+        },
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '.fl718-film-section',
+          start: 'top top',
+          end: '+=3000',
+          scrub: 0.5,
+          pin: true,
+          anticipatePin: 1,
+          invalidateOnRefresh: true
+        }
+      });
+    }
+
+    // Guard: if 'load' already fired (resources cached), call directly.
+    // Otherwise wait for it — we need image dimensions settled before reading scrollWidth.
+    if (document.readyState === 'complete') {
+      setupFilmScroll();
+    } else {
+      window.addEventListener('load', setupFilmScroll);
+    }
+  }());
+  </script>
+
 </body>
 </html>
 
 <!--
 ============================================
-ASSET MANIFEST - REQUIRED IMAGES
+ASSET MANIFEST — NOTE
 ============================================
-
-HERO SECTION (0. Hero/):
-- placeholder1.jpg (motorcycle reflection)
-- placeholder2.jpg (street shooting)
-- placeholder3.JPG (Brooklyn stoop)
-- placeholder4.jpeg (burning dollar)
-
-CHAPTER 1 (1. chapter 1/):
-- chapter1-scrapbook-library-cards.png
-- chapter1-scrapbook-metrocards.png
-- chapter1-scrapbook-spraypaint-street.png
-- chapter1-scrapbook-quarter-drinks-street.png
-- chapter1-scrapbook-pizza-box.png
-- chapter1-scrapbook-research_notes.png
-- chapter1-scrapbook-books.png
-- chapter1.jpg (Bay Ridge portrait)
-- chapter2-me-2.jpg (Flushing portrait)
-
-CHAPTER 2 (2. chapter 2/):
-- chapter2-scrap1.png (Cochin postcards)
-- NookNook-scrap2.png (shipping docs)
-- chapter2-scrap3.jpg (coir mat product)
-- chapter2-scrap4.png (business notes)
-- nook-nook-1.png (brand logo)
-- nook-nook-2.jpg (mat design)
-- nook-nook-3.jpg (tree design mat)
-- nook-nook4.jpg (product benefits)
-- Nook-Nook5.JPG (artisan preparing fiber)
-- Nook-Nook6.JPG (hand loom weaving)
-
-CHAPTER 3 (3. chapter 3/):
-- chapter3-scrap1.png (Nikon D3300 camera)
-- chapter3scrap-6.png (camera in bodega bag)
-- chapter3-scrap3.png (vintage letters)
-- chapter3-scrap2.png (Peruvian currency)
-- chapter3-scrap5.png (travel journal)
-- chapter3-scrap4.png (boarding passes)
-- chapter3-myfoto1.jpg (child in pink)
-- chapter3-myfoto2.jpg (shattered windshield)
-- chapter3-myfoto3.jpg (B&W framed woman)
-- chapter3-myfoto5.jpg (woman at van)
-
-CHAPTER 4 (4. chapter 4/):
-- chapter5-colo1.jpg (Mexico City color)
-- chapter5-bnw1.jpg (Mexico City B&W)
-- chapter5-filmstrip1.jpg (Frame 1A)
-- chapter5-filmstrip2.jpg (Frame 2)
-- chapter5-filmstrip3.jpg (Frame 3A)
-- chapter5-filmstrip4.jpg (Frame 4)
-- chapter5-filmstrip5.jpg (Frame 5A)
-- chapter5-filmstrip6.jpg (Frame 6)
-- chapter5-filmstrip7.jpg (Frame 7A)
-
-CHAPTER 5 (5. chapter 5/):
-- Chapter5-foto1.jpg (Bad Habits neon)
-- Chapter5-foto2.jpg (street vendor)
-- Chapter5-foto3.jpg (burning dollar portrait)
-- Chapter5-foto4.jpg (carnival scene)
-- Chapter5-foto5.jpg (urban art)
-- Chapter5-foto6.jpg (self portrait with camera)
-
-TOTAL: 50+ image assets
+This manifest is STALE and does not reflect current asset paths.
+See actual src="..." attributes in the HTML above for current asset paths.
+All assets live in Assets/ subdirectories organized by chapter number.
 
 WORDPRESS UPLOAD INSTRUCTIONS:
 1. Upload all images to WordPress Media Library
-2. Organize in folders by chapter (optional but recommended)
-3. Replace image src paths in HTML with WordPress URLs
-4. Format: https://yourdomain.com/wp-content/uploads/YYYY/MM/filename.ext
+2. Replace image src paths in HTML with WordPress URLs
+3. Format: https://yourdomain.com/wp-content/uploads/YYYY/MM/filename.ext
 
 ============================================
 END OF FILE

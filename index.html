@@ -1786,7 +1786,7 @@
     .ch2-spine-title { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(90deg); font-family: 'Courier Prime', monospace; font-size: 6px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(180,150,80,0.45); white-space: nowrap; }
 
     .ch2-manifest-section { position: relative; width: 100%; border-radius: 2px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.10); }
-    .ch2-chart-map { display: block; width: 100%; height: auto; }
+    .ch2-chart-map { display: block; width: 100%; height: auto; aspect-ratio: 3/2; }
     .ch2-chart-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
     .ch2-mat-surface { position: absolute; top: 18%; left: 22%; width: 185px; opacity: 0; z-index: 8; pointer-events: none; transform: rotate(4deg); filter: drop-shadow(0 6px 18px rgba(0,0,0,0.38)); }
     .ch2-mat-surface img { display: block; width: 100%; height: auto; border-radius: 2px; }
@@ -2078,6 +2078,11 @@
       display: flex;
       align-items: center;
       background: #1a1a1a;
+      /* z-index: 20 ensures the pinned film section (which GSAP sets to
+         position:fixed) paints above #chapterNumber4 (z-index:10) during
+         the overlap window at the top of the pin. Without this the pink
+         "CHAPTER 4" typewriter text bleeds through the dark film section. */
+      z-index: 20;
     }
 
     .fl718-film-wrapper {
@@ -2327,6 +2332,7 @@
       display: block;
       width: 100%;
       height: auto;
+      aspect-ratio: 97/60; /* nook product photos: 970x600 */
     }
 
     .fl718-pstack-item__footer {
@@ -2437,6 +2443,15 @@
       line-height: 1;
     }
 
+    /* ── Ch5 closing stick figure ── */
+    .fl718-closing__figure {
+      display: block;
+      margin: 80px auto 0;
+      height: 460px;
+      width: auto;
+      opacity: 0;
+    }
+
     /*
     ============================================
     RESPONSIVE DESIGN
@@ -2544,6 +2559,15 @@
 
       .fl718-chapter4 .fl718-closing__text {
         font-size: 20px;
+      }
+
+      .fl718-ch5-title {
+        font-size: clamp(52px, 14vw, 90px);
+      }
+
+      .fl718-threshold__sentence {
+        font-size: clamp(16px, 4.5vw, 24px);
+        white-space: normal;
       }
     }
   </style>
@@ -3878,6 +3902,11 @@
         <div class="fl718-colophon__hedera">❧</div>
       </div>
 
+      <img src="../../Flaneur Figure/flaneur_black_line3.png"
+           alt="Flaneur 718"
+           class="fl718-closing__figure"
+           id="fl718ClosingFigure">
+
     </section>
 
   </div>
@@ -4867,60 +4896,8 @@
     const ch2ManifestEl = document.getElementById('ch2ManifestSection');
     if (ch2ManifestEl) ch2ManifestObs.observe(ch2ManifestEl);
 
-    // Artisan Photos Presentation - Chapter 2
-    // ── Chapter 2 pinboard animation ──────────────────────────────────────
-    // finalRot: resting angle. rotOffset: starting angle offset before pinned.
-    // yFrom: how far above its resting position the photo starts.
-    // delay: stagger from when ScrollTrigger fires.
-    (function () {
-      var ch2PinData = [
-        { id: 'ch2pi1', finalRot: -3.0, rotOffset: +19, yFrom: -145, delay: 0.00 },
-        { id: 'ch2pi2', finalRot:  1.8, rotOffset: -21, yFrom: -155, delay: 0.13 },
-        { id: 'ch2pi3', finalRot:  2.6, rotOffset: +17, yFrom: -148, delay: 0.26 },
-        { id: 'ch2pi4', finalRot: -2.0, rotOffset: -18, yFrom: -140, delay: 0.39 },
-        { id: 'ch2pi5', finalRot:  2.3, rotOffset: +16, yFrom: -142, delay: 0.52 },
-        { id: 'ch2pi6', finalRot: -1.5, rotOffset: -20, yFrom: -138, delay: 0.65 },
-      ];
-
-      if (reducedMotion) {
-        ch2PinData.forEach(function (p) {
-          var el = document.getElementById(p.id);
-          if (el) gsap.set(el, { opacity: 1, rotation: p.finalRot, transformOrigin: '50% 0' });
-        });
-        return;
-      }
-
-      ch2PinData.forEach(function (p) {
-        var el = document.getElementById(p.id);
-        if (!el) return;
-
-        // Start: invisible, above the board, tilted off-axis
-        gsap.set(el, {
-          opacity: 0,
-          y: p.yFrom,
-          rotation: p.finalRot + p.rotOffset,
-          transformOrigin: '50% 0'   // pivot at the pin head
-        });
-
-        var tl = gsap.timeline({
-          delay: p.delay,
-          scrollTrigger: {
-            trigger: '#ch2PinboardSection',
-            start: 'top 40%',
-            once: true
-          }
-        });
-
-        // Phase 1 — rapid gravity drop
-        tl.to(el, { opacity: 1, y: 0, duration: 0.21, ease: 'power3.in' });
-
-        // Phase 2 — impact squash at the pin point
-        tl.to(el, { scaleX: 1.045, scaleY: 0.925, duration: 0.055, ease: 'power1.out' });
-
-        // Phase 3 — elastic wobble settle (bottom swings like a pendulum from the pin)
-        tl.to(el, { rotation: p.finalRot, scaleX: 1, scaleY: 1, duration: 0.72, ease: 'elastic.out(1.05, 0.40)' });
-      });
-    }());
+    // Ch2 pinboard animation moved to separate <script> block at bottom of <body>
+    // (main script block silently breaks ScrollTrigger on this page — see project patterns)
 
     // ============================================
     // CHAPTER 3 f/stop DIVIDER
@@ -5557,6 +5534,109 @@
   }());
   </script>
 
+  <!-- Ch.2 Kochi pinboard — separate script per project convention.
+       Uses IntersectionObserver (not ScrollTrigger) because 16 lazy-loaded images
+       above this section inflate the layout after window.load fires, making any
+       pre-calculated scroll position wrong. IntersectionObserver fires reactively
+       when the element enters the viewport — immune to layout-shift timing bugs. -->
+  <script>
+    (function () {
+      var pinReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var pinTriggered = false;
+
+      var ch2PinData = [
+        { id: 'ch2pi1', finalRot: -3.0, rotOffset: +19, yFrom: -145, delay: 0.00 },
+        { id: 'ch2pi2', finalRot:  1.8, rotOffset: -21, yFrom: -155, delay: 0.13 },
+        { id: 'ch2pi3', finalRot:  2.6, rotOffset: +17, yFrom: -148, delay: 0.26 },
+        { id: 'ch2pi4', finalRot: -2.0, rotOffset: -18, yFrom: -140, delay: 0.39 },
+        { id: 'ch2pi5', finalRot:  2.3, rotOffset: +16, yFrom: -142, delay: 0.52 },
+        { id: 'ch2pi6', finalRot: -1.5, rotOffset: -20, yFrom: -138, delay: 0.65 },
+      ];
+
+      if (pinReducedMotion) {
+        ch2PinData.forEach(function (p) {
+          var el = document.getElementById(p.id);
+          if (el) gsap.set(el, { opacity: 1, rotation: p.finalRot, transformOrigin: '50% 0' });
+        });
+        return;
+      }
+
+      // Hide photos immediately — no flash of visible content during page load
+      ch2PinData.forEach(function (p) {
+        var el = document.getElementById(p.id);
+        if (!el) return;
+        gsap.set(el, {
+          opacity: 0,
+          y: p.yFrom,
+          rotation: p.finalRot + p.rotOffset,
+          transformOrigin: '50% 0'   // pivot at the pin head
+        });
+      });
+
+      function runPinboard() {
+        ch2PinData.forEach(function (p) {
+          var el = document.getElementById(p.id);
+          if (!el) return;
+
+          var tl = gsap.timeline({ delay: p.delay });
+
+          // Phase 1 — rapid gravity drop
+          tl.to(el, { opacity: 1, y: 0, duration: 0.21, ease: 'power3.in' });
+
+          // Phase 2 — impact squash at the pin point
+          tl.to(el, { scaleX: 1.045, scaleY: 0.925, duration: 0.055, ease: 'power1.out' });
+
+          // Phase 3 — elastic wobble settle (bottom swings like a pendulum from the pin)
+          tl.to(el, { rotation: p.finalRot, scaleX: 1, scaleY: 1, duration: 0.72, ease: 'elastic.out(1.05, 0.40)' });
+        });
+      }
+
+      // IntersectionObserver fires reactively when the section enters the viewport —
+      // unaffected by lazy-image layout shift that breaks ScrollTrigger pre-calculation.
+      // threshold: 0.25 matches the established pattern for one-shot animations on this page.
+      var pinObs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting && !pinTriggered) {
+            pinTriggered = true;
+            pinObs.disconnect();
+            runPinboard();
+          }
+        });
+      }, { threshold: 0.25 });
+
+      var pinSection = document.getElementById('ch2PinboardSection');
+      if (pinSection) pinObs.observe(pinSection);
+    }());
+  </script>
+
+  <!-- Ch5 closing stick figure — fades in after colophon -->
+  <script>
+  (function() {
+    var sfTriggered = false;
+    var sfReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    var sfObs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting && !sfTriggered) {
+          sfTriggered = true;
+          sfObs.disconnect();
+          if (sfReduced) {
+            document.getElementById('fl718ClosingFigure').style.opacity = 1;
+            return;
+          }
+          gsap.fromTo('#fl718ClosingFigure',
+            { opacity: 0, y: 18 },
+            { opacity: 1, y: 0, duration: 2.0, ease: 'power2.out', delay: 0.6 }
+          );
+        }
+      });
+    }, { threshold: 0.4 });
+
+    var sfEl = document.getElementById('fl718ClosingFigure');
+    if (sfEl) sfObs.observe(sfEl);
+  }());
+  </script>
+
   <!-- ── FILM STRIP HORIZONTAL SCROLL — Ch.4 ── -->
   <script>
   (function() {
@@ -5590,6 +5670,12 @@
           invalidateOnRefresh: true
         }
       });
+      // REQUIRED: recalculate trigger offsets against final layout height.
+      // Without this, the pin fires too early — ScrollTrigger records stale
+      // pixel positions at setup time before all images above have settled
+      // their intrinsic dimensions. See memory: "ScrollTrigger Pin Broken
+      // by Stale Layout Positions".
+      ScrollTrigger.refresh();
     }
 
     // Guard: if 'load' already fired (resources cached), call directly.

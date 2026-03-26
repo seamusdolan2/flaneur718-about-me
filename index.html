@@ -92,7 +92,9 @@
     ============================================
     */
 
-    * {
+    :where(.fl718-about-page) *,
+    :where(.fl718-about-page) *::before,
+    :where(.fl718-about-page) *::after {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
@@ -122,6 +124,9 @@
       /* Ch4 darkroom: override JS-set initial filter states so images show revealed */
       #ch4ImgColor { filter: none !important; }
       #ch4ImgBnw   { filter: contrast(1.05) !important; }
+      /* Ch3: ensure blur-to-focus lines and closing quote are visible if JS fails */
+      .fl718-transform-line { opacity: 1 !important; filter: none !important; color: #1a1a1a !important; transform: none !important; }
+      .fl718-ch3-closing-quote { opacity: 1 !important; filter: none !important; }
     }
 
     /*
@@ -141,9 +146,9 @@
     /* LEFT: Vertical Title */
     .fl718-opening__title-container {
       position: absolute;
-      left: 16px;
+      left: 34px;
       top: 20px;
-      width: 100px;
+      width: 120px;
       display: flex;
       align-items: flex-start;
       z-index: 100;
@@ -167,11 +172,15 @@
       text-transform: uppercase;
     }
 
+    .fl718-opening__title-main .fl718-opening__accent {
+      color: #c44536;
+    }
+
     .fl718-opening__title-sub {
       display: block;
       font-size: 72px;
       font-weight: 600;
-      color: #333333;
+      color: #c44536;
       margin-top: -12px;
     }
 
@@ -542,6 +551,13 @@
     ============================================
     */
 
+    /* Clip wrapper — contains the strip's subtle settle without breaking sticky contexts */
+    .fl718-ch34-clip {
+      width: 100%;
+      overflow: hidden;
+      background: linear-gradient(to bottom, #f4e4d7 0%, #fef3e2 100%); /* matches strip bg so no seams */
+    }
+
     .fl718-ch34-transition {
       width: 100%;
       background: linear-gradient(to bottom, #f4e4d7 0%, #fef3e2 100%); /* bridges ch3 bottom → ch4 top */
@@ -550,6 +566,15 @@
       align-items: center;
       justify-content: space-between;
       box-sizing: border-box;
+      opacity: 0; /* JS will animate in via negative-drop */
+    }
+
+    /* SVG filter definition — hidden, referenced by JS animation */
+    svg.fl718-ch34-defs {
+      position: absolute;
+      width: 0;
+      height: 0;
+      overflow: hidden;
     }
 
     .fl718-ch34-chunk {
@@ -592,26 +617,124 @@
 
     .fl718-ch45-transition {
       width: 100%;
-      background: #ffffff;
-      padding: 44px 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      background: linear-gradient(to bottom, #1a1a1a 0%, #2a2520 12%, #4a3f36 28%, #8a7a6a 48%, #c4b8a8 65%, #e8e0d6 78%, #ffffff 100%);
+      padding: 420px 0 80px 0;
+      position: relative;
+      z-index: 25;
+      margin-top: -10px;
       box-sizing: border-box;
+      overflow: hidden;
     }
 
-    .fl718-ch45-coord {
+    /* Grid lines: full-width rules spanning edge to edge */
+    .fl718-ch45c-rule {
+      width: 100%;
+      height: 1px;
+      background: rgba(42,26,10,0.12);
+      transform-origin: left center;
+      transform: scaleX(0);
+      position: relative;
+    }
+
+    /* Tick marks on the rules — cartographic margin annotations */
+    .fl718-ch45c-rule::before,
+    .fl718-ch45c-rule::after {
+      content: '';
+      position: absolute;
+      width: 1px;
+      height: 5px;
+      background: rgba(42,26,10,0.18);
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .fl718-ch45c-rule::before { left: 80px; }
+    .fl718-ch45c-rule::after  { right: 80px; }
+    .fl718-ch45c-rule.ticked::before,
+    .fl718-ch45c-rule.ticked::after {
+      opacity: 1;
+    }
+
+    /* Coordinate block between the two rules */
+    .fl718-ch45c-coord-block {
+      padding: 20px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+
+    /* Each coordinate line: margin label + separator + value */
+    .fl718-ch45c-coord-row {
+      display: flex;
+      align-items: baseline;
+      gap: 0;
+      opacity: 0;
+    }
+
+    /* Margin label — the cartographic annotation key */
+    .fl718-ch45c-coord-label {
+      font-family: 'Courier Prime', 'Courier New', monospace;
+      font-size: 9px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: rgba(42,26,10,0.22);
+      width: 22px;
+      flex-shrink: 0;
+      padding-top: 2px;
+    }
+
+    /* Vertical separator rule between label and value */
+    .fl718-ch45c-coord-sep {
+      width: 1px;
+      height: 18px;
+      background: rgba(42,26,10,0.1);
+      margin: 0 14px;
+      flex-shrink: 0;
+      transform: scaleY(0);
+      transform-origin: top center;
+    }
+
+    /* Coordinate value */
+    .fl718-ch45c-coord-value {
       font-family: 'EB Garamond', Georgia, serif;
       font-size: 15px;
       font-style: italic;
-      font-weight: 400;
       color: rgba(42,26,10,0.32);
       letter-spacing: 0.06em;
+      white-space: nowrap;
+    }
+
+    /* Spacer between the two coordinate rows */
+    .fl718-ch45c-coord-gap {
+      height: 10px;
+    }
+
+    /* Reduced motion: ch4→5 transition */
+    @media (prefers-reduced-motion: reduce) {
+      .fl718-ch45c-rule {
+        transform: scaleX(1) !important;
+      }
+      .fl718-ch45c-rule::before,
+      .fl718-ch45c-rule::after {
+        opacity: 1 !important;
+        transition: none !important;
+      }
+      .fl718-ch45c-coord-sep {
+        transform: scaleY(1) !important;
+      }
+      .fl718-ch45c-coord-row {
+        opacity: 1 !important;
+        transform: none !important;
+      }
     }
 
     @media (max-width: 768px) {
-      .fl718-ch45-transition { padding: 32px 0; }
-      .fl718-ch45-coord { font-size: 13px; }
+      .fl718-ch45-transition { padding: 120px 0 32px 0; }
+      .fl718-ch45c-coord-value { font-size: 13px; }
+      .fl718-ch45c-rule::before { left: 28px; }
+      .fl718-ch45c-rule::after  { right: 28px; }
     }
 
     /*
@@ -728,24 +851,24 @@
     #subway-r-line        { opacity: 0; }
     #pizzaOuter           { opacity: 0; }
 
-    .subway-station {
+    body.fl718-about-page .subway-station {
       opacity: 0;
       transform-origin: center;
       transform-box: fill-box;
     }
 
-    .subway-label {
+    body.fl718-about-page .subway-label {
       font-family: Helvetica, Arial, sans-serif;
       font-size: 11px;
       fill: #555;
       font-weight: 500;
       opacity: 0;
     }
-    .subway-label-hero     { font-size: 15px; font-weight: 700; fill: #000; }
-    .subway-label-terminus { font-size: 10px; font-weight: 500; fill: #777; }
+    body.fl718-about-page .subway-label-hero     { font-size: 15px; font-weight: 700; fill: #000; }
+    body.fl718-about-page .subway-label-terminus { font-size: 10px; font-weight: 500; fill: #777; }
 
-    .line-bullet      { opacity: 0; }
-    .line-bullet-text {
+    body.fl718-about-page .line-bullet      { opacity: 0; }
+    body.fl718-about-page .line-bullet-text {
       font-family: Helvetica, Arial, sans-serif;
       font-size: 11px; font-weight: 700;
       fill: #ffffff;
@@ -939,7 +1062,7 @@
     .fl718-university-scrapbook-stage {
       position: relative;
       width: 100%;
-      height: 660px;
+      height: 740px;
       overflow: visible;
       margin-top: -120px;
       margin-bottom: 150px;
@@ -950,8 +1073,8 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      width: 1060px;
-      height: 660px;
+      width: 1220px;
+      height: 740px;
       top: 0;
       display: flex;
       flex-direction: row;
@@ -975,21 +1098,21 @@
     /* Books */
     #uni-books-stack {
       position: relative;
-      width: 370px;
-      height: 530px;
+      width: 425px;
+      height: 610px;
       flex-shrink: 0;
     }
-    .uni-book { position: absolute; width: 360px; opacity: 0; }
+    .uni-book { position: absolute; width: 415px; opacity: 0; }
     .uni-book img { width: 100%; display: block; }
-    #uni-b1 { left: 0px; top: 365px; }
-    #uni-b2 { left: 7px; top: 313px; }
-    #uni-b3 { left: 0px; top: 277px; }
-    #uni-b4 { left: 5px; top: 147px; }
-    #uni-b5 { left: 3px; top: 183px; }
+    #uni-b1 { left: 0px; top: 420px; }
+    #uni-b2 { left: 8px; top: 360px; }
+    #uni-b3 { left: 0px; top: 319px; }
+    #uni-b4 { left: 6px; top: 169px; }
+    #uni-b5 { left: 3px; top: 210px; }
 
     /* Notebook */
     #uni-notebook {
-      width: 300px;
+      width: 375px;
       opacity: 0;
       transform-origin: center center;
       flex-shrink: 0;
@@ -998,7 +1121,7 @@
 
     /* SAS Terminal window */
     #uni-sas {
-      width: 380px;
+      width: 435px;
       opacity: 0;
       transform-origin: center center;
       border-radius: 3px;
@@ -1427,7 +1550,6 @@
       font-size: 52px;
       font-weight: 400;
       color: #000000;
-      font-style: italic;
       position: relative;
       top: -15px;
       left: -10px;
@@ -1541,7 +1663,7 @@
 
     /* ARTISAN PINBOARD SECTION - Chapter 2 */
     .fl718-artisan-section {
-      margin: 120px 0;
+      margin: 120px 0 200px;
     }
 
     .fl718-artisan-title {
@@ -1601,9 +1723,21 @@
     .fl718-ch2-pin-item img {
       display: block;
       width: 100%;
+      height: auto;
+      object-fit: contain;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.13);
+    }
+
+    /* Wide source images — use cover to fill height, cropping sides */
+    .fl718-ch2-pin-item--p2 img,
+    .fl718-ch2-pin-item--p4 img,
+    .fl718-ch2-pin-item--p6 img {
       height: 100%;
       object-fit: cover;
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.13);
+    }
+
+    .fl718-ch2-pin-item--p4 img {
+      object-position: 58% center;
     }
 
     /* Thumbtack — colour set per photo via CSS vars */
@@ -1641,14 +1775,46 @@
     }
 
     /* ── Top row: P1(278)+24+P2(378)+30+P3(256) = 966px ── */
-    .fl718-ch2-pin-item--p1 { width: 278px; height: 348px; left: 8px;   top: 50px;  --pin-hi: #ee5555; --pin-lo: #8b0000; }
-    .fl718-ch2-pin-item--p2 { width: 378px; height: 262px; left: 310px; top: 16px;  --pin-hi: #f0d860; --pin-lo: #9a8400; }
-    .fl718-ch2-pin-item--p3 { width: 256px; height: 322px; left: 718px; top: 56px;  --pin-hi: #ee5555; --pin-lo: #8b0000; }
+    .fl718-ch2-pin-item--p1 { width: 314px; height: 392px; left: -50px;  top: 38px;  --pin-hi: #ee5555; --pin-lo: #8b0000; }
+    .fl718-ch2-pin-item--p2 { width: 378px; height: 310px; left: 310px; top: 16px;  --pin-hi: #f0d860; --pin-lo: #9a8400; }
+    .fl718-ch2-pin-item--p3 { width: 290px; height: 362px; left: 726px; top: 44px;  --pin-hi: #ee5555; --pin-lo: #8b0000; }
 
     /* ── Bottom row: P4(348)+22+P5(360)+22+P6(260) = 1012px ── */
-    .fl718-ch2-pin-item--p4 { width: 348px; height: 240px; left: 8px;   top: 486px; --pin-hi: #888888; --pin-lo: #222222; }
-    .fl718-ch2-pin-item--p5 { width: 360px; height: 250px; left: 378px; top: 514px; --pin-hi: #ee5555; --pin-lo: #8b0000; }
-    .fl718-ch2-pin-item--p6 { width: 260px; height: 336px; left: 760px; top: 462px; --pin-hi: #6699dd; --pin-lo: #1a3f7a; }
+    .fl718-ch2-pin-item--p4 { width: 348px; height: 300px; left: -50px;  top: 486px; --pin-hi: #888888; --pin-lo: #222222; }
+    .fl718-ch2-pin-item--p5 { width: 360px; height: 252px; left: 378px; top: 514px; --pin-hi: #ee5555; --pin-lo: #8b0000; }
+    .fl718-ch2-pin-item--p6 { width: 360px; height: 246px; left: 760px; top: 530px; --pin-hi: #6699dd; --pin-lo: #1a3f7a; }
+
+    /* ── Mobile pinboard: 2 columns × 3 rows, larger photos ── */
+    @media (max-width: 1024px) {
+      .fl718-ch2-pinboard {
+        padding: 20px 8px 24px;
+      }
+
+      .fl718-ch2-pin-stage {
+        height: 640px;
+      }
+
+      .fl718-ch2-pin-item {
+        padding: 5px 5px 28px;
+      }
+
+      .fl718-ch2-pin-label {
+        font-size: 8px;
+        bottom: 7px;
+        left: 5px;
+        right: 5px;
+        padding-top: 5px;
+      }
+
+      /* 2 columns at 48% each, staggered pinboard feel.
+         Animation order P1→P6 zigzags: left→right→right→left→left→right */
+      .fl718-ch2-pin-item--p1 { width: 48%; height: auto; aspect-ratio: 278/348; left: 1%;  top: 8px; }
+      .fl718-ch2-pin-item--p2 { width: 48%; height: auto; aspect-ratio: 378/262; left: 51%; top: 25px; }
+      .fl718-ch2-pin-item--p3 { width: 48%; height: auto; aspect-ratio: 256/322; left: 51%; top: 168px; }
+      .fl718-ch2-pin-item--p4 { width: 48%; height: auto; aspect-ratio: 348/240; left: 1%;  top: 244px; }
+      .fl718-ch2-pin-item--p5 { width: 48%; height: auto; aspect-ratio: 360/250; left: 1%;  top: 386px; }
+      .fl718-ch2-pin-item--p6 { width: 48%; height: auto; aspect-ratio: 260/336; left: 51%; top: 405px; }
+    }
 
     /* SCRAPBOOK CLUSTER - BASE RULES (shared by Ch2 and Ch3) */
     /* ── BODEGA BAG TIP — SCRAPBOOK ANIMATION ── */
@@ -1699,63 +1865,88 @@
       #tip-bag { transform: rotate(180deg) !important; transform-origin: center !important; }
     }
 
-    /* ── CH.3 LONG WALK MAP ── */
-    #mapSection {
-      padding: 60px 24px 60px;
-      display: flex; flex-direction: column; align-items: center;
+    /* ── CH.3 HORIZONTAL SUBWAY CARDS ── */
+    body.fl718-about-page .subway-section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 40px 120px;
     }
-    #mapContainer {
-      position: relative;
-      width: 100%; max-width: 1100px;
-      aspect-ratio: 1400 / 1000;
+    body.fl718-about-page .subway-card {
+      width: 100%;
+      margin: 0 auto 0;
+      border-radius: 5px;
+      overflow: hidden;
+      box-shadow: 0 4px 32px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06);
+    }
+    body.fl718-about-page .subway-card__header {
+      padding: 16px 24px 13px;
+      display: flex; align-items: center; gap: 16px;
+    }
+    body.fl718-about-page .subway-card__bullet {
+      width: 42px; height: 42px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 21px; font-weight: 800; color: #fff;
+      flex-shrink: 0; opacity: 0; transform: scale(0);
+    }
+    body.fl718-about-page .subway-card__header-text { display: flex; flex-direction: column; gap: 2px; }
+    body.fl718-about-page .subway-card__line-name {
+      font-size: 17px; font-weight: 700; color: #fff;
+      letter-spacing: 0.01em; opacity: 0; transform: translateX(-8px);
+    }
+    body.fl718-about-page .subway-card__borough {
+      font-size: 10px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.2em; color: rgba(255,255,255,0.7); opacity: 0;
+    }
+    body.fl718-about-page .subway-card__map {
       background: #ddd7ca;
-      background-image: radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.12) 0%, transparent 70%);
-      border: 1px solid rgba(0,0,0,0.06);
-      box-shadow: 0 2px 24px rgba(0,0,0,0.10);
+      background-image: radial-gradient(ellipse at 50% 30%, rgba(255,255,255,0.10) 0%, transparent 65%);
+      padding: 0; position: relative;
     }
-    #mapSvg {
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      pointer-events: none;
+    body.fl718-about-page .subway-card__map svg { display: block; width: 100%; height: auto; }
+    body.fl718-about-page .subway-card--d .subway-card__header { background: #FF6319; }
+    body.fl718-about-page .subway-card--d .subway-card__bullet { background: #fff; color: #FF6319; box-shadow: 0 2px 8px rgba(255,99,25,0.3); }
+    body.fl718-about-page .subway-card--7 .subway-card__header { background: #B933AD; }
+    body.fl718-about-page .subway-card--7 .subway-card__bullet { background: #fff; color: #B933AD; box-shadow: 0 2px 8px rgba(185,51,173,0.3); }
+    body.fl718-about-page .subway-card--j .subway-card__header { background: #996633; }
+    body.fl718-about-page .subway-card--j .subway-card__bullet { background: #fff; color: #996633; box-shadow: 0 2px 8px rgba(153,102,51,0.3); }
+    body.fl718-about-page .line-path { opacity: 0; }
+    body.fl718-about-page .stn { opacity: 0; }
+    body.fl718-about-page .stn-label { opacity: 0; font-family: Helvetica, Arial, sans-serif; }
+    body.fl718-about-page .stn-sub { opacity: 0; font-family: Helvetica, Arial, sans-serif; }
+    body.fl718-about-page .ghost-ext { opacity: 0; }
+    body.fl718-about-page .pulse { opacity: 0; }
+    body.fl718-about-page .photo-interleave {
+      display: flex; flex-direction: column; align-items: center; gap: 0;
     }
-    /* Ch.3 map label: darker fill (#333) than Ch.1 scrapbook label (#555) — intentional */
-    .fl718-chapter3 .subway-label {
-      fill: #333;
+    body.fl718-about-page .photo-pair {
+      display: flex; justify-content: center; gap: 60px;
+      margin: 64px 0 80px; width: 100%; padding: 0 40px;
     }
-    .subway-label-sm { font-size: 9px; fill: #666; }
-    /* Ch.3 map bullet text: 12px vs Ch.1 scrapbook 11px — intentional, scoped */
-    #mapSvg .line-bullet-text {
-      font-size: 12px;
-    }
-    .pulse-ring     { opacity: 0; }
-    .photo-connector { opacity: 0; }
-    #d-line, #seven-line, #j-line { opacity: 0; }
-    .photo-pin {
-      position: absolute;
+    body.fl718-about-page .mstrip-photo {
       background: #faf8f4;
-      box-shadow: 1px 3px 14px rgba(0,0,0,0.20), 0 1px 3px rgba(0,0,0,0.08);
-      opacity: 0; will-change: opacity, transform;
+      box-shadow: 1px 3px 14px rgba(0,0,0,0.18), 0 1px 3px rgba(0,0,0,0.06);
+      padding: 8px 8px 32px; opacity: 0; will-change: opacity, transform;
+      width: 400px; flex-shrink: 0; position: relative;
     }
-    .photo-pin img { display: block; object-fit: cover; width: 100%; }
-    .photo-pin-caption {
+    body.fl718-about-page .mstrip-img-wrapper { width: 100%; aspect-ratio: 5 / 4; overflow: hidden; position: relative; }
+    body.fl718-about-page .mstrip-img-wrapper img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    body.fl718-about-page .mstrip-caption {
       text-align: center; font-family: Helvetica, Arial, sans-serif;
-      text-transform: uppercase; letter-spacing: 0.08em; color: #999;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: #999; font-size: 10px; margin-top: 10px; opacity: 0;
     }
-    #photo1 { left: 75%; top: 7%;  padding: 10px 10px 40px; transform: rotate(1.8deg); }
-    #photo1 img { width: 180px; height: 138px; filter: grayscale(0.60) brightness(0.9); }
-    #photo1 .photo-pin-caption { font-size: 9px; margin-top: 10px; }
-    #photo2 { left: 75%; top: 74%; padding: 9px 9px 36px; transform: rotate(-2.2deg); }
-    #photo2 img { width: 150px; height: 115px; }
-    #photo2 .photo-pin-caption { font-size: 8px; margin-top: 9px; }
-    #photo3 { left: 53%; top: 2%;  padding: 9px 9px 36px; transform: rotate(-1.5deg); }
-    #photo3 img { width: 150px; height: 115px; filter: grayscale(0.28); }
-    #photo3 .photo-pin-caption { font-size: 8px; margin-top: 9px; }
-    #photo4 { left: 5%;  top: 14%; padding: 10px 10px 40px; transform: rotate(1.0deg); }
-    #photo4 img { width: 180px; height: 138px; filter: grayscale(0); }
-    #photo4 .photo-pin-caption { font-size: 9px; margin-top: 10px; color: #c8602a; font-weight: 700; letter-spacing: 0.12em; }
-    #mapCaption {
-      margin-top: 28px;
-      font-size: 11px; letter-spacing: 0.26em; color: rgba(90,70,48,0.55);
-      text-transform: uppercase; text-align: center; opacity: 0;
+    #d-photo-1 { transform: rotate(1.2deg); margin-top: 12px; }
+    #d-photo-2 { transform: rotate(-1.8deg); margin-top: -8px; }
+    #d-photo-2 img { filter: grayscale(0.28); }
+    #s-photo-1 { transform: rotate(-1.4deg); margin-top: 6px; }
+    #s-photo-1 img { filter: grayscale(0.60) brightness(0.9); }
+    #s-photo-2 { transform: rotate(2.0deg); margin-top: -14px; }
+    #j-photo-1 { transform: rotate(1.6deg); margin-top: -6px; }
+    #j-photo-2 { transform: rotate(-2.2deg); margin-top: 10px; }
+    body.fl718-about-page .subway-caption {
+      text-align: center; font-size: 11px; letter-spacing: 0.26em;
+      text-transform: uppercase; color: rgba(90,70,48,0.55);
+      margin: 40px auto 0; line-height: 1.8; opacity: 0;
     }
 
     /* ── CHAPTER 2: LEDGER + MANIFEST ── */
@@ -1768,25 +1959,35 @@
     .ch2-book-spine::before { content: ''; position: absolute; top: 0; bottom: 0; left: 0; width: 7px; background: linear-gradient(90deg, rgba(0,0,0,0.15), transparent); }
     .ch2-book-spine::after { content: ''; position: absolute; top: 0; bottom: 0; right: 0; width: 7px; background: linear-gradient(270deg, rgba(0,0,0,0.10), transparent); }
     .ch2-ruled-lines { position: absolute; top: 76px; left: 0; right: 0; bottom: 34px; pointer-events: none; z-index: 1; }
-    .ch2-ledger-header { display: flex; font-family: 'Courier Prime', monospace; font-size: 8.5px; letter-spacing: 0.2em; text-transform: uppercase; color: #7a5518; border-bottom: 1.5px solid #9a7030; padding-bottom: 7px; opacity: 0; position: relative; z-index: 3; }
+    .ch2-ledger-header { display: flex; font-family: 'Courier Prime', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #7a5518; border-bottom: 1.5px solid #9a7030; padding-bottom: 8px; opacity: 0; position: relative; z-index: 3; }
     .ch2-col-item { flex: 2.8; } .ch2-col-qty { flex: 0.75; text-align: right; } .ch2-col-cost { flex: 1.1; text-align: right; } .ch2-col-note { flex: 2.2; padding-left: 14px; }
     .ch2-col-source { flex: 2.0; } .ch2-col-dest { flex: 2.2; } .ch2-col-date { flex: 1.1; text-align: right; } .ch2-col-status { flex: 1.4; padding-left: 14px; }
     .ch2-ledger-rows { position: relative; z-index: 3; }
-    .ch2-ledger-row { display: flex; align-items: baseline; padding: 6px 0 5px; border-bottom: 1px solid rgba(139,96,32,0.13); opacity: 0; }
-    .ch2-ledger-row .ch2-col-item, .ch2-ledger-row .ch2-col-source, .ch2-ledger-row .ch2-col-dest { font-family: 'Courier Prime', monospace; font-size: 9.5px; color: #3a2810; letter-spacing: 0.03em; }
-    .ch2-ledger-row .ch2-col-qty, .ch2-ledger-row .ch2-col-cost, .ch2-ledger-row .ch2-col-date, .ch2-ledger-row .ch2-col-status, .ch2-ledger-row .ch2-col-note { font-family: 'Caveat', cursive; font-size: 13.5px; color: #2e1e08; line-height: 1; }
+    .ch2-ledger-row { display: flex; align-items: baseline; padding: 7px 0 6px; border-bottom: 1px solid rgba(139,96,32,0.13); opacity: 0; }
+    .ch2-ledger-row .ch2-col-item, .ch2-ledger-row .ch2-col-source, .ch2-ledger-row .ch2-col-dest { font-family: 'Courier Prime', monospace; font-size: 11.5px; color: #3a2810; letter-spacing: 0.03em; }
+    .ch2-ledger-row .ch2-col-qty, .ch2-ledger-row .ch2-col-cost, .ch2-ledger-row .ch2-col-date, .ch2-ledger-row .ch2-col-status, .ch2-ledger-row .ch2-col-note { font-family: 'Caveat', cursive; font-size: 16px; color: #2e1e08; line-height: 1; }
     .ch2-ledger-row .ch2-col-qty { text-align: right; } .ch2-ledger-row .ch2-col-cost { text-align: right; } .ch2-ledger-row .ch2-col-date { text-align: right; }
     .ch2-ledger-row .ch2-col-note { padding-left: 14px; color: #6b4e1a; } .ch2-ledger-row .ch2-col-status { padding-left: 14px; }
-    .ch2-status-ok { color: #1e5020; } .ch2-status-late { color: #8b3300; } .ch2-status-clear { color: #1a3060; } .ch2-status-end { color: #5a1a1a; }
     .ch2-ledger-row.dim .ch2-col-item, .ch2-ledger-row.dim .ch2-col-source, .ch2-ledger-row.dim .ch2-col-dest { color: #5a3e20; }
     .ch2-ledger-row.dim .ch2-col-qty, .ch2-ledger-row.dim .ch2-col-cost, .ch2-ledger-row.dim .ch2-col-date, .ch2-ledger-row.dim .ch2-col-note, .ch2-ledger-row.dim .ch2-col-status { color: #7a5a30; }
+    /* Color accents — specificity must beat .ch2-ledger-row .ch2-col-* and .ch2-ledger-row.dim .ch2-col-* */
+    .ch2-ledger-row .ch2-cost-out { color: #8b3a2a; }
+    .ch2-ledger-row .ch2-cost-in { color: #2a6e30; }
+    .ch2-ledger-row .ch2-status-ok { color: #2a6e30; }
+    .ch2-ledger-row .ch2-status-late { color: #a83a2a; }
+    .ch2-ledger-row .ch2-status-clear { color: #2a6e30; }
+    .ch2-ledger-row .ch2-status-end { color: #8b3a2a; }
+    .ch2-ledger-row.dim .ch2-cost-out { color: #a85a4a; }
+    .ch2-ledger-row.dim .ch2-status-ok { color: #4a8a50; }
+    .ch2-ledger-row.dim .ch2-status-late { color: #a85a4a; }
+    .ch2-ledger-row.dim .ch2-status-clear { color: #4a8a50; }
     .ch2-ledger-total { display: flex; align-items: baseline; padding: 10px 0 7px; border-top: 2px solid #9a7030; margin-top: 5px; opacity: 0; }
-    .ch2-ledger-total .t-label { flex: 3.65; font-family: 'Courier Prime', monospace; font-size: 8.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #7a5518; }
-    .ch2-ledger-total .t-value { flex: 1; font-family: 'Caveat', cursive; font-size: 16px; text-align: right; color: #2e1e08; font-weight: 600; }
-    .ch2-ledger-total .t-note { flex: 2.35; padding-left: 14px; font-family: 'Caveat', cursive; font-size: 12.5px; color: #6b4e1a; }
-    .ch2-page-num { position: absolute; bottom: 14px; font-family: 'Courier Prime', monospace; font-size: 7.5px; color: rgba(122,85,24,0.45); letter-spacing: 0.12em; }
+    .ch2-ledger-total .t-label { flex: 3.65; font-family: 'Courier Prime', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #7a5518; }
+    .ch2-ledger-total .t-value { flex: 1; font-family: 'Caveat', cursive; font-size: 19px; text-align: right; color: #2e1e08; font-weight: 600; }
+    .ch2-ledger-total .t-note { flex: 2.35; padding-left: 14px; font-family: 'Caveat', cursive; font-size: 14.5px; color: #6b4e1a; }
+    .ch2-page-num { position: absolute; bottom: 14px; font-family: 'Courier Prime', monospace; font-size: 9px; color: rgba(122,85,24,0.45); letter-spacing: 0.12em; }
     .ch2-page-left .ch2-page-num { left: 32px; } .ch2-page-right .ch2-page-num { right: 32px; }
-    .ch2-spine-title { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(90deg); font-family: 'Courier Prime', monospace; font-size: 6px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(180,150,80,0.45); white-space: nowrap; }
+    .ch2-spine-title { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(90deg); font-family: 'Courier Prime', monospace; font-size: 7px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(180,150,80,0.45); white-space: nowrap; }
 
     .ch2-manifest-section { position: relative; width: 100%; border-radius: 2px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.10); }
     .ch2-chart-map { display: block; width: 100%; height: auto; aspect-ratio: 3/2; }
@@ -1967,7 +2168,9 @@
       width: 100%;
       min-height: 100vh;
       background: #fef3e2;
-      padding-top: 220px;
+      padding-top: 300px;
+      padding-bottom: 0;
+      margin-bottom: 0;
     }
 
     .fl718-chapter4 .fl718-chapter__number {
@@ -2059,6 +2262,13 @@
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+
+    @media (max-width: 1350px) {
+      .fl718-darkroom-print img {
+        width: 480px;
+        height: 320px;
+      }
     }
 
     @media (max-width: 1000px) {
@@ -2275,11 +2485,19 @@
     .fl718-ch5-title {
       font-size: 90px;
       font-weight: 800;
-      color: #c44536;
+      color: #000000;
       letter-spacing: -0.02em;
       text-transform: uppercase;
       margin-top: 80px;
       line-height: 1;
+    }
+
+    .fl718-ch5-title .fl718-ch5-accent {
+      color: #c44536;
+    }
+
+    .fl718-ch5-title .fl718-ch5-718 {
+      color: #c44536;
     }
 
     .fl718-statement {
@@ -2389,9 +2607,10 @@
     .fl718-chapter5 .fl718-closing {
       position: relative;
       width: 100%;
-      padding: 240px 60px 300px 60px;
+      padding: 240px 60px 80px 60px;
       text-align: center;
       background: #ffffff;
+      overflow: hidden; /* clip the figure during its walk-in entry */
     }
 
     .fl718-chapter5 .fl718-closing__text {
@@ -2416,12 +2635,14 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      opacity: 0;
     }
     .fl718-colophon__rule {
       width: 260px;
       height: 1px;
       background: #e0e0e0;
+      transform-origin: center center;
+      transform: scaleX(0);
+      opacity: 0;
     }
     .fl718-colophon__notation {
       font-family: 'EB Garamond', Georgia, serif;
@@ -2431,6 +2652,11 @@
       color: #c2c2c2;
       text-transform: uppercase;
       margin: 14px 0;
+      opacity: 0;
+    }
+    .fl718-colophon__notation .fl718-word {
+      display: inline-block;
+      opacity: 0;
     }
     .fl718-colophon__walker {
       display: inline-block;
@@ -2444,6 +2670,11 @@
       font-size: 36px;
       color: #c44536;
       line-height: 1;
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    .fl718-closing__figure.fl718-walking {
+      filter: drop-shadow(12px 0 8px rgba(0,0,0,0.06));
     }
 
     /* ── Ch5 closing stick figure ── */
@@ -2586,7 +2817,7 @@
     <!-- LEFT: Vertical Title -->
     <div class="fl718-opening__title-container">
       <h1 class="fl718-opening__title">
-        <span class="fl718-opening__title-main">Flâneur</span>
+        <span class="fl718-opening__title-main">Fl<span class="fl718-opening__accent">â</span>neur</span>
         <span class="fl718-opening__title-sub">718</span>
       </h1>
     </div>
@@ -2606,7 +2837,7 @@
         <div class="fl718-film-strip__frames">
           <!-- Frame 1 - marked -->
           <div class="fl718-frame fl718-frame--marked">
-            <img src="Assets/0.%20Hero/seamus-mirror.jpg" alt="Seamus Dolan reflected in a mirror" class="fl718-frame__image">
+            <img src="assets/seamus-mirror.jpg" alt="Seamus Dolan reflected in a mirror" class="fl718-frame__image">
             <div class="fl718-frame__hand-drawn">
               <svg viewBox="0 0 196 196" xmlns="http://www.w3.org/2000/svg">
                 <path d="M 4,10 Q 6,8 12,7 L 95,5 Q 140,4 188,7 Q 192,9 193,15 L 194,90 Q 195,140 192,186 Q 190,191 185,192 L 100,194 Q 50,195 8,193 Q 4,192 3,187 L 2,100 Q 1,50 4,10" />
@@ -2617,13 +2848,13 @@
 
           <!-- Frame 2 - EMPTY -->
           <div class="fl718-frame">
-            <img src="Assets/0.%20Hero/seamus-fire.jpg" alt="Seamus Dolan photographing a fire scene" class="fl718-frame__image">
+            <img src="assets/seamus-fire.jpg" alt="Seamus Dolan photographing a fire scene" class="fl718-frame__image">
             <div class="fl718-frame__number">22</div>
           </div>
 
           <!-- Frame 3 - marked -->
           <div class="fl718-frame fl718-frame--marked">
-            <img src="Assets/0.%20Hero/seamus-desert.jpg" alt="Seamus Dolan in the desert" class="fl718-frame__image">
+            <img src="assets/seamus-desert.jpg" alt="Seamus Dolan in the desert" class="fl718-frame__image">
             <div class="fl718-frame__hand-drawn">
               <svg viewBox="0 0 196 196" xmlns="http://www.w3.org/2000/svg">
                 <path d="M 7,12 Q 10,6 18,5 L 100,3 Q 150,2 189,6 Q 194,8 195,18 L 196,100 Q 197,145 193,188 Q 191,193 184,194 L 95,196 Q 45,196 6,192 Q 2,190 2,185 L 1,95 Q 0,45 7,12" />
@@ -2644,12 +2875,12 @@
 
         <div class="fl718-film-strip__frames">
           <div class="fl718-frame">
-            <img src="Assets/0.%20Hero/seamus-bridge.jpg" alt="Seamus Dolan on a bridge" class="fl718-frame__image">
+            <img src="assets/seamus-bridge.jpg" alt="Seamus Dolan on a bridge" class="fl718-frame__image">
             <div class="fl718-frame__number">31</div>
           </div>
 
           <div class="fl718-frame fl718-frame--marked">
-            <img src="Assets/0.%20Hero/seamus-cdmx-eyes.jpg" alt="Close-up street portrait, Mexico City" class="fl718-frame__image">
+            <img src="assets/seamus-cdmx-eyes.jpg" alt="Close-up street portrait, Mexico City" class="fl718-frame__image">
             <div class="fl718-frame__hand-drawn">
               <svg viewBox="0 0 196 196" xmlns="http://www.w3.org/2000/svg">
                 <path d="M 5,8 Q 8,4 15,3 L 98,2 Q 145,1 190,5 Q 195,7 196,14 L 197,98 Q 198,148 194,189 Q 192,195 186,196 L 98,197 Q 48,197 7,194 Q 3,193 2,188 L 1,98 Q 0,42 5,8" />
@@ -2671,17 +2902,17 @@
 
         <div class="fl718-film-strip__frames">
           <div class="fl718-frame">
-            <img src="Assets/0.%20Hero/seamus-simone.jpg" alt="Portrait photograph" class="fl718-frame__image">
+            <img src="assets/seamus-simone.jpg" alt="Simone, portrait photograph" class="fl718-frame__image">
             <div class="fl718-frame__number">27</div>
           </div>
 
           <div class="fl718-frame">
-            <img src="Assets/0.%20Hero/seamus-smoke.jpg" alt="Street scene with smoke" class="fl718-frame__image">
+            <img src="assets/seamus-smoke.jpg" alt="Street scene with smoke" class="fl718-frame__image">
             <div class="fl718-frame__number">19A</div>
           </div>
 
           <div class="fl718-frame fl718-frame--marked">
-            <img src="Assets/0.%20Hero/seamus-mosque.jpg" alt="Street scene near a mosque" class="fl718-frame__image">
+            <img src="assets/seamus-mosque.jpg" alt="Street scene near a mosque" class="fl718-frame__image">
             <div class="fl718-frame__hand-drawn">
               <svg viewBox="0 0 196 196" xmlns="http://www.w3.org/2000/svg">
                 <path d="M 6,11 Q 9,5 16,4 L 102,2 Q 152,1 191,6 Q 196,9 197,17 L 198,102 Q 199,152 195,190 Q 193,196 187,197 L 100,198 Q 46,198 5,195 Q 1,194 1,189 L 0,100 Q -1,44 6,11" />
@@ -2866,19 +3097,19 @@
           <!-- GHOST LAYER: wiffle ball stroboscopic echoes -->
           <div class="fl718-ghost-layer" id="ghostLayer" aria-hidden="true">
             <div class="fl718-ghost" id="ghost1" style="left: 7.6%; top: 13.6%;">
-              <img src="Assets/1.%20chapter%201/wiffle-ball.png" alt="" width="38" style="transform: rotate(-8deg);" />
+              <img src="assets/wiffle-ball.png" alt="" width="38" style="transform: rotate(-8deg);" />
             </div>
             <div class="fl718-ghost" id="ghost2" style="left: 25.2%; top: 20.8%;">
-              <img src="Assets/1.%20chapter%201/wiffle-ball.png" alt="" width="44" style="transform: rotate(5deg);" />
+              <img src="assets/wiffle-ball.png" alt="" width="44" style="transform: rotate(5deg);" />
             </div>
             <div class="fl718-ghost" id="ghost3" style="left: 40.3%; top: 25.9%;">
-              <img src="Assets/1.%20chapter%201/wiffle-ball.png" alt="" width="50" style="transform: rotate(12deg);" />
+              <img src="assets/wiffle-ball.png" alt="" width="50" style="transform: rotate(12deg);" />
             </div>
             <div class="fl718-ghost" id="ghost4" style="left: 51.7%; top: 36.6%;">
-              <img src="Assets/1.%20chapter%201/wiffle-ball.png" alt="" width="56" style="transform: rotate(22deg);" />
+              <img src="assets/wiffle-ball.png" alt="" width="56" style="transform: rotate(22deg);" />
             </div>
             <div class="fl718-ghost" id="ghost5" style="left: 62.9%; top: 54.6%;">
-              <img src="Assets/1.%20chapter%201/wiffle-ball.png" alt="" width="62" style="transform: rotate(34deg);" />
+              <img src="assets/wiffle-ball.png" alt="" width="62" style="transform: rotate(34deg);" />
             </div>
           </div>
 
@@ -2889,31 +3120,31 @@
 
             <div class="fl718-pizza-outer" id="pizzaOuter">
               <div class="fl718-pizza-inner" id="pizzaInner">
-                <img src="Assets/1.%20chapter%201/pizza-scrapbook.png" alt="Brooklyn pizza box" class="fl718-pizza-img" id="pizzaImg" draggable="false" />
+                <img src="assets/pizza-scrapbook.png" alt="Brooklyn pizza box" class="fl718-pizza-img" id="pizzaImg" draggable="false" />
               </div>
             </div>
 
             <div class="fl718-drink-outer fl718-drink-green" id="drinkGreenOuter">
               <div class="fl718-drink-inner" id="drinkGreenInner">
-                <img src="Assets/1.%20chapter%201/quarter-drink-1.png" alt="Green quarter water" class="fl718-drink-img" id="drinkGreenImg" draggable="false" />
+                <img src="assets/quarter-drink-1.png" alt="Green quarter water" class="fl718-drink-img" id="drinkGreenImg" draggable="false" />
               </div>
             </div>
 
             <div class="fl718-drink-outer fl718-drink-orange" id="drinkOrangeOuter">
               <div class="fl718-drink-inner" id="drinkOrangeInner">
-                <img src="Assets/1.%20chapter%201/quarter-drink-3.png" alt="Orange quarter water" class="fl718-drink-img" id="drinkOrangeImg" draggable="false" />
+                <img src="assets/quarter-drink-3.png" alt="Orange quarter water" class="fl718-drink-img" id="drinkOrangeImg" draggable="false" />
               </div>
             </div>
 
             <div class="fl718-drink-outer fl718-drink-blue" id="drinkBlueOuter">
               <div class="fl718-drink-inner" id="drinkBlueInner">
-                <img src="Assets/1.%20chapter%201/quarter-drink-2.png" alt="Blue quarter water" class="fl718-drink-img" id="drinkBlueImg" draggable="false" />
+                <img src="assets/quarter-drink-2.png" alt="Blue quarter water" class="fl718-drink-img" id="drinkBlueImg" draggable="false" />
               </div>
             </div>
 
             <div class="fl718-drink-outer fl718-drink-purple" id="drinkPurpleOuter">
               <div class="fl718-drink-inner" id="drinkPurpleInner">
-                <img src="Assets/1.%20chapter%201/quarter-drink-4.png" alt="Purple quarter water" class="fl718-drink-img" id="drinkPurpleImg" draggable="false" />
+                <img src="assets/quarter-drink-4.png" alt="Purple quarter water" class="fl718-drink-img" id="drinkPurpleImg" draggable="false" />
               </div>
             </div>
 
@@ -2924,7 +3155,7 @@
             <div class="fl718-ball-shadow" id="ballShadow"></div>
             <div class="fl718-ball-outer" id="ballOuter">
               <div class="fl718-ball-inner" id="ballInner">
-                <img src="Assets/1.%20chapter%201/wiffle-ball.png" alt="Wiffle ball" class="fl718-ball-img" id="ballImg" draggable="false" />
+                <img src="assets/wiffle-ball.png" alt="Wiffle ball" class="fl718-ball-img" id="ballImg" draggable="false" />
               </div>
             </div>
           </div>
@@ -2933,7 +3164,7 @@
           <div class="fl718-can-layer">
             <div class="fl718-can-outer" id="canOuter">
               <div class="fl718-can-inner" id="canInner">
-                <img src="Assets/1.%20chapter%201/spray-paint-can.png" alt="718 spray paint can" class="fl718-can-img" id="canImg" draggable="false" />
+                <img src="assets/spray-paint-can.png" alt="718 spray paint can" class="fl718-can-img" id="canImg" draggable="false" />
               </div>
             </div>
           </div>
@@ -2989,7 +3220,7 @@
           <div class="fl718-photo fl718-photo--polaroid" data-develop-delay="0">
             <div class="fl718-photo__overlay"></div>
             <div class="fl718-photo__image">
-              <img src="Assets/0.%20Hero/seamus-5points.jpg" alt="Bay Ridge, Brooklyn" loading="lazy">
+              <img src="assets/seamus-5points.jpg" alt="5-Pointz, Queens" loading="lazy">
             </div>
             <div class="fl718-photo__caption">5-Pointz, Queens</div>
           </div>
@@ -2997,7 +3228,7 @@
           <div class="fl718-photo fl718-photo--polaroid" data-develop-delay="1000">
             <div class="fl718-photo__overlay"></div>
             <div class="fl718-photo__image">
-              <img src="Assets/1.%20chapter%201/seamus-bedsuy.jpg" alt="Flushing, Queens" loading="lazy">
+              <img src="assets/seamus-bedsuy-ch1.jpg" alt="Bed-Stuy, Brooklyn" loading="lazy">
             </div>
             <div class="fl718-photo__caption">Bed-Stuy, Brooklyn</div>
           </div>
@@ -3082,25 +3313,25 @@
             <!-- Phase 1: 5 books — parabolic toss from different directions -->
             <div id="uni-books-stack">
               <div class="uni-book" id="uni-b1">
-                <img src="Assets/1.%20chapter%201/book1.png" alt="Antonio Gramsci — Selections from the Prison Notebooks" loading="lazy">
+                <img src="assets/book1.png" alt="Antonio Gramsci — Selections from the Prison Notebooks" loading="lazy">
               </div>
               <div class="uni-book" id="uni-b2">
-                <img src="Assets/1.%20chapter%201/book2.png" alt="Walter Benjamin — Illuminations" loading="lazy">
+                <img src="assets/book2.png" alt="Walter Benjamin — Illuminations" loading="lazy">
               </div>
               <div class="uni-book" id="uni-b3">
-                <img src="Assets/1.%20chapter%201/book3.png" alt="Don DeLillo — White Noise" loading="lazy">
+                <img src="assets/book3.png" alt="Don DeLillo — White Noise" loading="lazy">
               </div>
               <div class="uni-book" id="uni-b4">
-                <img src="Assets/1.%20chapter%201/book4.png" alt="George Orwell — Down and Out in Paris and London" loading="lazy">
+                <img src="assets/book4.png" alt="George Orwell — Down and Out in Paris and London" loading="lazy">
               </div>
               <div class="uni-book" id="uni-b5">
-                <img src="Assets/1.%20chapter%201/book5.png" alt="Wei Liang — The Century of Red and Thunder" loading="lazy">
+                <img src="assets/book5.png" alt="Wei Liang — The Century of Red and Thunder" loading="lazy">
               </div>
             </div><!-- /uni-books-stack -->
 
             <!-- Phase 2: College notebook — skids in from right -->
             <div id="uni-notebook">
-              <img src="Assets/1.%20chapter%201/college-notebook.png" alt="College research notebook" loading="lazy">
+              <img src="assets/college-notebook.png" alt="College research notebook" loading="lazy">
             </div>
 
           </div><!-- /uniCluster -->
@@ -3163,7 +3394,7 @@
           <div class="fl718-brand-logo__dot" id="dot"></div>
           <span class="fl718-brand-logo__nook" id="nook2"><span>n</span><span>o</span><span>o</span><span>k</span></span>
         </div>
-        <span class="fl718-brand-logo__mats" id="mats"></span>
+        <span class="fl718-brand-logo__mats" id="mats">Mats</span>
       </div>
 
       <!-- RIGHT: Organic Shape -->
@@ -3195,7 +3426,7 @@
               <span class="fl718-pstack-item__index-num">01</span>
               <div class="fl718-pstack-item__index-line"></div>
             </div>
-            <img src="Assets/2.%20chapter%202/nook-nook-3.jpg" alt="Hand-woven Tree Design Mat" loading="lazy">
+            <img src="assets/nook-nook-3.jpg" alt="Hand-woven Tree Design Mat" loading="lazy">
             <div class="fl718-pstack-item__footer">
               <span class="fl718-pstack-item__caption">Hand-Woven · Kochi, India</span>
             </div>
@@ -3206,7 +3437,7 @@
               <span class="fl718-pstack-item__index-num">02</span>
               <div class="fl718-pstack-item__index-line"></div>
             </div>
-            <img src="Assets/2.%20chapter%202/nook-nook-1.jpg" alt="Nook Nook Mats Brand" loading="lazy">
+            <img src="assets/nook-nook-1.jpg" alt="Nook Nook Mats Brand" loading="lazy">
             <div class="fl718-pstack-item__footer">
               <span class="fl718-pstack-item__caption">Sustainable · Handmade · Humane</span>
             </div>
@@ -3217,7 +3448,7 @@
               <span class="fl718-pstack-item__index-num">03</span>
               <div class="fl718-pstack-item__index-line"></div>
             </div>
-            <img src="Assets/2.%20chapter%202/nook-nook-2.png" alt="Handmade in India" loading="lazy">
+            <img src="assets/nook-nook-2.png" alt="Handmade in India" loading="lazy">
             <div class="fl718-pstack-item__footer">
               <span class="fl718-pstack-item__caption">From The Earth To Your Home</span>
             </div>
@@ -3260,16 +3491,16 @@
                 <span class="ch2-col-item">Description</span><span class="ch2-col-qty">Qty</span><span class="ch2-col-cost">Amount</span><span class="ch2-col-note">Notes</span>
               </div>
               <div class="ch2-ledger-rows">
-                <div class="ch2-ledger-row" id="ch2lL1"><span class="ch2-col-item">Design &amp; sampling</span><span class="ch2-col-qty">—</span><span class="ch2-col-cost">$2,800</span><span class="ch2-col-note">Brooklyn, 2018</span></div>
-                <div class="ch2-ledger-row" id="ch2lL2"><span class="ch2-col-item">Artisan deposit — Kochi</span><span class="ch2-col-qty">—</span><span class="ch2-col-cost">$8,400</span><span class="ch2-col-note">Wire transfer</span></div>
-                <div class="ch2-ledger-row" id="ch2lL3"><span class="ch2-col-item">Coir mat — tree design</span><span class="ch2-col-qty">180</span><span class="ch2-col-cost">$16,200</span><span class="ch2-col-note">Hand loom, 6 wks</span></div>
-                <div class="ch2-ledger-row dim" id="ch2lL4"><span class="ch2-col-item">Sea freight — Kochi→NY</span><span class="ch2-col-qty">1 crate</span><span class="ch2-col-cost">$4,800</span><span class="ch2-col-note">S.S. Jaladuta</span></div>
-                <div class="ch2-ledger-row dim" id="ch2lL5"><span class="ch2-col-item">U.S. Customs duty</span><span class="ch2-col-qty">—</span><span class="ch2-col-cost">$1,400</span><span class="ch2-col-note">Port of New York</span></div>
-                <div class="ch2-ledger-row dim" id="ch2lL6"><span class="ch2-col-item">Warehouse, Queens</span><span class="ch2-col-qty">3 mo.</span><span class="ch2-col-cost">$3,600</span><span class="ch2-col-note">Storage</span></div>
-                <div class="ch2-ledger-row" id="ch2lL7"><span class="ch2-col-item">Photography / branding</span><span class="ch2-col-qty">—</span><span class="ch2-col-cost">$4,200</span><span class="ch2-col-note">Product shots</span></div>
-                <div class="ch2-ledger-row" id="ch2lL8"><span class="ch2-col-item">Amazon + ad spend</span><span class="ch2-col-qty">—</span><span class="ch2-col-cost">$9,800</span><span class="ch2-col-note">Launch campaign</span></div>
-                <div class="ch2-ledger-row" id="ch2lL9"><span class="ch2-col-item">Sales — consignment 01</span><span class="ch2-col-qty">168 units</span><span class="ch2-col-cost" style="color:#1e5020;">+$58,800</span><span class="ch2-col-note ch2-status-ok">✓ Cleared</span></div>
-                <div class="ch2-ledger-total" id="ch2TotalLeft"><span class="t-label">Net — Consignment 01</span><span class="t-value" style="color:#1e5020;">+$8,600</span><span class="t-note">→ Reinvest · Consignment 02</span></div>
+                <div class="ch2-ledger-row" id="ch2lL1"><span class="ch2-col-item">Design &amp; sampling</span><span class="ch2-col-qty">—</span><span class="ch2-col-cost ch2-cost-out">$2,800</span><span class="ch2-col-note">Brooklyn, 2018</span></div>
+                <div class="ch2-ledger-row" id="ch2lL2"><span class="ch2-col-item">Artisan deposit — Kochi</span><span class="ch2-col-qty">—</span><span class="ch2-col-cost ch2-cost-out">$8,400</span><span class="ch2-col-note">Wire transfer</span></div>
+                <div class="ch2-ledger-row" id="ch2lL3"><span class="ch2-col-item">Coir mat — tree design</span><span class="ch2-col-qty">180</span><span class="ch2-col-cost ch2-cost-out">$16,200</span><span class="ch2-col-note">Hand loom, 6 wks</span></div>
+                <div class="ch2-ledger-row dim" id="ch2lL4"><span class="ch2-col-item">Sea freight — Kochi→NY</span><span class="ch2-col-qty">1 crate</span><span class="ch2-col-cost ch2-cost-out">$4,800</span><span class="ch2-col-note">S.S. Jaladuta</span></div>
+                <div class="ch2-ledger-row dim" id="ch2lL5"><span class="ch2-col-item">U.S. Customs duty</span><span class="ch2-col-qty">—</span><span class="ch2-col-cost ch2-cost-out">$1,400</span><span class="ch2-col-note">Port of New York</span></div>
+                <div class="ch2-ledger-row dim" id="ch2lL6"><span class="ch2-col-item">Warehouse, Queens</span><span class="ch2-col-qty">3 mo.</span><span class="ch2-col-cost ch2-cost-out">$3,600</span><span class="ch2-col-note">Storage</span></div>
+                <div class="ch2-ledger-row" id="ch2lL7"><span class="ch2-col-item">Photography / branding</span><span class="ch2-col-qty">—</span><span class="ch2-col-cost ch2-cost-out">$4,200</span><span class="ch2-col-note">Product shots</span></div>
+                <div class="ch2-ledger-row" id="ch2lL8"><span class="ch2-col-item">Amazon + ad spend</span><span class="ch2-col-qty">—</span><span class="ch2-col-cost ch2-cost-out">$9,800</span><span class="ch2-col-note">Launch campaign</span></div>
+                <div class="ch2-ledger-row" id="ch2lL9"><span class="ch2-col-item">Sales — consignment 01</span><span class="ch2-col-qty">168 units</span><span class="ch2-col-cost ch2-cost-in">+$58,800</span><span class="ch2-col-note ch2-status-ok">✓ Cleared</span></div>
+                <div class="ch2-ledger-total" id="ch2TotalLeft"><span class="t-label">Net — Consignment 01</span><span class="t-value ch2-cost-in">+$8,600</span><span class="t-note">→ Reinvest · Consignment 02</span></div>
               </div>
               <div class="ch2-page-num">p. 14</div>
             </div>
@@ -3320,7 +3551,7 @@
         <!-- ── CH2 MANIFEST MAP ── -->
         <div class="ch2-manifest-section" id="ch2ManifestSection">
 
-          <img class="ch2-chart-map" src="Assets/2.%20chapter%202/nook-nook-map.png" alt="Antique trade route map — Kochi, India to Port of New York" loading="lazy">
+          <img class="ch2-chart-map" src="assets/nook-nook-map.png" alt="Antique trade route map — Kochi, India to Port of New York" loading="lazy">
 
           <svg class="ch2-chart-overlay" id="ch2ChartOverlay"
             viewBox="0 0 600 400" preserveAspectRatio="none"
@@ -3354,7 +3585,7 @@
 
           <!-- Mat materializes at NY area after route arrives -->
           <div class="ch2-mat-surface" id="ch2MatSurface">
-            <img src="Assets/2.%20chapter%202/nook-nook-map-journey.png" alt="Nook Nook coir doormat — tree of life design" loading="lazy">
+            <img src="assets/nook-nook-map-journey.png" alt="Nook Nook coir doormat — tree of life design" loading="lazy">
           </div>
 
           <!-- CLEARED ink impression -->
@@ -3445,32 +3676,32 @@
           <div class="fl718-ch2-pin-stage">
 
             <div class="fl718-ch2-pin-item fl718-ch2-pin-item--p1" id="ch2pi1">
-              <img src="Assets/2.%20chapter%202/nook-nook-industry.jpg" alt="Artisan trimming mat edges, Kochi" loading="lazy">
+              <img src="assets/nook-nook-industry.jpg" alt="Artisan trimming mat edges, Kochi" loading="lazy">
               <div class="fl718-ch2-pin-label">Kochi · Finishing by hand</div>
             </div>
 
             <div class="fl718-ch2-pin-item fl718-ch2-pin-item--p2" id="ch2pi2">
-              <img src="Assets/2.%20chapter%202/nook-nook-industry_2.jpg" alt="Hand loom weaving, Kochi" loading="lazy">
+              <img src="assets/nook-nook-industry_2.jpg" alt="Hand loom weaving, Kochi" loading="lazy">
               <div class="fl718-ch2-pin-label">Hand loom · Kochi, India</div>
             </div>
 
             <div class="fl718-ch2-pin-item fl718-ch2-pin-item--p3" id="ch2pi3">
-              <img src="Assets/2.%20chapter%202/nook-nook-industry-woman.jpg" alt="Mat craftsmanship detail, Kochi" loading="lazy">
+              <img src="assets/nook-nook-industry-woman.jpg" alt="Mat craftsmanship detail, Kochi" loading="lazy">
               <div class="fl718-ch2-pin-label">Coconut husk · Where it begins</div>
             </div>
 
             <div class="fl718-ch2-pin-item fl718-ch2-pin-item--p4" id="ch2pi4">
-              <img src="Assets/2.%20chapter%202/nook-nook-industry-door.jpg" alt="Tree Design mat at a door" loading="lazy">
+              <img src="assets/nook-nook-industry-door.jpg" alt="Tree Design mat at a door" loading="lazy">
               <div class="fl718-ch2-pin-label">First delivery · Brooklyn</div>
             </div>
 
             <div class="fl718-ch2-pin-item fl718-ch2-pin-item--p5" id="ch2pi5">
-              <img src="Assets/2.%20chapter%202/nook-nook-mat-floor.jpg" alt="Twin Tree mat at a door" loading="lazy">
+              <img src="assets/nook-nook-mat-floor.jpg" alt="Twin Tree mat at a door" loading="lazy">
               <div class="fl718-ch2-pin-label">Sun-faded steps · Los Angeles</div>
             </div>
 
             <div class="fl718-ch2-pin-item fl718-ch2-pin-item--p6" id="ch2pi6">
-              <img src="Assets/2.%20chapter%202/nook-nook-mat-tall.jpg" alt="Nook Nook mat, finished product" loading="lazy">
+              <img src="assets/nook-nook-wide-blue.jpg" alt="Nook Nook mat at blue door" loading="lazy">
               <div class="fl718-ch2-pin-label">Welcome home · Pennsylvania</div>
             </div>
 
@@ -3548,145 +3779,224 @@
         <div id="tipStage">
 
           <div id="tip-bag">
-            <img src="Assets/3.%20chapter%203/nyc%20bodega%20bag.png" alt="NYC bodega bag" loading="lazy">
+            <img src="assets/nyc-bodega-bag.png" alt="NYC bodega bag" loading="lazy">
           </div>
 
           <div class="tip-item heavy" id="tip-camera">
-            <img src="Assets/3.%20chapter%203/nikond3300.png" alt="Nikon D3300" loading="lazy">
+            <img src="assets/nikond3300.png" alt="Nikon D3300" loading="lazy">
           </div>
           <div class="tip-item heavy" id="tip-beer">
-            <img src="Assets/3.%20chapter%203/china%20beer.png" alt="Chinese beer" loading="lazy">
+            <img src="assets/china-beer.png" alt="Chinese beer" loading="lazy">
           </div>
 
           <div class="tip-item paper" id="tip-sol">
-            <img src="Assets/3.%20chapter%203/peruvian%20sol.png" alt="Peruvian sol" loading="lazy">
+            <img src="assets/peruvian-sol.png" alt="Peruvian sol" loading="lazy">
           </div>
           <div class="tip-item paper" id="tip-lira">
-            <img src="Assets/3.%20chapter%203/turkish%20lira.png" alt="Turkish lira" loading="lazy">
+            <img src="assets/turkish-lira.png" alt="Turkish lira" loading="lazy">
           </div>
           <div class="tip-item paper" id="tip-matchbook">
-            <img src="Assets/3.%20chapter%203/vietnam%20matchbook.png" alt="Vietnam matchbook" loading="lazy">
+            <img src="assets/vietnam-matchbook.png" alt="Vietnam matchbook" loading="lazy">
           </div>
           <div class="tip-item paper" id="tip-pass">
-            <img src="Assets/3.%20chapter%203/mexico%20city%20pass.png" alt="Mexico City pass" loading="lazy">
+            <img src="assets/mexico-city-pass.png" alt="Mexico City pass" loading="lazy">
           </div>
 
           <div class="tip-item photo" id="tip-photo1">
-            <img src="Assets/2.%20chapter%202/photo-peru_1.jpg" alt="Street photograph, Peru" loading="lazy">
+            <img src="assets/photo-peru_1.jpg" alt="Street photograph, Peru" loading="lazy">
           </div>
           <div class="tip-item photo" id="tip-photo2">
-            <img src="Assets/2.%20chapter%202/photo-china.jpg" alt="Street photograph, China" loading="lazy">
+            <img src="assets/photo-china.jpg" alt="Street photograph, China" loading="lazy">
           </div>
 
         </div>
       </section>
 
-      <section class="fl718-section" style="margin-top: 80px;">
+      <section class="fl718-section" style="margin-top: 160px;">
         <p class="fl718-paragraph fl718-paragraph--opening">
           Back in New York, I'd take a train far out into Queens or the Bronx and walk for hours, shooting on instinct. I did this again and again, taking thousands of terrible photos. I pestered better photographers with questions, watched them edit, and slowly the photos became less terrible.
         </p>
 
-        <!-- Long Walk Map -->
-        <div id="mapSection" style="margin-top: 220px;">
-          <div id="mapContainer">
-            <svg id="mapSvg" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <pattern id="gridDots3" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
-                  <circle cx="20" cy="20" r="0.7" fill="#333"/>
-                </pattern>
-              </defs>
-              <rect width="1400" height="800" fill="url(#gridDots3)" opacity="0.04"/>
-              <!-- Context lines (other NYC lines, very faint) -->
-              <g id="ctx-lines" opacity="0">
-                <path d="M 0,700 L 180,700 L 250,613 L 250,150 L 310,75" stroke="#2850AD" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
-                <path d="M 90,950 L 90,850 L 160,763 L 250,681 L 340,600 L 420,525 L 500,463 L 580,419 L 640,400 L 700,388 L 780,388 L 870,375" stroke="#FCCC0A" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.3"/>
-                <path d="M 370,1000 L 370,850 L 400,813 L 400,600 L 430,563 L 430,375 L 450,350 L 450,150 L 480,113 L 480,0" stroke="#EE352E" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.35"/>
-              </g>
-              <!-- Ghost D: Brooklyn section -->
-              <g id="ghost-d" opacity="0">
-                <path id="d-line-ghost" d="M 622,613 L 624,656 L 632,703 L 646,750 L 664,803 L 684,858 L 702,908 L 714,948 L 720,980" stroke="#FF6319" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                <circle id="st-coney" cx="720" cy="980" r="5.5" fill="#fff" stroke="#FF6319" stroke-width="2.5"/>
-                <circle id="st-atld"  cx="646" cy="750" r="3.5" fill="#fff" stroke="#FF6319" stroke-width="1.5"/>
-                <text font-family="Helvetica, Arial, sans-serif" font-size="9" fill="#777" x="736" y="976">Coney Island – Stillwell Av</text>
-                <text font-family="Helvetica, Arial, sans-serif" font-size="9" fill="#777" x="660" y="746">Atlantic Av – Barclays Ctr</text>
-              </g>
-              <!-- D LINE (Orange, lower Manhattan → Norwood-205 St) -->
-              <!-- curves left fast from Grand St, leftmost ~x=431 at Harlem, arcs back right into Bronx -->
-              <path id="d-line" d="M 628,609 L 566,562 L 553,511 L 527,461 L 500,426 L 475,394 L 454,360 L 443,325 L 431,296 L 437,267 L 445,231 L 456,197 L 473,169 L 497,148 L 527,130 L 565,118 L 608,114 L 641,115" stroke="#FF6319" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-              <!-- 7 LINE (Purple, Times Square → Flushing) -->
-              <path id="seven-line" d="M 580,425 L 748,423 L 820,418 L 890,410 L 955,400 L 1025,388 L 1090,373 L 1145,360" stroke="#B933AD" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-              <!-- J LINE (Brown, Broad St → Jamaica) -->
-              <path id="j-line" d="M 580,638 L 616,663 L 658,688 L 710,710 L 782,725 L 856,731 L 922,725 L 1002,713 L 1080,695 L 1140,685" stroke="#996633" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-              <!-- Station dots -->
-              <circle class="subway-station" id="st-gran"  cx="628"  cy="609" r="4.5" fill="#fff" stroke="#FF6319" stroke-width="2"/>
-              <circle class="subway-station" id="st-34h"   cx="533"  cy="472" r="3.5" fill="#fff" stroke="#FF6319" stroke-width="1.5"/>
-              <circle class="subway-station" id="st-42d"   cx="500"  cy="426" r="3.5" fill="#fff" stroke="#FF6319" stroke-width="1.5"/>
-              <circle class="subway-station" id="st-tsq"   cx="580"  cy="425" r="8"   fill="#fff" stroke="#333"    stroke-width="2.5"/>
-              <circle class="pulse-ring"     id="ring-tsq-d" cx="500" cy="426" r="8" fill="none" stroke="#FF6319" stroke-width="2.5"/>
-              <circle class="pulse-ring"     id="ring-tsq-7" cx="580" cy="425" r="8" fill="none" stroke="#B933AD" stroke-width="2"/>
-              <circle class="subway-station" id="st-161"   cx="464"  cy="183" r="3.5" fill="#fff" stroke="#FF6319" stroke-width="1.5"/>
-              <circle class="subway-station" id="st-norw"  cx="641"  cy="115" r="5.5" fill="#fff" stroke="#FF6319" stroke-width="2.5"/>
-              <circle class="subway-station" id="st-wds"   cx="834"  cy="416" r="3.5" fill="#fff" stroke="#B933AD" stroke-width="1.5"/>
-              <circle class="subway-station" id="st-jh"    cx="902"  cy="408" r="4.5" fill="#fff" stroke="#B933AD" stroke-width="2"/>
-              <circle class="subway-station" id="st-flu"   cx="1145" cy="360" r="5.5" fill="#fff" stroke="#B933AD" stroke-width="2.5"/>
-              <circle class="subway-station" id="st-broad" cx="580"  cy="638" r="4.5" fill="#fff" stroke="#996633" stroke-width="2"/>
-              <circle class="subway-station" id="st-marcy" cx="710"  cy="710" r="3.5" fill="#fff" stroke="#996633" stroke-width="1.5"/>
-              <circle class="subway-station" id="st-bjx"   cx="922"  cy="725" r="5"   fill="#fff" stroke="#996633" stroke-width="2"/>
-              <circle class="subway-station" id="st-jam"   cx="1140" cy="685" r="5.5" fill="#fff" stroke="#996633" stroke-width="2.5"/>
-              <circle class="pulse-ring"     id="ring-bjx" cx="922"  cy="725" r="5" fill="none" stroke="#996633" stroke-width="2"/>
-              <!-- Photo connectors -->
-              <line class="photo-connector" id="conn1" x1="1145" y1="354" x2="1145" y2="220" stroke="#B933AD" stroke-width="1" stroke-dasharray="3,4" opacity="0"/>
-              <line class="photo-connector" id="conn2" x1="1140" y1="691" x2="1140" y2="723" stroke="#996633" stroke-width="1" stroke-dasharray="3,4" opacity="0"/>
-              <line class="photo-connector" id="conn3" x1="647"  y1="115" x2="742"  y2="115" stroke="#FF6319" stroke-width="1" stroke-dasharray="3,4" opacity="0"/>
-              <!-- Station labels -->
-              <text class="subway-label subway-label-sm" id="lbl-gran"  x="640"  y="605">Grand St</text>
-              <text class="subway-label subway-label-sm" id="lbl-34h"   x="545"  y="468">34 St – Herald Sq</text>
-              <text class="subway-label subway-label-sm" id="lbl-42d"   x="488"  y="420" text-anchor="end">42 St – Bryant Park</text>
-              <text class="subway-label"                 id="lbl-tsq"   x="592"  y="420">Times Sq – 42 St</text>
-              <text class="subway-label subway-label-sm" id="lbl-161"   x="476"  y="179">161 St – Yankee Stadium</text>
-              <text class="subway-label subway-label-sm" id="lbl-norw"  x="657"  y="110">Norwood – 205 St</text>
-              <text class="subway-label subway-label-sm" id="lbl-wds"   x="827"  y="399" text-anchor="end">61 St – Woodside</text>
-              <text class="subway-label subway-label-sm" id="lbl-jh"    x="909"  y="374">Jackson Hts – Roosevelt Av</text>
-              <text class="subway-label subway-label-sm" id="lbl-flu"   x="1057" y="355">Flushing – Main St</text>
-              <text class="subway-label subway-label-sm" id="lbl-broad" x="568"  y="626" text-anchor="start">Broad St</text>
-              <text class="subway-label subway-label-sm" id="lbl-marcy" x="710"  y="700" text-anchor="middle">Marcy Av</text>
-              <text class="subway-label subway-label-sm" id="lbl-bjx"   x="922"  y="712" text-anchor="middle">Broadway Junction</text>
-              <text class="subway-label subway-label-sm" id="lbl-jam"   x="1058" y="680">Jamaica Center</text>
-              <!-- Train bullets -->
-              <circle class="line-bullet" id="bullet-d" cx="604" cy="609" r="10" fill="#FF6319"/>
-              <text   class="line-bullet-text" x="604" y="609" id="bt-d">D</text>
-              <circle class="line-bullet" id="bullet-7" cx="580" cy="407" r="10" fill="#B933AD"/>
-              <text   class="line-bullet-text" x="580" y="407" id="bt-7">7</text>
-              <circle class="line-bullet" id="bullet-j" cx="555" cy="638" r="10" fill="#996633"/>
-              <text   class="line-bullet-text" x="555" y="638" id="bt-j">J</text>
-              <!-- Borough labels -->
-              <text id="bronx-label"    font-family="Helvetica, Arial, sans-serif" font-size="9" fill="#888" opacity="0" letter-spacing="3" x="490"  y="113" text-anchor="middle">THE BRONX</text>
-              <line id="bronx-border"   x1="370" y1="118" x2="680"  y2="118" stroke="#aaa" stroke-width="0.8" stroke-dasharray="4,4" opacity="0"/>
-              <text id="queens-label"   font-family="Helvetica, Arial, sans-serif" font-size="9" fill="#888" opacity="0" letter-spacing="3" x="1020" y="575" text-anchor="middle">QUEENS</text>
-              <line id="queens-border"  x1="870" y1="563" x2="1160" y2="550" stroke="#aaa" stroke-width="0.8" stroke-dasharray="4,4" opacity="0"/>
-              <text id="brooklyn-label" font-family="Helvetica, Arial, sans-serif" font-size="9" fill="#888" opacity="0" letter-spacing="3" x="640"  y="908" text-anchor="middle">BROOKLYN</text>
-              <line id="brooklyn-border" x1="480" y1="900" x2="800" y2="900" stroke="#aaa" stroke-width="0.8" stroke-dasharray="4,4" opacity="0"/>
-            </svg>
-            <!-- Polaroid photos (HTML, positioned by SVG coordinate %) -->
-            <div class="photo-pin" id="photo1">
-              <img src="Assets/3.%20chapter%203/photo-woman.jpg" alt="Flushing, Queens" loading="lazy">
-              <div class="photo-pin-caption">Flushing, Queens</div>
+        <!-- Horizontal Subway Cards -->
+        <div class="subway-section" style="margin-top: 220px;">
+          <div class="photo-interleave">
+
+            <!-- ── CARD 1: D TRAIN ── -->
+            <div class="subway-card subway-card--d" id="card-d">
+              <div class="subway-card__header">
+                <div class="subway-card__bullet" id="d-bullet">D</div>
+                <div class="subway-card__header-text">
+                  <div class="subway-card__line-name" id="d-name">D Train</div>
+                  <div class="subway-card__borough" id="d-boro">Grand St → Norwood, The Bronx</div>
+                </div>
+              </div>
+              <div class="subway-card__map">
+                <svg viewBox="0 0 1020 280" xmlns="http://www.w3.org/2000/svg" aria-label="D train route">
+                  <defs>
+                    <pattern id="dots-d" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
+                      <circle cx="14" cy="14" r="0.5" fill="#333"/>
+                    </pattern>
+                  </defs>
+                  <rect width="1020" height="280" fill="url(#dots-d)" opacity="0.04"/>
+                  <path class="line-path" id="d-path" d="M 60,140 C 120,140 180,138 240,136 C 300,134 360,132 420,130 C 480,128 540,128 600,130 C 660,132 720,136 780,138 C 840,140 900,140 960,140" stroke="#FF6319" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                  <line class="ghost-ext" id="d-bronx-div" x1="600" y1="30" x2="600" y2="250" stroke="#FF6319" stroke-width="0.6" stroke-dasharray="5,4" opacity="0.35"/>
+                  <text class="ghost-ext" id="d-bronx-lbl" x="610" y="50" font-family="Helvetica, Arial, sans-serif" font-size="8" font-weight="700" fill="#FF6319" fill-opacity="0.55" letter-spacing="3">THE BRONX</text>
+                  <circle class="stn" id="d-st-grand" cx="60" cy="140" r="6" fill="#fff" stroke="#FF6319" stroke-width="2.5"/>
+                  <circle class="pulse" id="d-ring-grand" cx="60" cy="140" r="9" fill="none" stroke="#FF6319" stroke-width="1.5"/>
+                  <text class="stn-label" id="d-lbl-grand" x="60" y="118" text-anchor="middle" font-size="10" font-weight="700" fill="#333">Grand St</text>
+                  <text class="stn-sub" id="d-sub-grand" x="60" y="106" text-anchor="middle" font-size="8" fill="#888">Lower Manhattan</text>
+                  <circle class="stn" id="d-st-34" cx="240" cy="136" r="4.5" fill="#fff" stroke="#FF6319" stroke-width="1.8"/>
+                  <circle class="pulse" id="d-ring-34" cx="240" cy="136" r="8" fill="none" stroke="#FF6319" stroke-width="1.5"/>
+                  <text class="stn-label" id="d-lbl-34" x="240" y="168" text-anchor="middle" font-size="10" font-weight="600" fill="#333">34 St – Herald Sq</text>
+                  <circle class="stn" id="d-st-42" cx="340" cy="133" r="4.5" fill="#fff" stroke="#FF6319" stroke-width="1.8"/>
+                  <circle class="pulse" id="d-ring-42" cx="340" cy="133" r="8" fill="none" stroke="#FF6319" stroke-width="1.5"/>
+                  <text class="stn-label" id="d-lbl-42" x="340" y="111" text-anchor="middle" font-size="10" font-weight="600" fill="#333">42 St – Bryant Park</text>
+                  <circle class="stn" id="d-st-tsq" cx="420" cy="130" r="7" fill="#fff" stroke="#333" stroke-width="2"/>
+                  <circle class="pulse" id="d-ring-tsq" cx="420" cy="130" r="10" fill="none" stroke="#FF6319" stroke-width="1.5"/>
+                  <text class="stn-label" id="d-lbl-tsq" x="420" y="162" text-anchor="middle" font-size="10" font-weight="700" fill="#222">Times Sq – 42 St</text>
+                  <text class="stn-sub" id="d-sub-tsq" x="420" y="175" text-anchor="middle" font-size="8" fill="#888">Transfer: 7 · N · Q · R</text>
+                  <circle class="stn" id="d-st-161" cx="720" cy="136" r="4.5" fill="#fff" stroke="#FF6319" stroke-width="1.8"/>
+                  <circle class="pulse" id="d-ring-161" cx="720" cy="136" r="8" fill="none" stroke="#FF6319" stroke-width="1.5"/>
+                  <text class="stn-label" id="d-lbl-161" x="720" y="114" text-anchor="middle" font-size="10" font-weight="600" fill="#333">161 St – Yankee Stadium</text>
+                  <circle class="stn" id="d-st-norw" cx="960" cy="140" r="7" fill="#fff" stroke="#FF6319" stroke-width="2.5"/>
+                  <circle class="pulse" id="d-ring-norw" cx="960" cy="140" r="10" fill="none" stroke="#FF6319" stroke-width="1.5"/>
+                  <text class="stn-label" id="d-lbl-norw" x="960" y="172" text-anchor="middle" font-size="10" font-weight="700" fill="#FF6319">Norwood – 205 St</text>
+                  <text class="stn-sub" id="d-sub-norw" x="960" y="185" text-anchor="middle" font-size="8" font-weight="600" fill="#c44e0e">Last Stop</text>
+                </svg>
+              </div>
             </div>
-            <div class="photo-pin" id="photo2">
-              <img src="Assets/3.%20chapter%203/photo-train-guy.jpg" alt="Jamaica, Queens" loading="lazy">
-              <div class="photo-pin-caption">Jamaica, Queens</div>
+
+            <!-- D TRAIN PHOTO PAIR -->
+            <div class="photo-pair" id="d-photos">
+              <div class="mstrip-photo" id="d-photo-1">
+                <div class="mstrip-img-wrapper">
+                  <img id="d-img-1" src="assets/nyc-cab-cool.jpg" alt="Manhattan" loading="lazy">
+                </div>
+                <div class="mstrip-caption" id="d-cap-1" style="color:#c8602a; font-weight:700; letter-spacing:0.12em;">Lower East Side, Manhattan</div>
+              </div>
+              <div class="mstrip-photo" id="d-photo-2">
+                <div class="mstrip-img-wrapper">
+                  <img id="d-img-2" src="assets/nyc-car-surreal.jpg" alt="Fordham Road, The Bronx" loading="lazy">
+                </div>
+                <div class="mstrip-caption" id="d-cap-2" style="color:#c8602a; font-weight:700; letter-spacing:0.12em;">Fordham Road, The Bronx</div>
+              </div>
             </div>
-            <div class="photo-pin" id="photo3">
-              <img src="Assets/3.%20chapter%203/photo-train-guy_1.jpg" alt="The Bronx" loading="lazy">
-              <div class="photo-pin-caption">Fordham Road, The Bronx</div>
+
+            <!-- ── CARD 2: 7 TRAIN ── -->
+            <div class="subway-card subway-card--7" id="card-7">
+              <div class="subway-card__header">
+                <div class="subway-card__bullet" id="seven-bullet">7</div>
+                <div class="subway-card__header-text">
+                  <div class="subway-card__line-name" id="seven-name">7 Train</div>
+                  <div class="subway-card__borough" id="seven-boro">Times Sq → Flushing, Queens</div>
+                </div>
+              </div>
+              <div class="subway-card__map">
+                <svg viewBox="0 0 1020 260" xmlns="http://www.w3.org/2000/svg" aria-label="7 train route">
+                  <defs><pattern id="dots-7" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse"><circle cx="14" cy="14" r="0.5" fill="#333"/></pattern></defs>
+                  <rect width="1020" height="260" fill="url(#dots-7)" opacity="0.04"/>
+                  <path class="line-path" id="seven-path" d="M 60,130 C 140,130 220,128 300,126 C 380,124 460,122 540,124 C 620,126 700,130 780,132 C 860,134 920,132 960,130" stroke="#B933AD" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                  <line class="ghost-ext" id="s-queens-div" x1="200" y1="26" x2="200" y2="234" stroke="#B933AD" stroke-width="0.6" stroke-dasharray="5,4" opacity="0.35"/>
+                  <text class="ghost-ext" id="s-queens-lbl" x="210" y="44" font-family="Helvetica, Arial, sans-serif" font-size="8" font-weight="700" fill="#B933AD" fill-opacity="0.55" letter-spacing="3">QUEENS</text>
+                  <circle class="stn" id="s-st-tsq" cx="60" cy="130" r="6.5" fill="#fff" stroke="#333" stroke-width="2"/>
+                  <circle class="pulse" id="s-ring-tsq" cx="60" cy="130" r="10" fill="none" stroke="#B933AD" stroke-width="1.5"/>
+                  <text class="stn-label" id="s-lbl-tsq" x="60" y="108" text-anchor="middle" font-size="10" font-weight="700" fill="#222">Times Sq – 42 St</text>
+                  <text class="stn-sub" id="s-sub-tsq" x="60" y="96" text-anchor="middle" font-size="8" fill="#888">Transfer: D · N · Q · R</text>
+                  <circle class="stn" id="s-st-wds" cx="300" cy="126" r="4.5" fill="#fff" stroke="#B933AD" stroke-width="1.8"/>
+                  <circle class="pulse" id="s-ring-wds" cx="300" cy="126" r="8" fill="none" stroke="#B933AD" stroke-width="1.5"/>
+                  <text class="stn-label" id="s-lbl-wds" x="300" y="158" text-anchor="middle" font-size="10" font-weight="600" fill="#333">61 St – Woodside</text>
+                  <circle class="stn" id="s-st-jh" cx="500" cy="123" r="5" fill="#fff" stroke="#B933AD" stroke-width="1.8"/>
+                  <circle class="pulse" id="s-ring-jh" cx="500" cy="123" r="8" fill="none" stroke="#B933AD" stroke-width="1.5"/>
+                  <text class="stn-label" id="s-lbl-jh" x="500" y="101" text-anchor="middle" font-size="10" font-weight="600" fill="#333">Jackson Hts</text>
+                  <text class="stn-sub" id="s-sub-jh" x="500" y="89" text-anchor="middle" font-size="8" fill="#888">Roosevelt Av</text>
+                  <circle class="stn" id="s-st-cor" cx="700" cy="130" r="4.5" fill="#fff" stroke="#B933AD" stroke-width="1.8"/>
+                  <circle class="pulse" id="s-ring-cor" cx="700" cy="130" r="8" fill="none" stroke="#B933AD" stroke-width="1.5"/>
+                  <text class="stn-label" id="s-lbl-cor" x="700" y="162" text-anchor="middle" font-size="10" font-weight="600" fill="#333">103 St – Corona Plaza</text>
+                  <circle class="stn" id="s-st-flu" cx="960" cy="130" r="7" fill="#fff" stroke="#B933AD" stroke-width="2.5"/>
+                  <circle class="pulse" id="s-ring-flu" cx="960" cy="130" r="10" fill="none" stroke="#B933AD" stroke-width="1.5"/>
+                  <text class="stn-label" id="s-lbl-flu" x="960" y="108" text-anchor="middle" font-size="10" font-weight="700" fill="#B933AD">Flushing – Main St</text>
+                  <text class="stn-sub" id="s-sub-flu" x="960" y="96" text-anchor="middle" font-size="8" font-weight="600" fill="#8a2580">Last Stop</text>
+                </svg>
+              </div>
             </div>
-            <div class="photo-pin" id="photo4">
-              <img src="Assets/3.%20chapter%203/photo-guy.jpg" alt="Brooklyn — the keeper" loading="lazy">
-              <div class="photo-pin-caption" style="color:#c8602a; font-weight:700;">Manhattan</div>
+
+            <!-- 7 TRAIN PHOTO PAIR -->
+            <div class="photo-pair" id="s-photos">
+              <div class="mstrip-photo" id="s-photo-1">
+                <div class="mstrip-img-wrapper">
+                  <img id="s-img-1" src="assets/nyc-queens-mirror.jpg" alt="Flushing, Queens" loading="lazy">
+                </div>
+                <div class="mstrip-caption" id="s-cap-1" style="color:#B933AD; font-weight:700; letter-spacing:0.12em;">College Point, Queens</div>
+              </div>
+              <div class="mstrip-photo" id="s-photo-2">
+                <div class="mstrip-img-wrapper">
+                  <img id="s-img-2" src="assets/nyc-queens-flushing.jpg" alt="Corona, Queens" loading="lazy">
+                </div>
+                <div class="mstrip-caption" id="s-cap-2" style="color:#B933AD; font-weight:700; letter-spacing:0.12em;">Flushing, Queens</div>
+              </div>
             </div>
-          </div><!-- /mapContainer -->
-          <div id="mapCaption">Brooklyn. Queens. The Bronx. Walk far enough, and something opens.</div>
-        </div><!-- /mapSection -->
+
+            <!-- ── CARD 3: J TRAIN ── -->
+            <div class="subway-card subway-card--j" id="card-j">
+              <div class="subway-card__header">
+                <div class="subway-card__bullet" id="j-bullet">J</div>
+                <div class="subway-card__header-text">
+                  <div class="subway-card__line-name" id="j-name">J Train</div>
+                  <div class="subway-card__borough" id="j-boro">Broad St → Jamaica Center</div>
+                </div>
+              </div>
+              <div class="subway-card__map">
+                <svg viewBox="0 0 1020 280" xmlns="http://www.w3.org/2000/svg" aria-label="J train route">
+                  <defs><pattern id="dots-j" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse"><circle cx="14" cy="14" r="0.5" fill="#333"/></pattern></defs>
+                  <rect width="1020" height="280" fill="url(#dots-j)" opacity="0.04"/>
+                  <path class="line-path" id="j-path" d="M 60,140 C 130,140 200,138 270,134 C 340,130 410,126 480,128 C 550,130 620,136 690,138 C 760,140 830,140 900,140 C 930,140 950,140 960,140" stroke="#996633" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                  <line class="ghost-ext" id="j-bk-div" x1="200" y1="30" x2="200" y2="250" stroke="#996633" stroke-width="0.6" stroke-dasharray="5,4" opacity="0.35"/>
+                  <text class="ghost-ext" id="j-bk-lbl" x="210" y="48" font-family="Helvetica, Arial, sans-serif" font-size="8" font-weight="700" fill="#996633" fill-opacity="0.55" letter-spacing="3">BROOKLYN</text>
+                  <line class="ghost-ext" id="j-q-div" x1="620" y1="30" x2="620" y2="250" stroke="#996633" stroke-width="0.6" stroke-dasharray="5,4" opacity="0.35"/>
+                  <text class="ghost-ext" id="j-q-lbl" x="630" y="48" font-family="Helvetica, Arial, sans-serif" font-size="8" font-weight="700" fill="#996633" fill-opacity="0.55" letter-spacing="3">QUEENS</text>
+                  <circle class="stn" id="j-st-broad" cx="60" cy="140" r="6" fill="#fff" stroke="#996633" stroke-width="2"/>
+                  <circle class="pulse" id="j-ring-broad" cx="60" cy="140" r="9" fill="none" stroke="#996633" stroke-width="1.5"/>
+                  <text class="stn-label" id="j-lbl-broad" x="60" y="118" text-anchor="middle" font-size="10" font-weight="700" fill="#333">Broad St</text>
+                  <text class="stn-sub" id="j-sub-broad" x="60" y="106" text-anchor="middle" font-size="8" fill="#888">Financial District</text>
+                  <circle class="stn" id="j-st-marcy" cx="270" cy="134" r="4.5" fill="#fff" stroke="#996633" stroke-width="1.8"/>
+                  <circle class="pulse" id="j-ring-marcy" cx="270" cy="134" r="8" fill="none" stroke="#996633" stroke-width="1.5"/>
+                  <text class="stn-label" id="j-lbl-marcy" x="270" y="166" text-anchor="middle" font-size="10" font-weight="600" fill="#333">Marcy Av</text>
+                  <text class="stn-sub" id="j-sub-marcy" x="270" y="179" text-anchor="middle" font-size="8" fill="#888">Williamsburg</text>
+                  <circle class="stn" id="j-st-bjx" cx="480" cy="128" r="6" fill="#fff" stroke="#996633" stroke-width="2"/>
+                  <circle class="pulse" id="j-ring-bjx" cx="480" cy="128" r="10" fill="none" stroke="#996633" stroke-width="1.5"/>
+                  <text class="stn-label" id="j-lbl-bjx" x="480" y="106" text-anchor="middle" font-size="10" font-weight="700" fill="#333">Broadway Jct</text>
+                  <text class="stn-sub" id="j-sub-bjx" x="480" y="94" text-anchor="middle" font-size="8" fill="#888">Transfer: A · C · L</text>
+                  <circle class="stn" id="j-st-whb" cx="720" cy="139" r="4.5" fill="#fff" stroke="#996633" stroke-width="1.8"/>
+                  <circle class="pulse" id="j-ring-whb" cx="720" cy="139" r="8" fill="none" stroke="#996633" stroke-width="1.5"/>
+                  <text class="stn-label" id="j-lbl-whb" x="720" y="171" text-anchor="middle" font-size="10" font-weight="600" fill="#333">Woodhaven Blvd</text>
+                  <circle class="stn" id="j-st-jam" cx="960" cy="140" r="7" fill="#fff" stroke="#996633" stroke-width="2.5"/>
+                  <circle class="pulse" id="j-ring-jam" cx="960" cy="140" r="10" fill="none" stroke="#996633" stroke-width="1.5"/>
+                  <text class="stn-label" id="j-lbl-jam" x="960" y="118" text-anchor="middle" font-size="10" font-weight="700" fill="#996633">Jamaica Center</text>
+                  <text class="stn-sub" id="j-sub-jam" x="960" y="106" text-anchor="middle" font-size="8" font-weight="600" fill="#6b4822">Parsons/Archer · Last Stop</text>
+                </svg>
+              </div>
+            </div>
+
+            <!-- J TRAIN PHOTO PAIR -->
+            <div class="photo-pair" id="j-photos">
+              <div class="mstrip-photo" id="j-photo-1">
+                <div class="mstrip-img-wrapper">
+                  <img id="j-img-1" src="assets/nyc-bronx-train.jpg" alt="Jamaica, Queens" loading="lazy">
+                </div>
+                <div class="mstrip-caption" id="j-cap-1" style="color:#996633; font-weight:700; letter-spacing:0.12em;">Woodhaven, Queens</div>
+              </div>
+              <div class="mstrip-photo" id="j-photo-2">
+                <div class="mstrip-img-wrapper">
+                  <img id="j-img-2" src="assets/nyc-bronx-me.jpg" alt="Williamsburg" loading="lazy">
+                </div>
+                <div class="mstrip-caption" id="j-cap-2" style="color:#996633; font-weight:700; letter-spacing:0.12em;">Jamaica, Queens</div>
+              </div>
+            </div>
+
+            <p class="subway-caption" id="subwayCaption">Brooklyn. Queens. The Bronx. Walk far enough, and something opens.</p>
+
+          </div><!-- /photo-interleave -->
+        </div><!-- /subway-section -->
 
         <!-- Blur to Focus Transformation -->
         <div class="fl718-transform-container" id="ch3FocusBlock" style="margin-top: 200px;">
@@ -3708,12 +4018,24 @@
 
   <!-- ============================================
        CHAPTER 3→4 TRANSITION: FILM DATA STRIP
+       (Negative Drop animation — see script IIFE at bottom of body)
        ============================================ -->
 
-  <div class="fl718-ch34-transition" aria-hidden="true">
-    <span class="fl718-ch34-chunk fl718-ch34-chunk--stock">Fujifilm Superia X-TRA 400</span>
-    <span class="fl718-ch34-chunk">ISO 400<span class="fl718-film-sep">·</span>36 exp</span>
-    <span class="fl718-ch34-chunk">Roll 07<span class="fl718-film-sep">·</span>2015</span>
+  <!-- SVG filter for vertical motion blur during the strip's settling phase -->
+  <svg class="fl718-ch34-defs" aria-hidden="true">
+    <defs>
+      <filter id="fl718NegDropBlur" x="-5%" y="-30%" width="110%" height="160%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="0 0"/>
+      </filter>
+    </defs>
+  </svg>
+
+  <div class="fl718-ch34-clip" aria-hidden="true">
+    <div class="fl718-ch34-transition" id="ch34Transition">
+      <span class="fl718-ch34-chunk fl718-ch34-chunk--stock">Fujifilm Superia X-TRA 400</span>
+      <span class="fl718-ch34-chunk">ISO 400<span class="fl718-film-sep">·</span>36 exp</span>
+      <span class="fl718-ch34-chunk">Roll 07<span class="fl718-film-sep">·</span>2015</span>
+    </div>
   </div>
 
   <!-- ============================================
@@ -3725,8 +4047,8 @@
     <div class="fl718-chapter__number" id="chapterNumber4" role="heading" aria-level="2"></div>
     <div class="fl718-chapter__title-line"></div>
 
-    <div class="fl718-content">
-      <section class="fl718-section">
+    <div class="fl718-content" style="padding-bottom: 180px;">
+      <section class="fl718-section" style="margin-bottom: 0;">
         <p id="ch4-opening-paragraph" class="fl718-paragraph fl718-paragraph--opening">
           Later, living in Mexico City, I fell in love with 35mm film photography. That city's light, shadow, and color were made for analog capture. Film demands intention; every frame costs something. A craftsperson with an old camera and minimal editing can still make timeless photographs.
         </p>
@@ -3741,7 +4063,7 @@
           <div class="fl718-darkroom-item">
             <div class="fl718-darkroom-print">
               <img id="ch4ImgColor"
-                   src="Assets/4.%20chapter%204/photo-man-ledge.jpg"
+                   src="assets/cdmx-man-ledge.jpg"
                    alt="Mexico City, Fuji 400"
                    loading="lazy">
               <div class="fl718-darkroom-stock">Fuji 400</div>
@@ -3751,7 +4073,7 @@
           <div class="fl718-darkroom-item">
             <div class="fl718-darkroom-print">
               <img id="ch4ImgBnw"
-                   src="Assets/4.%20chapter%204/photo-mexico-bw.jpg"
+                   src="assets/cdmx-home-plant.jpg"
                    alt="Mexico City, Kodak Tri-X 400"
                    loading="lazy">
               <div class="fl718-darkroom-stock">Kodak Tri-X 400</div>
@@ -3763,10 +4085,10 @@
     </section>
 
     <!-- TODO: move to scoped CSS if using an opinionated theme (e.g. Uncode). Fine as inline on a minimal theme. -->
-    <div class="fl718-content" style="padding-top: 200px; padding-bottom: 200px;">
+    <div class="fl718-content" style="padding-top: 160px; padding-bottom: 300px;">
       <!-- TODO: move to scoped CSS if using an opinionated theme (e.g. Uncode). Fine as inline on a minimal theme. -->
       <section class="fl718-section" style="margin-bottom: 0;">
-        <p class="fl718-paragraph fl718-paragraph--opening">
+        <p class="fl718-paragraph fl718-paragraph--opening" style="margin-bottom: 0;">
           And then there's the phone, the camera you carry without thinking about it. Everyone else scrolls; I shoot. If the device is going to dominate modern life, it might as well make something worth looking at. Turns out, pointing a camera at the world is a better use of the thing than most of what it was designed for.
         </p>
       </section>
@@ -3785,49 +4107,49 @@
           <!-- Frames -->
           <div class="fl718-film-frame">
             <div class="fl718-film-frame__image">
-              <img src="Assets/4.%20chapter%204/photo-mexico-color.jpg" alt="Mexico City street photography" loading="lazy">
+              <img src="assets/photo-mexico-color.jpg" alt="Mexico City street photograph, frame 1A" loading="lazy">
             </div>
             <div class="fl718-film-frame__number">1A</div>
           </div>
 
           <div class="fl718-film-frame">
             <div class="fl718-film-frame__image">
-              <img src="Assets/4.%20chapter%204/photo-mexico-bw-boy.jpg" alt="Mexico City street photography" loading="lazy">
+              <img src="assets/photo-mexico-bw-boy.jpg" alt="Mexico City street photograph, frame 2" loading="lazy">
             </div>
             <div class="fl718-film-frame__number">2</div>
           </div>
 
           <div class="fl718-film-frame">
             <div class="fl718-film-frame__image">
-              <img src="Assets/4.%20chapter%204/photo-mexico-color_me.jpg" alt="Mexico City street photography" loading="lazy">
+              <img src="assets/photo-mexico-color_me.jpg" alt="Mexico City street photograph, frame 3A" loading="lazy">
             </div>
             <div class="fl718-film-frame__number">3A</div>
           </div>
 
           <div class="fl718-film-frame">
             <div class="fl718-film-frame__image">
-              <img src="Assets/4.%20chapter%204/photo-mexico-bw-camera-raw.jpg" alt="Mexico City street photography" loading="lazy">
+              <img src="assets/photo-mexico-bw-camera-raw.jpg" alt="Mexico City street photograph, frame 4" loading="lazy">
             </div>
             <div class="fl718-film-frame__number">4</div>
           </div>
 
           <div class="fl718-film-frame">
             <div class="fl718-film-frame__image">
-              <img src="Assets/4.%20chapter%204/photo-mexico-bw-camera-raw_1.jpg" alt="Mexico City street photography" loading="lazy">
+              <img src="assets/photo-mexico-bw-camera-raw_1.jpg" alt="Mexico City street photograph, frame 5A" loading="lazy">
             </div>
             <div class="fl718-film-frame__number">5A</div>
           </div>
 
           <div class="fl718-film-frame">
             <div class="fl718-film-frame__image">
-              <img src="Assets/4.%20chapter%204/photo-mexico-bw-family.jpg" alt="Mexico City street photography" loading="lazy">
+              <img src="assets/photo-mexico-bw-family.jpg" alt="Mexico City street photograph, frame 6" loading="lazy">
             </div>
             <div class="fl718-film-frame__number">6</div>
           </div>
 
           <div class="fl718-film-frame">
             <div class="fl718-film-frame__image">
-              <img src="Assets/4.%20chapter%204/photo-mexico-bw-metro.jpg" alt="Mexico City street photography" loading="lazy">
+              <img src="assets/photo-mexico-bw-metro.jpg" alt="Mexico City street photograph, frame 7A" loading="lazy">
             </div>
             <div class="fl718-film-frame__number">7A</div>
           </div>
@@ -3839,9 +4161,38 @@
 
   </div>
 
-  <!-- Chapter 4 → 5 Coordinate Divider -->
-  <div class="fl718-ch45-transition" aria-hidden="true">
-    <span class="fl718-ch45-coord">40.621278° N &nbsp;&nbsp;74.026585° W</span>
+  <!-- ============================================
+       TRANSITION: CHAPTER 4 → CHAPTER 5 (Grid Reference)
+       ============================================ -->
+  <div class="fl718-ch45-transition" id="fl718Ch45Transition" aria-hidden="true">
+
+    <!-- Top rule — draws full width left to right -->
+    <div class="fl718-ch45c-rule" id="fl718Ch45CRuleTop"></div>
+
+    <!-- Coordinate block -->
+    <div class="fl718-ch45c-coord-block">
+
+      <!-- Latitude row -->
+      <div class="fl718-ch45c-coord-row" id="fl718Ch45CRowLat">
+        <span class="fl718-ch45c-coord-label">Lat</span>
+        <div class="fl718-ch45c-coord-sep" id="fl718Ch45CSepLat"></div>
+        <span class="fl718-ch45c-coord-value">40.621278° N</span>
+      </div>
+
+      <div class="fl718-ch45c-coord-gap"></div>
+
+      <!-- Longitude row -->
+      <div class="fl718-ch45c-coord-row" id="fl718Ch45CRowLng">
+        <span class="fl718-ch45c-coord-label">Lng</span>
+        <div class="fl718-ch45c-coord-sep" id="fl718Ch45CSepLng"></div>
+        <span class="fl718-ch45c-coord-value">74.026585° W</span>
+      </div>
+
+    </div>
+
+    <!-- Bottom rule — draws full width left to right -->
+    <div class="fl718-ch45c-rule" id="fl718Ch45CRuleBottom"></div>
+
   </div>
 
   <!-- ============================================
@@ -3853,7 +4204,7 @@
     <section class="fl718-opening">
       <div class="fl718-chapter__number" id="chapterNumber5" role="heading" aria-level="2"></div>
       <div class="fl718-chapter__title-line"></div>
-      <h2 class="fl718-ch5-title">Flâneur 718</h2>
+      <h2 class="fl718-ch5-title">Fl<span class="fl718-ch5-accent">â</span>neur <span class="fl718-ch5-718">718</span></h2>
     </section>
 
     <section class="fl718-statement">
@@ -3868,7 +4219,7 @@
       <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 100px;">
 
         <!-- TODO: move to scoped CSS if using an opinionated theme (e.g. Uncode). Fine as inline on a minimal theme. -->
-        <div id="practice-left" style="opacity: 0; transform: translateY(20px);">
+        <div id="practice-left">
           <p class="fl718-paragraph">
             I shoot both digital and analog, color and black-and-white, capturing daily repetitions, light and shadow, reflections and dualities.
           </p>
@@ -3879,7 +4230,7 @@
         </div>
 
         <!-- TODO: move to scoped CSS if using an opinionated theme (e.g. Uncode). Fine as inline on a minimal theme. -->
-        <div id="practice-right" style="opacity: 0; transform: translateY(20px);">
+        <div id="practice-right">
           <p class="fl718-paragraph">
             I write photo essays, city essays, and travel observations.
           </p>
@@ -3896,19 +4247,19 @@
       </div>
     </section>
 
-    <section class="fl718-closing">
+    <section class="fl718-closing" id="ch5FinaleSection">
       <p class="fl718-closing__text" id="closing-text">
         This website archives my life's photographic work and writing. I add new work regularly.
       </p>
 
       <div class="fl718-colophon" id="fl718Colophon">
-        <div class="fl718-colophon__rule"></div>
-        <div class="fl718-colophon__notation">◁ &thinsp; Flaneur 718 &thinsp; · &thinsp;<span class="fl718-colophon__walker"><svg width="18" height="24" viewBox="8 0 36 58" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="7" r="5.5" stroke="#c2c2c2" stroke-width="2"/><line x1="30" y1="12.5" x2="26" y2="30" stroke="#c2c2c2" stroke-width="2" stroke-linecap="round"/><path d="M 29 17 Q 36 22 38 30" stroke="#c2c2c2" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M 28 18 Q 18 22 14 29" stroke="#c2c2c2" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M 26 30 Q 24 42 20 52" stroke="#c2c2c2" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M 20 52 L 13 55" stroke="#c2c2c2" stroke-width="2" stroke-linecap="round"/><path d="M 26 30 Q 30 42 36 50" stroke="#c2c2c2" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M 36 50 L 44 52" stroke="#c2c2c2" stroke-width="2" stroke-linecap="round"/></svg></span>&thinsp; ▷</div>
-        <div class="fl718-colophon__rule"></div>
-        <div class="fl718-colophon__hedera">❧</div>
+        <div class="fl718-colophon__rule" id="colRule1"></div>
+        <div class="fl718-colophon__notation" id="colNotation">◁ &thinsp; Flaneur 718 &thinsp; · &thinsp;<span class="fl718-colophon__walker"><svg width="18" height="24" viewBox="8 0 36 58" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="7" r="5.5" stroke="#c2c2c2" stroke-width="2"/><line x1="30" y1="12.5" x2="26" y2="30" stroke="#c2c2c2" stroke-width="2" stroke-linecap="round"/><path d="M 29 17 Q 36 22 38 30" stroke="#c2c2c2" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M 28 18 Q 18 22 14 29" stroke="#c2c2c2" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M 26 30 Q 24 42 20 52" stroke="#c2c2c2" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M 20 52 L 13 55" stroke="#c2c2c2" stroke-width="2" stroke-linecap="round"/><path d="M 26 30 Q 30 42 36 50" stroke="#c2c2c2" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M 36 50 L 44 52" stroke="#c2c2c2" stroke-width="2" stroke-linecap="round"/></svg></span>&thinsp; ▷</div>
+        <div class="fl718-colophon__rule" id="colRule2"></div>
+        <div class="fl718-colophon__hedera" id="colHedera">❧</div>
       </div>
 
-      <img src="Assets/flaneur_black_line3.png"
+      <img src="assets/flaneur_black_line3.png"
            alt=""
            class="fl718-closing__figure"
            id="fl718ClosingFigure"
@@ -3923,6 +4274,8 @@
        ============================================ -->
 
   <script>
+  (function() {
+    'use strict';
     // Register GSAP ScrollTrigger
     gsap.registerPlugin(ScrollTrigger);
 
@@ -4015,7 +4368,6 @@
     var SLIDE_DUR    = 0.5;
 
     // ==================== PHASE 6: QUARTER DRINKS TUNING ====================
-    var DRINK_SIZE       = 80;
     var DRIFT_MULTIPLIER = 1.0;
     var ROCK_MULTIPLIER  = 1.0;
     var PULSE_RADIUS     = 55;
@@ -4232,7 +4584,6 @@
 
       gsap.to(config.outer, { opacity: 1, duration: 0.1, delay: config.delay, ease: 'none' });
       gsap.to(config.outer, { left: config.landLeft, top: config.landTop, duration: config.travelDur, delay: config.delay, ease: 'power4.out' });
-      gsap.to(config.inner, { rotateZ: config.travelLean, duration: config.travelDur * 0.6, delay: config.delay, ease: 'power2.out' });
       gsap.to(config.inner, { rotateZ: config.driftAngle * DRIFT_MULTIPLIER, duration: config.travelDur, delay: config.delay, ease: 'power2.inOut' });
 
       var rockTL = gsap.timeline({ delay: LAND_TIME });
@@ -4265,7 +4616,7 @@
         inner: document.getElementById('drinkGreenInner'),
         img:   document.getElementById('drinkGreenImg'),
         ring:  document.getElementById('ring-green'),
-        travelDur: 0.5,  travelLean: 3,   driftAngle: 18,
+        travelDur: 0.5,  driftAngle: 18,
         landLeft: '51%', landTop: '40%',  finalAngle: -6,
         delay: DRINKS_START,
       });
@@ -4275,7 +4626,7 @@
         inner: document.getElementById('drinkOrangeInner'),
         img:   document.getElementById('drinkOrangeImg'),
         ring:  document.getElementById('ring-orange'),
-        travelDur: 0.45, travelLean: -8,  driftAngle: -22,
+        travelDur: 0.45, driftAngle: -22,
         landLeft: '55%', landTop: '57%',  finalAngle: 9,
         delay: DRINKS_START + 0.5,
       });
@@ -4285,7 +4636,7 @@
         inner: document.getElementById('drinkBlueInner'),
         img:   document.getElementById('drinkBlueImg'),
         ring:  document.getElementById('ring-blue'),
-        travelDur: 0.55, travelLean: -4,  driftAngle: 15,
+        travelDur: 0.55, driftAngle: 15,
         landLeft: '50%', landTop: '68%',  finalAngle: -3,
         delay: DRINKS_START + 1.1,
       });
@@ -4295,7 +4646,7 @@
         inner: document.getElementById('drinkPurpleInner'),
         img:   document.getElementById('drinkPurpleImg'),
         ring:  document.getElementById('ring-purple'),
-        travelDur: 0.5,  travelLean: -10, driftAngle: -28,
+        travelDur: 0.5,  driftAngle: -28,
         landLeft: '73%', landTop: '20%',  finalAngle: 12,
         delay: DRINKS_START + 1.7,
       });
@@ -4405,7 +4756,8 @@
       var img   = document.getElementById('canImg');
 
       resetSprayAction();
-      gsap.set(outer, { left: CAN_START_LEFT, top: CAN_START_TOP, opacity: 1 });
+      gsap.set(outer, { left: CAN_START_LEFT, top: CAN_START_TOP, opacity: 0 });
+      gsap.to(outer,  { opacity: 1, duration: 0.01, delay: CAN_DELAY });
       gsap.set(inner, { rotateZ: 0, scaleY: 1, scaleX: 1 });
       img.classList.remove('landed');
 
@@ -4922,24 +5274,36 @@
           return;
         }
 
-        // Ensure reset state
+        // ── Concept A: "Aperture Opening" ──
+        // Rules expand outward from center like aperture blades parting,
+        // then text fades in once the opening is made. Staggered L→R.
         gsap.set(marks, { opacity: 0 });
         gsap.set(rules, { scaleX: 0 });
-        gsap.set(texts, { opacity: 0, letterSpacing: '0.52em' });
+        gsap.set(texts, { opacity: 0 });
 
-        // ── One synchronous event — all 4 marks at once ──
-        gsap.to(marks, { opacity: 1, duration: 0.01 });
-        gsap.to(texts, {
-          opacity: 1,
-          letterSpacing: '0.22em',
-          duration: 0.6,
-          ease: 'power2.out'
-        });
-        gsap.to(rules, {
-          scaleX: 1,
-          duration: 0.45,
-          ease: 'power2.out',
-          delay: 0.33
+        marks.forEach(function(mark, i) {
+          var delay = i * 0.18;
+          var markRules = mark.querySelectorAll('.fl718-fstop-rule');
+          var markText = mark.querySelector('.fl718-fstop-text');
+
+          // Mark container fades in immediately at its stagger point
+          gsap.to(mark, { opacity: 1, duration: 0.01, delay: delay });
+
+          // Rules expand outward from center — aperture blades opening
+          gsap.to(markRules, {
+            scaleX: 1,
+            duration: 0.5,
+            ease: 'power2.out',
+            delay: delay
+          });
+
+          // Text fades in after rules have begun opening
+          gsap.to(markText, {
+            opacity: 0.52,
+            duration: 0.4,
+            ease: 'power2.out',
+            delay: delay + 0.15
+          });
         });
       }
 
@@ -4950,7 +5314,7 @@
             ch3DividerObserver.unobserve(entry.target);
           }
         });
-      }, { threshold: 0.5 });
+      }, { threshold: 0.85 });
 
       onReady(function() {
         var el = document.getElementById('ch3Divider');
@@ -4990,8 +5354,9 @@
         if (shutterTriggered) return;
         shutterTriggered = true;
 
-        // Depends on ch1ReducedMotion declared by the Brooklyn scrapbook IIFE above
-        if (ch1ReducedMotion) {
+        // FIX: Own matchMedia call so this IIFE is self-contained (was reading ch1ReducedMotion from parent scope)
+        var shutterReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (shutterReducedMotion) {
           gsap.set(sentence, { opacity: 1 });
           return;
         }
@@ -5073,7 +5438,10 @@
       }
     });
 
-    // Practice columns
+    // Practice columns — gsap.set() initializes GSAP's transform cache (moved from inline styles)
+    gsap.set('#practice-left', { opacity: 0, y: 20 });
+    gsap.set('#practice-right', { opacity: 0, y: 20 });
+
     gsap.to('#practice-left', {
       opacity: 1,
       y: 0,
@@ -5099,17 +5467,8 @@
       }
     });
 
-    // Closing
-    gsap.to('#closing-text', {
-      opacity: 1,
-      duration: 1,
-      ease: 'power2.out',
-      scrollTrigger: {
-        trigger: '.fl718-closing',
-        start: 'top 70%',
-        toggleActions: 'play none none none'
-      }
-    });
+    // Closing text animation moved to unified finale IIFE below
+  })();
   </script>
 
   <!-- ── BODEGA BAG TIP — Ch.3 Scrapbook Animation ── -->
@@ -5181,135 +5540,260 @@
     })();
   </script>
 
-  <!-- ── Long Walk Map Animation ── -->
+  <!-- ── Horizontal Subway Cards Animation (D, 7, J) ── -->
   <script>
-    (function () {
-      var walkTriggered = false;
+  (function() {
+    'use strict';
+    var _subwayReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      function prepLine(el) {
-        var len = el.getTotalLength();
-        el.style.strokeDasharray  = len;
-        el.style.strokeDashoffset = len;
-        return len;
-      }
-      function prepConnector(el) {
-        var dx = el.x2.baseVal.value - el.x1.baseVal.value;
-        var dy = el.y2.baseVal.value - el.y1.baseVal.value;
-        var len = Math.sqrt(dx * dx + dy * dy);
-        el.style.strokeDasharray  = len;
-        el.style.strokeDashoffset = len;
-        return len;
-      }
+    function _setupDraw(pathEl) {
+      if (!pathEl || !pathEl.getTotalLength) return 0;
+      var len = pathEl.getTotalLength();
+      gsap.set(pathEl, { strokeDasharray: len, strokeDashoffset: len, opacity: 1 });
+      return len;
+    }
 
-      function runWalkAnimation() {
-        var dLine     = document.getElementById('d-line');
-        var sevenLine = document.getElementById('seven-line');
-        var jLine     = document.getElementById('j-line');
-        gsap.set([dLine, sevenLine, jLine], { opacity: 1 });
-        prepLine(dLine);
-        prepLine(sevenLine);
-        prepLine(jLine);
-        ['conn1','conn2','conn3'].forEach(function(id) {
-          prepConnector(document.getElementById(id));
-        });
-
-        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-          gsap.set([dLine, sevenLine, jLine], { strokeDashoffset: 0 });
-          gsap.set('#ghost-d', { opacity: 0.32 });
-          gsap.set('.subway-station', { opacity: 1, scale: 1 });
-          gsap.set('.subway-label', { opacity: 1 });
-          gsap.set('.line-bullet, .line-bullet-text', { opacity: 1 });
-          gsap.set(['#photo1','#photo2','#photo3','#photo4'], { opacity: 1 });
-          gsap.set('#mapCaption', { opacity: 1 });
-          return;
+    function _popIn(tl, sel, time, opts) {
+      var o = opts || {};
+      var els = typeof sel === 'string' ? document.querySelectorAll(sel) : [sel];
+      els.forEach(function(el) {
+        if (el && el.getAttribute) {
+          var cx = el.getAttribute('cx'), cy = el.getAttribute('cy');
+          if (cx && cy) { gsap.set(el, { scale: 0, svgOrigin: cx + ' ' + cy }); }
+          else { gsap.set(el, { scale: 0, transformOrigin: 'center center' }); }
         }
+      });
+      tl.to(sel, { opacity: 1, scale: 1, duration: o.dur || 0.35, ease: o.ease || 'back.out(2)' }, time);
+    }
 
-        var tl = gsap.timeline({ defaults: { ease: 'power2.out' } });
+    function _fadeIn(tl, sel, time, dur) {
+      tl.to(sel, { opacity: 1, duration: dur || 0.35 }, time);
+    }
 
-        tl.to('#ctx-lines', { opacity: 0.18, duration: 0.8 }, 0.2);
-        tl.to('#ghost-d',   { opacity: 0.32, duration: 1.1 }, 0.2);
-        tl.to(['#brooklyn-border', '#brooklyn-label'], { opacity: 0.28, duration: 0.9 }, 0.3);
+    function _pulseRing(tl, ringEl, time) {
+      if (!ringEl) return;
+      tl.call(function() {
+        var cx = ringEl.getAttribute('cx'), cy = ringEl.getAttribute('cy');
+        gsap.set(ringEl, { opacity: 1, scale: 0.5, svgOrigin: cx + ' ' + cy });
+        gsap.to(ringEl, { scale: 2.8, opacity: 0, duration: 1.0, ease: 'power2.out' });
+      }, null, time);
+    }
 
-        tl.fromTo('#st-gran',  { opacity:0, scale:0 }, { opacity:1, scale:1, duration:0.4, ease:'back.out(2.5)' }, 0.5);
-        tl.to('#lbl-gran', { opacity:1, duration:0.4 }, 0.62);
-        tl.fromTo('#bullet-d', { opacity:0, scale:0 }, { opacity:1, scale:1, duration:0.35, ease:'back.out(2)' }, 0.6);
-        tl.to('#bt-d',     { opacity:1, duration:0.2 }, 0.72);
+    function _observeCard(cardId, animFn) {
+      var el = document.getElementById(cardId);
+      if (!el) return;
+      var obs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(e) {
+          if (e.isIntersecting) { obs.unobserve(e.target); setTimeout(animFn, 200); }
+        });
+      }, { threshold: 0.12 });
+      obs.observe(el);
+    }
 
-        tl.to(dLine, { strokeDashoffset:0, duration:2.0, ease:'power1.inOut' }, 1.0);
-        tl.fromTo('#st-34h', { opacity:0, scale:0 }, { opacity:1, scale:1, duration:0.3, ease:'back.out(2)' }, 1.4);
-        tl.to('#lbl-34h', { opacity:1, duration:0.4 }, 1.5);
-        tl.fromTo('#st-42d', { opacity:0, scale:0 }, { opacity:1, scale:1, duration:0.3, ease:'back.out(2)' }, 1.6);
-        tl.to('#lbl-42d', { opacity:1, duration:0.4 }, 1.7);
+    function _showStatic(cardId) {
+      var card = document.getElementById(cardId);
+      if (!card) return;
+      gsap.set(card.querySelectorAll('.line-path'), { opacity: 1, strokeDasharray: 'none' });
+      gsap.set(card.querySelectorAll('.stn, .stn-label, .stn-sub, .ghost-ext, .pulse'), { opacity: 1 });
+      var bullet = card.querySelector('.subway-card__bullet');
+      var name   = card.querySelector('.subway-card__line-name');
+      var boro   = card.querySelector('.subway-card__borough');
+      if (bullet) gsap.set(bullet, { opacity: 1, scale: 1 });
+      if (name)   gsap.set(name, { opacity: 1, x: 0 });
+      if (boro)   gsap.set(boro, { opacity: 1 });
+    }
 
-        tl.fromTo('#photo4',
-          { opacity:0, scale:0.78, y:10 },
-          { opacity:1, scale:1, y:0, duration:0.7, ease:'back.out(1.3)' }, 1.5);
+    /* ── D TRAIN ── */
+    _observeCard('card-d', function() {
+      if (_subwayReducedMotion) { _showStatic('card-d'); return; }
+      var tl = gsap.timeline();
+      gsap.set('#d-name', { x: -8 });
+      _popIn(tl, '#d-bullet', 0, { dur: 0.4, ease: 'back.out(2.5)' });
+      tl.to('#d-name', { opacity: 1, x: 0, duration: 0.4, ease: 'power2.out' }, 0.15);
+      _fadeIn(tl, '#d-boro', 0.3, 0.4);
+      _fadeIn(tl, '#d-bronx-div', 0.6, 0.5);
+      _fadeIn(tl, '#d-bronx-lbl', 0.7, 0.5);
+      var dPath = document.getElementById('d-path');
+      _setupDraw(dPath);
+      tl.to(dPath, { strokeDashoffset: 0, duration: 4.5, ease: 'none' }, 0.9);
+      _popIn(tl, '#d-st-grand', 0.7, { dur: 0.3 });
+      _pulseRing(tl, document.getElementById('d-ring-grand'), 0.8);
+      _fadeIn(tl, '#d-lbl-grand', 0.85);
+      _fadeIn(tl, '#d-sub-grand', 0.95);
+      tl.to('#d-st-34', { opacity: 1, duration: 0.25 }, 2.0);
+      _pulseRing(tl, document.getElementById('d-ring-34'), 2.05);
+      _fadeIn(tl, '#d-lbl-34', 2.1);
+      tl.to('#d-st-42', { opacity: 1, duration: 0.25 }, 2.6);
+      _pulseRing(tl, document.getElementById('d-ring-42'), 2.65);
+      _fadeIn(tl, '#d-lbl-42', 2.7);
+      _popIn(tl, '#d-st-tsq', 2.9, { dur: 0.4, ease: 'back.out(2.5)' });
+      _pulseRing(tl, document.getElementById('d-ring-tsq'), 3.0);
+      _fadeIn(tl, '#d-lbl-tsq', 3.05);
+      _fadeIn(tl, '#d-sub-tsq', 3.15);
+      tl.to('#d-st-161', { opacity: 1, duration: 0.25 }, 4.0);
+      _pulseRing(tl, document.getElementById('d-ring-161'), 4.05);
+      _fadeIn(tl, '#d-lbl-161', 4.1);
+      _popIn(tl, '#d-st-norw', 5.0, { dur: 0.4, ease: 'back.out(2)' });
+      _pulseRing(tl, document.getElementById('d-ring-norw'), 5.1);
+      _fadeIn(tl, '#d-lbl-norw', 5.15);
+      _fadeIn(tl, '#d-sub-norw', 5.25);
+    });
 
-        tl.fromTo('#st-tsq', { opacity:0, scale:0 }, { opacity:1, scale:1, duration:0.45, ease:'back.out(2.5)' }, 1.8);
-        tl.to('#lbl-tsq', { opacity:1, duration:0.5 }, 1.9);
-        tl.to('#ring-tsq-d', { scale:4.2, opacity:0, duration:1.0, ease:'power2.out' }, 1.85);
-        tl.to('#ring-tsq-7', { scale:3.4, opacity:0, duration:0.9, ease:'power2.out' }, 2.02);
+    /* ── 7 TRAIN ── */
+    _observeCard('card-7', function() {
+      if (_subwayReducedMotion) { _showStatic('card-7'); return; }
+      var tl = gsap.timeline();
+      gsap.set('#seven-name', { x: -8 });
+      _popIn(tl, '#seven-bullet', 0, { dur: 0.4, ease: 'back.out(2.5)' });
+      tl.to('#seven-name', { opacity: 1, x: 0, duration: 0.4, ease: 'power2.out' }, 0.15);
+      _fadeIn(tl, '#seven-boro', 0.3, 0.4);
+      _fadeIn(tl, '#s-queens-div', 0.5, 0.5);
+      _fadeIn(tl, '#s-queens-lbl', 0.6, 0.5);
+      var sPath = document.getElementById('seven-path');
+      _setupDraw(sPath);
+      tl.to(sPath, { strokeDashoffset: 0, duration: 4.5, ease: 'none' }, 0.8);
+      _popIn(tl, '#s-st-tsq', 0.6, { dur: 0.35 });
+      _pulseRing(tl, document.getElementById('s-ring-tsq'), 0.7);
+      _fadeIn(tl, '#s-lbl-tsq', 0.75);
+      _fadeIn(tl, '#s-sub-tsq', 0.85);
+      tl.to('#s-st-wds', { opacity: 1, duration: 0.25 }, 2.0);
+      _pulseRing(tl, document.getElementById('s-ring-wds'), 2.05);
+      _fadeIn(tl, '#s-lbl-wds', 2.1);
+      tl.to('#s-st-jh', { opacity: 1, duration: 0.25 }, 2.9);
+      _pulseRing(tl, document.getElementById('s-ring-jh'), 2.95);
+      _fadeIn(tl, '#s-lbl-jh', 3.0);
+      _fadeIn(tl, '#s-sub-jh', 3.1);
+      tl.to('#s-st-cor', { opacity: 1, duration: 0.25 }, 3.7);
+      _pulseRing(tl, document.getElementById('s-ring-cor'), 3.75);
+      _fadeIn(tl, '#s-lbl-cor', 3.8);
+      _popIn(tl, '#s-st-flu', 4.9, { dur: 0.4, ease: 'back.out(2)' });
+      _pulseRing(tl, document.getElementById('s-ring-flu'), 5.0);
+      _fadeIn(tl, '#s-lbl-flu', 5.05);
+      _fadeIn(tl, '#s-sub-flu', 5.15);
+    });
 
-        tl.fromTo('#bullet-7', { opacity:0, scale:0 }, { opacity:1, scale:1, duration:0.35, ease:'back.out(2)' }, 2.1);
-        tl.to('#bt-7',     { opacity:1, duration:0.2 }, 2.22);
+    /* ── J TRAIN ── */
+    _observeCard('card-j', function() {
+      if (_subwayReducedMotion) { _showStatic('card-j'); return; }
+      var tl = gsap.timeline();
+      gsap.set('#j-name', { x: -8 });
+      _popIn(tl, '#j-bullet', 0, { dur: 0.4, ease: 'back.out(2.5)' });
+      tl.to('#j-name', { opacity: 1, x: 0, duration: 0.4, ease: 'power2.out' }, 0.15);
+      _fadeIn(tl, '#j-boro', 0.3, 0.4);
+      _fadeIn(tl, '#j-bk-div', 0.5, 0.5);
+      _fadeIn(tl, '#j-bk-lbl', 0.6, 0.5);
+      _fadeIn(tl, '#j-q-div', 0.6, 0.5);
+      _fadeIn(tl, '#j-q-lbl', 0.7, 0.5);
+      var jPath = document.getElementById('j-path');
+      _setupDraw(jPath);
+      tl.to(jPath, { strokeDashoffset: 0, duration: 4.5, ease: 'none' }, 0.8);
+      _popIn(tl, '#j-st-broad', 0.6, { dur: 0.3 });
+      _pulseRing(tl, document.getElementById('j-ring-broad'), 0.7);
+      _fadeIn(tl, '#j-lbl-broad', 0.75);
+      _fadeIn(tl, '#j-sub-broad', 0.85);
+      tl.to('#j-st-marcy', { opacity: 1, duration: 0.25 }, 2.0);
+      _pulseRing(tl, document.getElementById('j-ring-marcy'), 2.05);
+      _fadeIn(tl, '#j-lbl-marcy', 2.1);
+      _fadeIn(tl, '#j-sub-marcy', 2.2);
+      _popIn(tl, '#j-st-bjx', 3.0, { dur: 0.35 });
+      _pulseRing(tl, document.getElementById('j-ring-bjx'), 3.1);
+      _fadeIn(tl, '#j-lbl-bjx', 3.15);
+      _fadeIn(tl, '#j-sub-bjx', 3.25);
+      tl.to('#j-st-whb', { opacity: 1, duration: 0.25 }, 3.9);
+      _pulseRing(tl, document.getElementById('j-ring-whb'), 3.95);
+      _fadeIn(tl, '#j-lbl-whb', 4.0);
+      _popIn(tl, '#j-st-jam', 4.9, { dur: 0.4, ease: 'back.out(2)' });
+      _pulseRing(tl, document.getElementById('j-ring-jam'), 5.0);
+      _fadeIn(tl, '#j-lbl-jam', 5.05);
+      _fadeIn(tl, '#j-sub-jam', 5.15);
+    });
 
-        tl.fromTo('#st-161', { opacity:0, scale:0 }, { opacity:1, scale:1, duration:0.3, ease:'back.out(2)' }, 2.4);
-        tl.to('#lbl-161', { opacity:1, duration:0.4 }, 2.65);
-        tl.to('#bronx-border', { opacity:1, duration:0.6 }, 2.5);
-        tl.to('#bronx-label',  { opacity:1, duration:0.5 }, 2.6);
-        tl.fromTo('#st-norw', { opacity:0, scale:0 }, { opacity:1, scale:1, duration:0.4, ease:'back.out(2)' }, 2.9);
-        tl.to('#lbl-norw',{ opacity:1, duration:0.4 }, 3.0);
-        tl.to('#conn3', { opacity:1, strokeDashoffset:0, duration:0.3 }, 3.1);
-        tl.fromTo('#photo3',
-          { opacity:0, scale:0.82, y:8 },
-          { opacity:1, scale:1, y:0, duration:0.55, ease:'back.out(1.4)' }, 3.2);
+    /* ── Caption ── */
+    var cap = document.getElementById('subwayCaption');
+    if (cap) {
+      gsap.set(cap, { y: 8 });
+      var capObs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(e) {
+          if (e.isIntersecting) {
+            capObs.unobserve(e.target);
+            gsap.to(cap, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' });
+          }
+        });
+      }, { threshold: 0.5 });
+      capObs.observe(cap);
+    }
+  })();
+  </script>
 
-        tl.to(sevenLine, { strokeDashoffset:0, duration:1.6, ease:'power1.inOut' }, 2.1);
-        tl.fromTo('#st-wds', { opacity:0, scale:0 }, { opacity:1, scale:1, duration:0.35, ease:'back.out(2)' }, 2.65);
-        tl.to('#lbl-wds', { opacity:1, duration:0.3 }, 2.8);
-        tl.fromTo('#st-jh',  { opacity:0, scale:0 }, { opacity:1, scale:1, duration:0.4, ease:'back.out(2)' }, 2.85);
-        tl.to('#lbl-jh', { opacity:1, duration:0.4 }, 3.0);
-        tl.fromTo('#st-flu', { opacity:0, scale:0 }, { opacity:1, scale:1, duration:0.4, ease:'back.out(2)' }, 3.55);
-        tl.to('#lbl-flu',{ opacity:1, duration:0.4 }, 3.67);
-        tl.to('#queens-border', { opacity:1, duration:0.6 }, 3.15);
-        tl.to('#queens-label',  { opacity:1, duration:0.5 }, 3.25);
-        tl.to('#conn1', { opacity:1, strokeDashoffset:0, duration:0.3 }, 3.75);
-        tl.fromTo('#photo1',
-          { opacity:0, scale:0.82, y:8 },
-          { opacity:1, scale:1, y:0, duration:0.55, ease:'back.out(1.4)' }, 3.85);
+  <!-- ── Subway Photo Pair Animation ── -->
+  <script>
+  (function() {
+    'use strict';
+    var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-        tl.fromTo('#bullet-j', { opacity:0, scale:0 }, { opacity:1, scale:1, duration:0.35, ease:'back.out(2)' }, 2.0);
-        tl.to('#bt-j',      { opacity:1, duration:0.2 }, 2.12);
-        tl.fromTo('#st-broad', { opacity:0, scale:0 }, { opacity:1, scale:1, duration:0.4, ease:'back.out(2)' }, 2.1);
-        tl.to('#lbl-broad', { opacity:1, duration:0.4 }, 2.25);
-        tl.to(jLine, { strokeDashoffset:0, duration:2.0, ease:'power1.inOut' }, 2.1);
-        tl.fromTo('#st-marcy', { opacity:0, scale:0 }, { opacity:1, scale:1, duration:0.3, ease:'back.out(2)' }, 2.62);
-        tl.to('#lbl-marcy', { opacity:1, duration:0.4 }, 2.75);
-        tl.fromTo('#st-bjx',  { opacity:0, scale:0 }, { opacity:1, scale:1, duration:0.4, ease:'back.out(2)' }, 3.18);
-        tl.to('#lbl-bjx', { opacity:1, duration:0.4 }, 3.32);
-        tl.to('#ring-bjx',{ scale:3.5, opacity:0, duration:0.8, ease:'power2.out' }, 3.2);
-        tl.fromTo('#st-jam',  { opacity:0, scale:0 }, { opacity:1, scale:1, duration:0.4, ease:'back.out(2)' }, 4.0);
-        tl.to('#lbl-jam', { opacity:1, duration:0.4 }, 4.12);
-        tl.to('#conn2', { opacity:1, strokeDashoffset:0, duration:0.3 }, 4.25);
-        tl.fromTo('#photo2',
-          { opacity:0, scale:0.82, y:8 },
-          { opacity:1, scale:1, y:0, duration:0.55, ease:'back.out(1.4)' }, 4.35);
+    var pairs = [
+      { containerId: 'd-photos', photos: [
+        { frameId: 'd-photo-1', imgId: 'd-img-1', capId: 'd-cap-1' },
+        { frameId: 'd-photo-2', imgId: 'd-img-2', capId: 'd-cap-2' }
+      ]},
+      { containerId: 's-photos', photos: [
+        { frameId: 's-photo-1', imgId: 's-img-1', capId: 's-cap-1' },
+        { frameId: 's-photo-2', imgId: 's-img-2', capId: 's-cap-2' }
+      ]},
+      { containerId: 'j-photos', photos: [
+        { frameId: 'j-photo-1', imgId: 'j-img-1', capId: 'j-cap-1' },
+        { frameId: 'j-photo-2', imgId: 'j-img-2', capId: 'j-cap-2' }
+      ]}
+    ];
 
-        tl.to('#mapCaption', { opacity:1, duration:0.7 }, 5.1);
-      }
+    pairs.forEach(function(pair) {
+      pair.photos.forEach(function(p) {
+        var img = document.getElementById(p.imgId);
+        if (img) gsap.set(img, { xPercent: 100 });
+      });
+    });
 
-      var walkObs = new IntersectionObserver(function(entries) {
+    if (reducedMotion) {
+      pairs.forEach(function(pair) {
+        pair.photos.forEach(function(p) {
+          var frame = document.getElementById(p.frameId);
+          var img   = document.getElementById(p.imgId);
+          var cap   = document.getElementById(p.capId);
+          if (frame) frame.style.opacity = '1';
+          if (img)   gsap.set(img, { xPercent: 0 });
+          if (cap)   cap.style.opacity = '1';
+        });
+      });
+      return;
+    }
+
+    function slideFromPocket(frameId, imgId, capId) {
+      var frame = document.getElementById(frameId);
+      var img   = document.getElementById(imgId);
+      var cap   = document.getElementById(capId);
+      if (!frame || !img || !cap) return;
+      gsap.to(frame, { opacity: 1, duration: 0.20, ease: 'power1.out' });
+      gsap.to(img, { xPercent: 0, duration: 0.52, delay: 0.14, ease: 'power2.out' });
+      gsap.to(cap, { opacity: 1, duration: 0.22, delay: 0.72, ease: 'power1.out' });
+    }
+
+    pairs.forEach(function(pair) {
+      var container = document.getElementById(pair.containerId);
+      if (!container) return;
+      var obs = new IntersectionObserver(function(entries) {
         entries.forEach(function(entry) {
-          if (entry.isIntersecting && !walkTriggered) {
-            walkTriggered = true;
-            walkObs.disconnect();
-            setTimeout(runWalkAnimation, 300);
+          if (entry.isIntersecting) {
+            obs.unobserve(entry.target);
+            slideFromPocket(pair.photos[0].frameId, pair.photos[0].imgId, pair.photos[0].capId);
+            setTimeout(function() {
+              slideFromPocket(pair.photos[1].frameId, pair.photos[1].imgId, pair.photos[1].capId);
+            }, 280);
           }
         });
       }, { threshold: 0.25 });
-
-      walkObs.observe(document.getElementById('mapSection'));
-    })();
+      obs.observe(container);
+    });
+  })();
   </script>
 
   <!-- Ch. 3 ending: blur-to-focus three lines + slow-resolve closing quote -->
@@ -5355,13 +5839,16 @@
         });
       }, { threshold: 0.4 });
 
-      lineObs.observe(document.getElementById('ch3FocusBlock'));
+      var focusBlock = document.getElementById('ch3FocusBlock');
+      if (!focusBlock) return;
+      lineObs.observe(focusBlock);
 
       // ── CLOSING QUOTE: its own trigger, resolves slowly ──
       // The slowness mirrors the content — paying attention and shooting
       // thousands of photos is a long accumulation, not a snap-to.
       var quoteTriggered = false;
       var quote = document.getElementById('ch3WalkingQuote');
+      if (!quote) return;
 
       var quoteObs = new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) {
@@ -5372,6 +5859,7 @@
               filter: 'blur(0px)',
               color: '#2a2a2a',
               duration: 2.5,
+              delay: 1.5,
               ease: 'power1.out',
             });
             quoteObs.disconnect();
@@ -5454,7 +5942,9 @@
       });
     }, { threshold: 0.3 });
 
-    ch4Observer.observe(document.getElementById('ch4DarkroomSection'));
+    var ch4Section = document.getElementById('ch4DarkroomSection');
+    if (!ch4Section) return;
+    ch4Observer.observe(ch4Section);
   }());
   </script>
 
@@ -5508,32 +5998,218 @@
   }());
   </script>
 
-  <!-- Ch5 colophon ornament — separate script, IIFE -->
+  <!-- Ch3→4 Negative Drop divider animation — separate script, IIFE
+       (isolated from main script block to avoid IntersectionObserver conflicts
+       with ScrollTrigger pins, same pattern as ch4 typewriter above) -->
   <script>
   (function() {
-    var colophonTriggered = false;
-    var colophonReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var ch34ReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var ch34Triggered = false;
 
-    var colophonObs = new IntersectionObserver(function(entries) {
+    var strip = document.getElementById('ch34Transition');
+    var blurPrim = document.querySelector('#fl718NegDropBlur feGaussianBlur');
+    if (!strip || !blurPrim) return;
+
+    var chunks = strip.querySelectorAll('.fl718-ch34-chunk');
+
+    // Reduced-motion fallback: show statically, no animation
+    if (ch34ReducedMotion) {
+      gsap.set(strip, { opacity: 1 });
+      return;
+    }
+
+    function runNegativeDrop() {
+      if (ch34Triggered) return;
+      ch34Triggered = true;
+
+      // Apply the SVG vertical blur filter for the settling phase
+      strip.style.filter = 'url(#fl718NegDropBlur)';
+
+      // Set the blur to its starting value (gentle vertical blur = 1.8px)
+      blurPrim.setAttribute('stdDeviation', '0 1.8');
+
+      var tl = gsap.timeline();
+
+      // Phase 1 — Pre-position: strip sits just barely above its resting place,
+      // like a negative being lowered into a carrier. Minimal displacement.
+      tl.set(strip, {
+        opacity: 1,
+        y: -5,
+        transformOrigin: 'center center'
+      });
+
+      // Phase 2 — Settle: eases down into position. Slow, quiet.
+      tl.to(strip, {
+        y: 0,
+        duration: 0.55,
+        ease: 'power2.out'
+      });
+
+      // Phase 3 — One micro-settle: the faintest click into place
+      tl.to(strip, { y: 0.4, duration: 0.08, ease: 'power1.out' });
+      tl.to(strip, { y: 0, duration: 0.12, ease: 'power1.inOut' });
+
+      // Phase 4 — Text crystallizes: vertical blur dissipates to sharp
+      tl.to(blurPrim, {
+        attr: { stdDeviation: '0 0' },
+        duration: 0.5,
+        ease: 'power2.out',
+        onComplete: function() {
+          strip.style.filter = 'none';
+        }
+      }, '-=0.18');
+    }
+
+    // One-shot IntersectionObserver trigger
+    var ch34Observer = new IntersectionObserver(function(entries) {
       entries.forEach(function(entry) {
-        if (entry.isIntersecting && !colophonTriggered) {
-          colophonTriggered = true;
-          colophonObs.disconnect();
-          if (colophonReduced) {
-            document.getElementById('fl718Colophon').style.opacity = 1;
-            return;
-          }
-          gsap.to('#fl718Colophon', {
-            opacity: 1,
-            duration: 2.5,
-            ease: 'power1.out',
-            delay: 0.8
-          });
+        if (entry.isIntersecting && !ch34Triggered) {
+          ch34Observer.disconnect();
+          setTimeout(runNegativeDrop, 600);
         }
       });
     }, { threshold: 0.5 });
 
-    colophonObs.observe(document.getElementById('fl718Colophon'));
+    ch34Observer.observe(strip);
+  }());
+  </script>
+
+  <!-- Ch5 "Walker Steps In" finale — unified colophon + figure animation, separate IIFE -->
+  <script>
+  (function() {
+    var finaleTriggered = false;
+    var finaleReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function showAllInstant() {
+      gsap.set(['#closing-text', '#fl718ClosingFigure'], { opacity: 1 });
+      gsap.set(['#colRule1', '#colRule2'], { scaleX: 1, opacity: 1 });
+      gsap.set('#colNotation', { opacity: 1 });
+      var words = document.querySelectorAll('.fl718-word');
+      words.forEach(function(w) { w.style.opacity = 1; });
+      gsap.set('#colHedera', { opacity: 1, y: 0 });
+    }
+
+    function buildWordSpans() {
+      var notation = document.getElementById('colNotation');
+      if (!notation) return;
+      var walkerSpan = notation.querySelector('.fl718-colophon__walker');
+      if (!walkerSpan) return;
+
+      var fullHTML = notation.innerHTML;
+      var walkerHTML = walkerSpan.outerHTML;
+      var parts = fullHTML.split(walkerHTML);
+      if (parts.length !== 2) return;
+
+      var tmp = document.createElement('div');
+      tmp.innerHTML = parts[0];
+      var leftText = tmp.textContent;
+      tmp.innerHTML = parts[1];
+      var rightText = tmp.textContent;
+
+      function tokenize(str) {
+        var tokens = [];
+        var words = str.split(' ');
+        words.forEach(function(w, i) {
+          if (w.length > 0) {
+            tokens.push(w + (i < words.length - 1 ? '\u2009' : ''));
+          }
+        });
+        return tokens;
+      }
+
+      var leftTokens = tokenize(leftText.trim());
+      var rightTokens = tokenize(rightText.trim());
+
+      function wrapTokens(tokens) {
+        return tokens.map(function(t) {
+          return '<span class="fl718-word" style="opacity:0">' + t + '</span>';
+        }).join('&thinsp;');
+      }
+
+      var newHTML = wrapTokens(leftTokens) +
+                    '&thinsp;' + walkerHTML + '&thinsp;' +
+                    wrapTokens(rightTokens);
+
+      notation.innerHTML = newHTML;
+      gsap.set(notation, { opacity: 1 });
+    }
+
+    function runFinale() {
+      var closingText = document.getElementById('closing-text');
+      var rule1       = document.getElementById('colRule1');
+      var rule2       = document.getElementById('colRule2');
+      var hedera      = document.getElementById('colHedera');
+      var figure      = document.getElementById('fl718ClosingFigure');
+
+      if (!figure) return;
+
+      buildWordSpans();
+      var words = document.querySelectorAll('.fl718-word');
+
+      var section = document.getElementById('ch5FinaleSection');
+      var sectionW = section ? section.offsetWidth : window.innerWidth;
+      var entryX = sectionW / 2 + 280;
+
+      gsap.set(figure, { x: entryX, opacity: 1 });
+      figure.classList.add('fl718-walking');
+
+      var tl = gsap.timeline({ delay: 0.2 });
+
+      tl.to(closingText, {
+        opacity: 1,
+        duration: 1.6,
+        ease: 'power1.out'
+      }, 0);
+
+      tl.to(figure, {
+        x: 0,
+        duration: 2.4,
+        ease: 'power2.out',
+        onComplete: function() {
+          figure.classList.remove('fl718-walking');
+        }
+      }, 0.6);
+
+      tl.to([rule1, rule2], {
+        scaleX: 1,
+        opacity: 1,
+        duration: 1.2,
+        ease: 'power2.out'
+      }, 1.6);
+
+      var wordStart = 2.4;
+      tl.to(words, {
+        opacity: 1,
+        duration: 0.4,
+        ease: 'power1.out',
+        stagger: 0.12
+      }, wordStart);
+
+      var hederaStart = wordStart + words.length * 0.12 + 0.4 + 0.15;
+      tl.to(hedera, {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        ease: 'back.out(1.6)'
+      }, hederaStart);
+    }
+
+    var obs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting && !finaleTriggered) {
+          finaleTriggered = true;
+          obs.disconnect();
+          if (finaleReduced) {
+            showAllInstant();
+            return;
+          }
+          runFinale();
+        }
+      });
+    }, { threshold: 0.15 });
+
+    var section = document.getElementById('ch5FinaleSection');
+    if (section) obs.observe(section);
   }());
   </script>
 
@@ -5612,33 +6288,7 @@
     }());
   </script>
 
-  <!-- Ch5 closing stick figure — fades in after colophon -->
-  <script>
-  (function() {
-    var sfTriggered = false;
-    var sfReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    var sfObs = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting && !sfTriggered) {
-          sfTriggered = true;
-          sfObs.disconnect();
-          if (sfReduced) {
-            document.getElementById('fl718ClosingFigure').style.opacity = 1;
-            return;
-          }
-          gsap.fromTo('#fl718ClosingFigure',
-            { opacity: 0, y: 18 },
-            { opacity: 1, y: 0, duration: 2.0, ease: 'power2.out', delay: 0.6 }
-          );
-        }
-      });
-    }, { threshold: 0.4 });
-
-    var sfEl = document.getElementById('fl718ClosingFigure');
-    if (sfEl) sfObs.observe(sfEl);
-  }());
-  </script>
+  <!-- Ch5 closing stick figure — now handled by unified finale IIFE above -->
 
   <!-- ── FILM STRIP HORIZONTAL SCROLL — Ch.4 ── -->
   <script>
@@ -5689,6 +6339,92 @@
       window.addEventListener('load', setupFilmScroll);
     }
   }());
+  </script>
+
+  <!-- ============================================
+       Ch4→5 Grid Reference Transition Animation
+       ============================================ -->
+  <script>
+  (function() {
+    var triggered = false;
+    var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function runCh45Transition() {
+      if (triggered) return;
+      triggered = true;
+
+      var ruleTop    = document.getElementById('fl718Ch45CRuleTop');
+      var ruleBottom = document.getElementById('fl718Ch45CRuleBottom');
+      var rowLat     = document.getElementById('fl718Ch45CRowLat');
+      var rowLng     = document.getElementById('fl718Ch45CRowLng');
+      var sepLat     = document.getElementById('fl718Ch45CSepLat');
+      var sepLng     = document.getElementById('fl718Ch45CSepLng');
+
+      if (reducedMotion) {
+        gsap.set([ruleTop, ruleBottom], { scaleX: 1 });
+        ruleTop.classList.add('ticked');
+        ruleBottom.classList.add('ticked');
+        gsap.set([rowLat, rowLng], { opacity: 1, x: 0 });
+        gsap.set([sepLat, sepLng], { scaleY: 1 });
+        return;
+      }
+
+      // Initial states
+      gsap.set([ruleTop, ruleBottom], { scaleX: 0, transformOrigin: 'left center' });
+      gsap.set([rowLat, rowLng], { opacity: 0, x: 8 });
+      gsap.set([sepLat, sepLng], { scaleY: 0, transformOrigin: 'top center' });
+
+      var tl = gsap.timeline();
+
+      // Phase 1: top rule draws across
+      tl.to(ruleTop, { scaleX: 1, duration: 0.6, ease: 'power2.out' }, 0);
+
+      // Phase 2: top rule tick marks appear
+      tl.call(function() {
+        ruleTop.classList.add('ticked');
+      }, [], 0.65);
+
+      // Phase 3: latitude row slides in and fades
+      tl.to(rowLat, { opacity: 1, x: 0, duration: 0.5, ease: 'power2.out' }, 0.7);
+
+      // Phase 4: lat separator draws downward
+      tl.to(sepLat, { scaleY: 1, duration: 0.3, ease: 'power2.out' }, 0.72);
+
+      // Phase 5: longitude row follows, staggered from lat
+      tl.to(rowLng, { opacity: 1, x: 0, duration: 0.5, ease: 'power2.out' }, 1.0);
+      tl.to(sepLng, { scaleY: 1, duration: 0.3, ease: 'power2.out' }, 1.02);
+
+      // Phase 6: bottom rule draws across
+      tl.to(ruleBottom, { scaleX: 1, duration: 0.55, ease: 'power2.out' }, 1.35);
+
+      // Phase 7: bottom rule ticks
+      tl.call(function() {
+        ruleBottom.classList.add('ticked');
+      }, [], 1.95);
+    }
+
+    // IntersectionObserver: one-shot trigger
+    // threshold 0.8 = wait until 80% visible so the coordinate area
+    // is well into the viewport before the animation begins
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting && !triggered) {
+          observer.disconnect();
+          runCh45Transition();
+        }
+      });
+    }, { threshold: 0.8 });
+
+    if (document.readyState !== 'loading') {
+      var el = document.getElementById('fl718Ch45Transition');
+      if (el) observer.observe(el);
+    } else {
+      document.addEventListener('DOMContentLoaded', function() {
+        var el = document.getElementById('fl718Ch45Transition');
+        if (el) observer.observe(el);
+      });
+    }
+  })();
   </script>
 
 </body>
